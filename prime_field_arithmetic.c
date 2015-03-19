@@ -26,3 +26,15 @@ unsigned int sub(uint64_t *c, uint64_t *a, uint64_t *b, unsigned int borrow_in, 
     unsigned int borrow_out = (c[num_limbs-1] > a[num_limbs-1]);
     return borrow_out;
 }
+
+void add_mod(uint64_t *c, uint64_t *a, uint64_t *b, uint64_t *m) {
+	add(c, a, b, 0, NUM_LIMBS);
+
+	uint64_t tmp[NUM_LIMBS];
+	clear_num(tmp);
+	unsigned int borrow_out = sub(tmp, c, m, 0, NUM_LIMBS);
+
+	if (borrow_out) {
+		sub(c, c, m, 0, NUM_LIMBS);
+	}
+}
