@@ -4,10 +4,12 @@
 #include <math.h>
 #include <stdint.h>
 
-#define PRIME_FIELD_BITS (131)
+#define PRIME_FIELD_BINARY_BIT_LENGTH (131)
 
-#define LIMB_SIZE_BITS (64)
-#define LIMB_SIZE_BYTE (LIMB_SIZE_BITS / 8)
-#define NUM_LIMBS ((unsigned int) ceil(PRIME_FIELD_BITS / ((double) LIMB_SIZE_BITS)))
+#define LIMB_SIZE_IN_BITS (64)
+#define LIMB_SIZE_IN_BYTES (LIMB_SIZE_IN_BITS / 8)
+#define LIMB_SIZE_IN_HEX (LIMB_SIZE_IN_BITS / 4)
+#define NUM_LIMBS ((unsigned int) ceil(PRIME_FIELD_BINARY_BIT_LENGTH / ((double) LIMB_SIZE_IN_BITS)))
+#define PRIME_FIELD_FULL_HEX_LENGTH (NUM_LIMBS * LIMB_SIZE_IN_HEX)
 
 #endif
