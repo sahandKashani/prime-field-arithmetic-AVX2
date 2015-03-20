@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -27,7 +28,9 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 	uint64_t op2[NUM_LIMBS];
 	uint64_t res[NUM_LIMBS];
 
-	for (unsigned int i = 0; i < number_of_tests; i++) {
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
 		mpz_urandomb(op1_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
 		mpz_urandomb(op2_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
 
@@ -40,10 +43,9 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(res, res_gmp);
 
 		mpz_add(res_gmp, op1_gmp, op2_gmp);
-		add(res, op1, op2, 0, NUM_LIMBS);
+		add(res, op1, op2, 0);
 
 		if (!is_equal_num_gmp(res, res_gmp)) {
-			is_equal_num_gmp(res, res_gmp);
 			print_num_gmp(op1_gmp);
 			print_num(op1);
 
@@ -53,11 +55,15 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 			print_num_gmp(res_gmp);
 			print_num(res);
 
-			return false;
+			success = false;
 		}
 	}
 
-	return true;
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(res_gmp);
+
+	return success;
 }
 
 bool test_sub(unsigned int number_of_tests, unsigned int seed) {
@@ -76,7 +82,9 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	uint64_t op2[NUM_LIMBS];
 	uint64_t res[NUM_LIMBS];
 
-	for (unsigned int i = 0; i < number_of_tests; i++) {
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
 		mpz_urandomb(op1_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
 		mpz_urandomb(op2_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
 
@@ -95,10 +103,9 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(res, res_gmp);
 
 		mpz_sub(res_gmp, op1_gmp, op2_gmp);
-		sub(res, op1, op2, 0, NUM_LIMBS);
+		sub(res, op1, op2, 0);
 
 		if (!is_equal_num_gmp(res, res_gmp)) {
-			is_equal_num_gmp(res, res_gmp);
 			print_num_gmp(op1_gmp);
 			print_num(op1);
 
@@ -108,11 +115,15 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 			print_num_gmp(res_gmp);
 			print_num(res);
 
-			return false;
+			success = false;
 		}
 	}
 
-	return true;
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(res_gmp);
+
+	return success;
 }
 
 bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
@@ -134,7 +145,9 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 	uint64_t mod[NUM_LIMBS];
 	uint64_t res[NUM_LIMBS];
 
-	for (unsigned int i = 0; i < number_of_tests; i++) {
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
 		mpz_urandomb(op1_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
 		mpz_urandomb(op2_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
 		mpz_urandomb(mod_gmp, gmp_random_state, PRIME_FIELD_BINARY_BIT_LENGTH);
@@ -151,14 +164,11 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 
 		// modular addition
 		mpz_add(res_gmp, op1_gmp, op2_gmp);
-		if (mpz_cmp(res_gmp, mod_gmp) >= 0) {
-			mpz_sub(res_gmp, res_gmp, mod_gmp);
-		}
+		mpz_mod(res_gmp, res_gmp, mod_gmp);
 
 		add_mod(res, op1, op2, mod);
 
 		if (!is_equal_num_gmp(res, res_gmp)) {
-			is_equal_num_gmp(res, res_gmp);
 			print_num_gmp(op1_gmp);
 			print_num(op1);
 
@@ -171,31 +181,36 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 			print_num_gmp(res_gmp);
 			print_num(res);
 
-			return false;
+			success = false;
 		}
 	}
 
-	return true;
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(mod_gmp);
+	mpz_clear(res_gmp);
+
+	return success;
 }
 
 int main(void) {
-//	if (test_add(NUM_ITERATIONS, SEED)) {
-//		printf("Add: Success\n");
-//	} else {
-//		printf("Add: Failed\n");
-//	}
-//
-//	if (test_sub(NUM_ITERATIONS, SEED)) {
-//		printf("Sub: Success\n");
-//	} else {
-//		printf("Sub: Failed\n");
-//	}
-
-	if (test_add_mod(NUM_ITERATIONS, SEED)) {
-		printf("Add Mod: Success\n");
+	if (test_add(NUM_ITERATIONS, SEED)) {
+		printf("Add: Success\n");
 	} else {
-		printf("Add Mod: Failed\n");
+		printf("Add: Failed\n");
 	}
+
+	if (test_sub(NUM_ITERATIONS, SEED)) {
+		printf("Sub: Success\n");
+	} else {
+		printf("Sub: Failed\n");
+	}
+
+//	if (test_add_mod(NUM_ITERATIONS, SEED)) {
+//		printf("Add Mod: Success\n");
+//	} else {
+//		printf("Add Mod: Failed\n");
+//	}
 
 	return EXIT_SUCCESS;
 }
