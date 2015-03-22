@@ -4,6 +4,7 @@
 #include "utilities.h"
 
 unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const carry_in) {
+	// we need to temporarily store the output of each operation, because it is possible that c is the same array as a.
 	uint64_t c_tmp;
 	unsigned int carry_out;
 
@@ -66,5 +67,12 @@ void add_mod(uint64_t * const c, uint64_t * const a, uint64_t * const b, uint64_
 	add(c, a, b, 0);
 	if (cmp(c, m) >= 0) {
 		sub(c, c, m, 0);
+	}
+}
+
+void sub_mod(uint64_t * const c, uint64_t * const a, uint64_t * const b, uint64_t * const m) {
+	unsigned int borrow_out = sub(c, a, b, 0);
+	if (borrow_out) {
+		add(c, c, m, 0);
 	}
 }

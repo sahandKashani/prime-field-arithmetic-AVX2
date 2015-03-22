@@ -299,18 +299,69 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 		add_mod(res, op1, op2, mod);
 
 		if (!is_equal_num_gmp(res, res_gmp)) {
-			print_num_gmp(op1_gmp);
 			print_num(op1);
-
-			print_num_gmp(op2_gmp);
 			print_num(op2);
-
-			print_num_gmp(mod_gmp);
 			print_num(mod);
-
-			print_num_gmp(res_gmp);
 			print_num(res);
+			success = false;
+		}
+	}
 
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(mod_gmp);
+	mpz_clear(res_gmp);
+
+	return success;
+}
+
+bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
+	gmp_randstate_t gmp_random_state;
+	gmp_randinit_default(gmp_random_state);
+	gmp_randseed_ui(gmp_random_state, seed);
+
+	mpz_t op1_gmp;
+	mpz_t op2_gmp;
+	mpz_t mod_gmp;
+	mpz_t res_gmp;
+	mpz_init(op1_gmp);
+	mpz_init(op2_gmp);
+	mpz_init(mod_gmp);
+	mpz_init(res_gmp);
+
+	uint64_t op1[NUM_LIMBS];
+	uint64_t op2[NUM_LIMBS];
+	uint64_t mod[NUM_LIMBS];
+	uint64_t res[NUM_LIMBS];
+
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+		generate_random_gmp(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, PRIME_MODULUS, gmp_random_state);
+
+		clear_num(mod);
+		convert_gmp_to_num(mod, mod_gmp);
+
+		generate_random_gmp(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod, gmp_random_state);
+		generate_random_gmp(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod, gmp_random_state);
+
+		clear_num(op1);
+		clear_num(op2);
+		clear_num(res);
+
+		convert_gmp_to_num(op1, op1_gmp);
+		convert_gmp_to_num(op2, op2_gmp);
+
+		// modular subtraction
+		mpz_sub(res_gmp, op1_gmp, op2_gmp);
+		mpz_mod(res_gmp, res_gmp, mod_gmp);
+		sub_mod(res, op1, op2, mod);
+
+		if (!is_equal_num_gmp(res, res_gmp)) {
+			print_num(op1);
+			print_num(op2);
+			print_num(mod);
+			print_num(res);
 			success = false;
 		}
 	}
@@ -361,6 +412,13 @@ int main(void) {
 
 	printf("Add Mod: ");
 	if (test_add_mod(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+
+	printf("Sub Mod: ");
+	if (test_sub_mod(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
