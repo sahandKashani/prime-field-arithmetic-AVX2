@@ -1,57 +1,70 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "constants.h"
 #include "utilities.h"
 
-unsigned int add(uint64_t *c, uint64_t *a, uint64_t *b, unsigned int carry_in) {
+unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const carry_in) {
+	uint64_t c_tmp;
 	unsigned int carry_out;
 
-    c[0] = a[0] + b[0] + carry_in;
-    carry_out = (c[0] < a[0]);
+    c_tmp = a[0] + b[0] + carry_in;
+    carry_out = (c_tmp < a[0]);
+    c[0] = c_tmp;
 
     for (unsigned int i = 1; i < NUM_LIMBS; i++) {
-        c[i] = a[i] + b[i] + carry_out;
-        carry_out = (c[i] < a[i]);
+        c_tmp = a[i] + b[i] + carry_out;
+        carry_out = (c_tmp < a[i]);
+        c[i] = c_tmp;
     }
 
     return carry_out;
 }
 
-unsigned int sub(uint64_t *c, uint64_t *a, uint64_t *b, unsigned int borrow_in) {
+unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const borrow_in) {
+	uint64_t c_tmp;
 	unsigned int borrow_out;
 
-    c[0] = a[0] - b[0] - borrow_in;
-    borrow_out = (c[0] > a[0]);
+    c_tmp = a[0] - b[0] - borrow_in;
+    borrow_out = (c_tmp > a[0]);
+    c[0] = c_tmp;
 
     for (unsigned int i = 1; i < NUM_LIMBS; i++) {
-        c[i] = a[i] - b[i] - borrow_out;
-        borrow_out = (c[i] > a[i]);
+        c_tmp = a[i] - b[i] - borrow_out;
+        borrow_out = (c_tmp > a[i]);
+        c[i] = c_tmp;
     }
 
     return borrow_out;
 }
 
-//// returns -1 if a < b
-//// returns  0 if a == b
-//// returns +1 if a > b
-//unsigned int cmp(uint64_t *a, uint64_t *b) {
-//	uint64_t tmp[NUM_LIMBS];
-//	clear_num(tmp);
-//	unsigned int borrow_out = sub(tmp, a, b, 0, NUM_LIMBS);
-//	if (borrow_out) {
-//		return -1;
-//	}
-//}
+bool equals_zero(uint64_t const * const num) {
+	for (unsigned int i = 0; i < NUM_LIMBS; i++) {
+		if (num[i] != 0) {
+			return false;
+		}
+	}
+	return true;
+}
 
-void add_mod(uint64_t *c, uint64_t *a, uint64_t *b, uint64_t *m) {
+// returns -1 if a < b
+// returns  0 if a == b
+// returns +1 if a > b
+int cmp(uint64_t const * const a, uint64_t const * const b) {
 	uint64_t tmp[NUM_LIMBS];
-	clear_num(tmp);
+	unsigned int borrow_out = sub(tmp, a, b, 0);
 
-	unsigned int carry_out = add(c, a, b, 0);
-	unsigned int borrow_out = sub(tmp, m, c, 0);
+	if (borrow_out) {
+		return -1;
+	} else if (equals_zero(tmp)) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
 
-	// result is bigger than our number's max precision due to word space, or is
-	// bigger than the modulus
-	if (carry_out || borrow_out) {
+void add_mod(uint64_t * const c, uint64_t * const a, uint64_t * const b, uint64_t * const m) {
+	add(c, a, b, 0);
+	if (cmp(c, m) >= 0) {
 		sub(c, c, m, 0);
 	}
 }

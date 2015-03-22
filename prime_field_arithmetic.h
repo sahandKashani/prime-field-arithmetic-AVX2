@@ -2,9 +2,12 @@
 #define PRIME_FIELD_ARITHMETIC_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
-void add(uint64_t *c, uint64_t *a, uint64_t *b, unsigned int carry_in);
-void sub(uint64_t *c, uint64_t *a, uint64_t *b, unsigned int borrow_in);
-void add_mod(uint64_t *c, uint64_t *a, uint64_t *b, uint64_t *m);
+unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const carry_in);
+unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const borrow_in);
+bool equals_zero(uint64_t const * const num);
+int cmp(uint64_t const * const a, uint64_t const * const b);
+void add_mod(uint64_t * const c, uint64_t * const a, uint64_t * const b, uint64_t * const m);
 
 #endif
