@@ -4,12 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-unsigned int add(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], unsigned int const carry_in);
-unsigned int sub(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], unsigned int const borrow_in);
-void mul(uint64_t c[2 * NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS]);
-bool equals_zero(uint64_t const num[NUM_LIMBS]);
-int cmp(uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS]);
-void add_mod(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], uint64_t const m[NUM_LIMBS]);
-void sub_mod(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], uint64_t const m[NUM_LIMBS]);
+unsigned int add(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs, unsigned int const carry_in);
+unsigned int sub(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs, unsigned int const borrow_in);
+void mul(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs);
+bool equals_zero(uint64_t const *num, unsigned int const num_limbs);
+int cmp(uint64_t const *a, uint64_t const *b, unsigned int const num_limbs);
+void add_mod(uint64_t *c, uint64_t const *a, uint64_t const *b, uint64_t const *m, unsigned int const num_limbs);
+void sub_mod(uint64_t *c, uint64_t const *a, uint64_t const *b, uint64_t const *m, unsigned int const num_limbs);
 
 #endif

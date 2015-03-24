@@ -42,7 +42,7 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
 		mpz_add(res_gmp, op1_gmp, op2_gmp);
-		add(res, op1, op2, 0);
+		add(res, op1, op2, NUM_LIMBS, 0);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num(op1, NUM_LIMBS);
@@ -91,7 +91,7 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
 		mpz_add(op1_gmp, op1_gmp, op2_gmp);
-		add(op1, op1, op2, 0);
+		add(op1, op1, op2, NUM_LIMBS, 0);
 
 		if (!is_equal_num_gmp(op1, op1_gmp, NUM_LIMBS)) {
 			print_num(op1_before, NUM_LIMBS);
@@ -144,7 +144,7 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
 		mpz_sub(res_gmp, op1_gmp, op2_gmp);
-		sub(res, op1, op2, 0);
+		sub(res, op1, op2, NUM_LIMBS, 0);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num(op1, NUM_LIMBS);
@@ -200,7 +200,7 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
 		mpz_sub(op1_gmp, op1_gmp, op2_gmp);
-		sub(op1, op1, op2, 0);
+		sub(op1, op1, op2, NUM_LIMBS, 0);
 
 		if (!is_equal_num_gmp(op1, op1_gmp, NUM_LIMBS)) {
 			print_num(op1_before, NUM_LIMBS);
@@ -247,7 +247,7 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
 		mpz_mul(res_gmp, op1_gmp, op2_gmp);
-		mul(res, op1, op2);
+		mul(res, op1, op2, NUM_LIMBS);
 
 		if (!is_equal_num_gmp(res, res_gmp, 2 * NUM_LIMBS)) {
 			print_num(op1, NUM_LIMBS);
@@ -289,7 +289,7 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
-		if (mpz_cmp(op1_gmp, op2_gmp) != cmp(op1, op2)) {
+		if (mpz_cmp(op1_gmp, op2_gmp) != cmp(op1, op2, NUM_LIMBS)) {
 			print_num(op1, NUM_LIMBS);
 			print_num(op2, NUM_LIMBS);
 
@@ -343,7 +343,7 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 		// modular addition
 		mpz_add(res_gmp, op1_gmp, op2_gmp);
 		mpz_mod(res_gmp, res_gmp, mod_gmp);
-		add_mod(res, op1, op2, mod);
+		add_mod(res, op1, op2, mod, NUM_LIMBS);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num(op1, NUM_LIMBS);
@@ -402,7 +402,7 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 		// modular subtraction
 		mpz_sub(res_gmp, op1_gmp, op2_gmp);
 		mpz_mod(res_gmp, res_gmp, mod_gmp);
-		sub_mod(res, op1, op2, mod);
+		sub_mod(res, op1, op2, mod, NUM_LIMBS);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num(op1, NUM_LIMBS);
@@ -450,6 +450,13 @@ int main(void) {
 		printf("Failed\n");
 	}
 
+	printf("Mul: ");
+	if (test_mul(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+
 	printf("cmp: ");
 	if (test_cmp(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -470,8 +477,6 @@ int main(void) {
 	} else {
 		printf("Failed\n");
 	}
-
-	mul(NULL, NULL, NULL);
 
 	return EXIT_SUCCESS;
 }
