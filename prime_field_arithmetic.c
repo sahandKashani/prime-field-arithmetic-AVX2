@@ -6,7 +6,7 @@
 #include "utilities.h"
 #include "prime_field_arithmetic.h"
 
-unsigned int add(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs, unsigned int const carry_in) {
+unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
 	// we need to temporarily store the output of each operation, because it is
 	// possible that c is the same array as a.
 	uint64_t c_tmp;
@@ -25,7 +25,7 @@ unsigned int add(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int
     return carry_out;
 }
 
-unsigned int sub(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs, unsigned int const borrow_in) {
+unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
 	uint64_t c_tmp;
 	unsigned int borrow_out;
 
@@ -42,7 +42,7 @@ unsigned int sub(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int
     return borrow_out;
 }
 
-void mul64_to_128(uint64_t *c_hi, uint64_t *c_lo, uint64_t const a, uint64_t const b) {
+void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a, uint64_t const b) {
 	uint32_t a_32[2] = {a & 0xffffffff, (uint32_t) (a >> 32)};
 	uint32_t b_32[2] = {b & 0xffffffff, (uint32_t) (b >> 32)};
 	uint32_t c_32[4] = {0, 0, 0, 0};
@@ -66,7 +66,7 @@ void mul64_to_128(uint64_t *c_hi, uint64_t *c_lo, uint64_t const a, uint64_t con
 	*c_hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
 }
 
-void mul(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs) {
+void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
 	clear_num(c, num_limbs);
 
 	for (unsigned int i = 0; i < num_limbs; i++) {
@@ -76,7 +76,7 @@ void mul(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const n
 	}
 }
 
-bool equals_zero(uint64_t const *num, unsigned int const num_limbs) {
+bool equals_zero(uint64_t const * const num, unsigned int const num_limbs) {
 	for (unsigned int i = 0; i < num_limbs; i++) {
 		if (num[i] != 0) {
 			return false;
@@ -88,7 +88,7 @@ bool equals_zero(uint64_t const *num, unsigned int const num_limbs) {
 // returns -1 if a < b
 // returns  0 if a == b
 // returns +1 if a > b
-int cmp(uint64_t const *a, uint64_t const *b, unsigned int const num_limbs) {
+int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
 	uint64_t *tmp = calloc(num_limbs, sizeof(uint64_t));
 	assert(tmp != NULL);
 	unsigned int borrow_out = sub(tmp, a, b, num_limbs, 0);
@@ -105,14 +105,14 @@ int cmp(uint64_t const *a, uint64_t const *b, unsigned int const num_limbs) {
 	}
 }
 
-void add_mod(uint64_t *c, uint64_t const *a, uint64_t const *b, uint64_t const *m, unsigned int const num_limbs) {
+void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs) {
 	add(c, a, b, num_limbs, 0);
 	if (cmp(c, m, num_limbs) >= 0) {
 		sub(c, c, m, num_limbs, 0);
 	}
 }
 
-void sub_mod(uint64_t *c, uint64_t const *a, uint64_t const *b, uint64_t const *m, unsigned int const num_limbs) {
+void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs) {
 	unsigned int borrow_out = sub(c, a, b, num_limbs, 0);
 	if (borrow_out) {
 		add(c, c, m, num_limbs, 0);
