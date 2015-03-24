@@ -6,6 +6,7 @@
 
 unsigned int add(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs, unsigned int const carry_in);
 unsigned int sub(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs, unsigned int const borrow_in);
+void mul64_to_128(uint64_t *c_hi, uint64_t *c_lo, uint64_t const a, uint64_t const b);
 void mul(uint64_t *c, uint64_t const *a, uint64_t const *b, unsigned int const num_limbs);
 bool equals_zero(uint64_t const *num, unsigned int const num_limbs);
 int cmp(uint64_t const *a, uint64_t const *b, unsigned int const num_limbs);

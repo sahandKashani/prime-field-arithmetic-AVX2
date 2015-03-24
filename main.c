@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -7,7 +8,7 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
-#define NUM_ITERATIONS (1L)
+#define NUM_ITERATIONS (100000L)
 #define SEED (12345)
 
 const uint64_t PRIME_MODULUS[] = {0x04L, 0x8E1D43F293469E33L, 0x194C43186B3ABC0BL};
@@ -216,6 +217,54 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(op1_gmp_before);
+	gmp_randclear(gmp_random_state);
+
+	return success;
+}
+
+bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
+	gmp_randstate_t gmp_random_state;
+	gmp_randinit_default(gmp_random_state);
+	gmp_randseed_ui(gmp_random_state, seed);
+
+	mpz_t op1_gmp;
+	mpz_t op2_gmp;
+	mpz_t res_gmp;
+	mpz_init(op1_gmp);
+	mpz_init(op2_gmp);
+	mpz_init(res_gmp);
+
+	uint64_t op1;
+	uint64_t op2;
+	uint64_t res[2];
+
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+		mpz_urandomb(op1_gmp, gmp_random_state, 64);
+		mpz_urandomb(op2_gmp, gmp_random_state, 64);
+
+		op1 = 0;
+		op2 = 0;
+		clear_num(res, 2);
+
+		convert_gmp_to_num(&op1, op1_gmp, 1);
+		convert_gmp_to_num(&op2, op2_gmp, 1);
+
+		mpz_mul(res_gmp, op1_gmp, op2_gmp);
+		mul64_to_128(res + 1, res, op1, op2);
+
+		if (!is_equal_num_gmp(res, res_gmp, 2)) {
+			printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op1);
+			printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op2);
+			print_num(res, 2);
+			success = false;
+		}
+	}
+
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(res_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -430,61 +479,77 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 }
 
 int main(void) {
-	printf("Add: ");
+	printf("Add:\n");
 	if (test_add(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("Sub: ");
+	printf("Sub:\n");
 	if (test_sub(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("Add with operand overlap: ");
+	printf("Add with operand overlap:\n");
 	if (test_add_overlap_operands(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("Sub with operand overlap: ");
+	printf("Sub with operand overlap:\n");
 	if (test_sub_overlap_operands(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("Mul: ");
+	printf("mul64_to_128:\n");
+	if (test_mul64_to_128(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+	printf("\n");
+
+	printf("Mul:\n");
 	if (test_mul(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("cmp: ");
+	printf("cmp:\n");
 	if (test_cmp(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("Add Mod: ");
+	printf("Add Mod:\n");
 	if (test_add_mod(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
-	printf("Sub Mod: ");
+	printf("Sub Mod:\n");
 	if (test_sub_mod(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
 	}
+	printf("\n");
 
 	return EXIT_SUCCESS;
 }
