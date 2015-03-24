@@ -3,7 +3,7 @@
 #include "constants.h"
 #include "utilities.h"
 
-unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const carry_in) {
+unsigned int add(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], unsigned int const carry_in) {
 	// we need to temporarily store the output of each operation, because it is possible that c is the same array as a.
 	uint64_t c_tmp;
 	unsigned int carry_out;
@@ -21,7 +21,7 @@ unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     return carry_out;
 }
 
-unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const borrow_in) {
+unsigned int sub(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], unsigned int const borrow_in) {
 	uint64_t c_tmp;
 	unsigned int borrow_out;
 
@@ -38,7 +38,11 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     return borrow_out;
 }
 
-bool equals_zero(uint64_t const * const num) {
+void mul() {
+
+}
+
+bool equals_zero(uint64_t const num[NUM_LIMBS]) {
 	for (unsigned int i = 0; i < NUM_LIMBS; i++) {
 		if (num[i] != 0) {
 			return false;
@@ -50,7 +54,7 @@ bool equals_zero(uint64_t const * const num) {
 // returns -1 if a < b
 // returns  0 if a == b
 // returns +1 if a > b
-int cmp(uint64_t const * const a, uint64_t const * const b) {
+int cmp(uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS]) {
 	uint64_t tmp[NUM_LIMBS];
 	unsigned int borrow_out = sub(tmp, a, b, 0);
 
@@ -63,14 +67,14 @@ int cmp(uint64_t const * const a, uint64_t const * const b) {
 	}
 }
 
-void add_mod(uint64_t * const c, uint64_t * const a, uint64_t * const b, uint64_t * const m) {
+void add_mod(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], uint64_t const m[NUM_LIMBS]) {
 	add(c, a, b, 0);
 	if (cmp(c, m) >= 0) {
 		sub(c, c, m, 0);
 	}
 }
 
-void sub_mod(uint64_t * const c, uint64_t * const a, uint64_t * const b, uint64_t * const m) {
+void sub_mod(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], uint64_t const m[NUM_LIMBS]) {
 	unsigned int borrow_out = sub(c, a, b, 0);
 	if (borrow_out) {
 		add(c, c, m, 0);
