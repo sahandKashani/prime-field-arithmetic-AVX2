@@ -584,10 +584,7 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 	return success;
 }
 
-int main(void) {
-	// Important condition for "basic" operations like addition not to overflow
-	assert((PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS)!= 0);
-
+void check_add() {
 	printf("Add:\n");
 	if (test_add(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -595,7 +592,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_add_num_64() {
 	printf("add_num_64:\n");
 	if (test_add_num_64(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -603,7 +602,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_sub() {
 	printf("Sub:\n");
 	if (test_sub(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -611,7 +612,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_add_overlap_operands() {
 	printf("Add with operand overlap:\n");
 	if (test_add_overlap_operands(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -619,7 +622,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_sub_overlap_operands() {
 	printf("Sub with operand overlap:\n");
 	if (test_sub_overlap_operands(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -627,7 +632,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_mul64_to_128() {
 	printf("mul64_to_128:\n");
 	if (test_mul64_to_128(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -635,7 +642,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_mul() {
 	printf("Mul:\n");
 	if (test_mul(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -643,7 +652,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_cmp() {
 	printf("cmp:\n");
 	if (test_cmp(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -651,7 +662,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_add_mod() {
 	printf("Add Mod:\n");
 	if (test_add_mod(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -659,7 +672,9 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
 
+void check_sub_mod() {
 	printf("Sub Mod:\n");
 	if (test_sub_mod(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
@@ -667,6 +682,22 @@ int main(void) {
 		printf("Failed\n");
 	}
 	printf("\n");
+}
+
+int main(void) {
+	// Important condition for "basic" operations like addition not to overflow
+	assert((PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS)!= 0);
+
+	check_add();
+	check_add_num_64();
+	check_sub();
+	check_add_overlap_operands();
+	check_sub_overlap_operands();
+	check_mul64_to_128();
+	check_mul();
+	check_cmp();
+	check_add_mod();
+	check_sub_mod();
 
 	return EXIT_SUCCESS;
 }
