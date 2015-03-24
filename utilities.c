@@ -50,7 +50,9 @@ int cmp_num_gmp(uint64_t const *num, mpz_t const num_gmp, unsigned int const num
 	mpz_t tmp;
 	mpz_init(tmp);
 	convert_num_to_gmp(tmp, num, num_limbs);
-	return mpz_cmp(tmp, num_gmp);
+	int result = mpz_cmp(tmp, num_gmp);
+	mpz_clear(tmp);
+	return result;
 }
 
 void generate_random_gmp(mpz_t num_gmp, unsigned int const precision_in_bits, uint64_t const *strict_upper_bound, unsigned int const upper_bound_num_limbs, gmp_randstate_t gmp_random_state) {

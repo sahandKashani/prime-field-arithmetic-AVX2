@@ -7,7 +7,7 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
-#define NUM_ITERATIONS (100000L)
+#define NUM_ITERATIONS (1L)
 #define SEED (12345)
 
 const uint64_t PRIME_MODULUS[] = {0x04L, 0x8E1D43F293469E33L, 0x194C43186B3ABC0BL};
@@ -55,6 +55,7 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -104,6 +105,7 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(op1_gmp_before);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -157,6 +159,7 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -213,6 +216,7 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(op1_gmp_before);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -260,6 +264,7 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -299,6 +304,7 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -358,6 +364,7 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op2_gmp);
 	mpz_clear(mod_gmp);
 	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
@@ -417,6 +424,7 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op2_gmp);
 	mpz_clear(mod_gmp);
 	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
 
 	return success;
 }
