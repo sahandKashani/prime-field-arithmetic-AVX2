@@ -55,8 +55,16 @@ int cmp_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int co
 	return result;
 }
 
-void generate_random_gmp(mpz_t num_gmp, unsigned int const precision_in_bits, uint64_t const * const strict_upper_bound, unsigned int const upper_bound_num_limbs, gmp_randstate_t gmp_random_state) {
+void generate_random_gmp_less_than(mpz_t num_gmp, unsigned int const precision_in_bits, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
 	do {
 		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
-	} while (cmp_num_gmp(strict_upper_bound, num_gmp, upper_bound_num_limbs) != 1);
+	} while (mpz_cmp(strict_upper_bound_gmp, num_gmp) != 1);
+}
+
+void generate_prime_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+	do {
+		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
+	} while (mpz_probab_prime_p(num_gmp, 25) < 1);
+	// mpz_probab_prime_p returns 1 if num_gmp is probably prime, and 2 if
+	// num_gmp is definitely prime
 }
