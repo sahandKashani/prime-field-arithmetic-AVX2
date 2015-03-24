@@ -61,10 +61,6 @@ void generate_random_gmp_less_than(mpz_t num_gmp, unsigned int const precision_i
 	} while (mpz_cmp(strict_upper_bound_gmp, num_gmp) != 1);
 }
 
-void generate_prime_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
-	do {
-		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
-	} while (mpz_probab_prime_p(num_gmp, 25) < 1);
-	// mpz_probab_prime_p returns 1 if num_gmp is probably prime, and 2 if
-	// num_gmp is definitely prime
+void generate_random_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+	mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
 }

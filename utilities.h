@@ -18,6 +18,6 @@ bool is_equal_num_num(uint64_t const * const num1, uint64_t const * const num2, 
 bool is_equal_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs);
 int cmp_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs);
 void generate_random_gmp_less_than(mpz_t num_gmp, unsigned int const precision_in_bits, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state);
-void generate_prime_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state);
+void generate_random_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state);
 
 #endif

@@ -8,7 +8,7 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
-#define NUM_ITERATIONS (10000L)
+#define NUM_ITERATIONS (10000000L)
 #define SEED (12345)
 
 bool test_add(unsigned int number_of_tests, unsigned int seed) {
@@ -19,11 +19,11 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
 	mpz_t res_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
 	mpz_init(res_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
@@ -32,9 +32,9 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		clear_num(op2, NUM_LIMBS);
@@ -60,7 +60,7 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -74,11 +74,11 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_t op1_gmp_before;
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp_before);
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1_before[NUM_LIMBS];
 	uint64_t op1[NUM_LIMBS];
@@ -87,9 +87,9 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		mpz_set(op1_gmp_before, op1_gmp);
 
 		clear_num(op1_before, NUM_LIMBS);
@@ -117,7 +117,7 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(op1_gmp_before);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -131,11 +131,11 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
 	mpz_t res_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
 	mpz_init(res_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2;
@@ -144,8 +144,8 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		mpz_urandomb(op2_gmp, gmp_random_state, 64);
 
 		clear_num(op1, NUM_LIMBS);
@@ -172,7 +172,7 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -186,11 +186,11 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
 	mpz_t res_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
 	mpz_init(res_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
@@ -199,9 +199,9 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		// op1_gmp has to be bigger than op2_gmp, because this is normal
 		// subtraction (no modular arithmetic)
@@ -233,7 +233,7 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -247,11 +247,11 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_t op1_gmp_before;
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp_before);
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1_before[NUM_LIMBS];
 	uint64_t op1[NUM_LIMBS];
@@ -260,9 +260,9 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		// op1_gmp has to be bigger than op2_gmp, because this is normal
 		// subtraction (no modular arithmetic)
@@ -297,7 +297,7 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(op1_gmp_before);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -362,11 +362,11 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
 	mpz_t res_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
 	mpz_init(res_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
@@ -375,9 +375,9 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		clear_num(op2, NUM_LIMBS);
@@ -403,7 +403,7 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -416,10 +416,10 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
@@ -427,9 +427,9 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		clear_num(op2, NUM_LIMBS);
@@ -454,7 +454,7 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -467,46 +467,46 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_t res_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 	mpz_init(res_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
-	uint64_t prime[NUM_LIMBS];
+	uint64_t mod[NUM_LIMBS];
 	uint64_t res[NUM_LIMBS];
 
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		clear_num(op2, NUM_LIMBS);
-		clear_num(prime, NUM_LIMBS);
+		clear_num(mod, NUM_LIMBS);
 		clear_num(res, NUM_LIMBS);
 
 		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
-		convert_gmp_to_num(prime, prime_gmp, NUM_LIMBS);
+		convert_gmp_to_num(mod, mod_gmp, NUM_LIMBS);
 
 		// modular addition
 		mpz_add(res_gmp, op1_gmp, op2_gmp);
-		mpz_mod(res_gmp, res_gmp, prime_gmp);
-		add_mod(res, op1, op2, prime, NUM_LIMBS);
+		mpz_mod(res_gmp, res_gmp, mod_gmp);
+		add_mod(res, op1, op2, mod, NUM_LIMBS);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num_gmp(op1_gmp, NUM_LIMBS);
 			print_num(op1, NUM_LIMBS);
 			print_num_gmp(op2_gmp, NUM_LIMBS);
 			print_num(op2, NUM_LIMBS);
-			print_num_gmp(prime_gmp, NUM_LIMBS);
-			print_num(prime, NUM_LIMBS);
+			print_num_gmp(mod_gmp, NUM_LIMBS);
+			print_num(mod, NUM_LIMBS);
 			print_num_gmp(res_gmp, NUM_LIMBS);
 			print_num(res, NUM_LIMBS);
 			success = false;
@@ -515,7 +515,7 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	mpz_clear(res_gmp);
 	gmp_randclear(gmp_random_state);
 
@@ -529,46 +529,46 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_t op1_gmp;
 	mpz_t op2_gmp;
-	mpz_t prime_gmp;
+	mpz_t mod_gmp;
 	mpz_t res_gmp;
 	mpz_init(op1_gmp);
 	mpz_init(op2_gmp);
-	mpz_init(prime_gmp);
+	mpz_init(mod_gmp);
 	mpz_init(res_gmp);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
-	uint64_t prime[NUM_LIMBS];
+	uint64_t mod[NUM_LIMBS];
 	uint64_t res[NUM_LIMBS];
 
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_prime_number(prime_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
-		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, prime_gmp, gmp_random_state);
+		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
+		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		clear_num(op2, NUM_LIMBS);
-		clear_num(prime, NUM_LIMBS);
+		clear_num(mod, NUM_LIMBS);
 		clear_num(res, NUM_LIMBS);
 
 		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
 		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
-		convert_gmp_to_num(prime, prime_gmp, NUM_LIMBS);
+		convert_gmp_to_num(mod, mod_gmp, NUM_LIMBS);
 
 		// modular subtraction
 		mpz_sub(res_gmp, op1_gmp, op2_gmp);
-		mpz_mod(res_gmp, res_gmp, prime_gmp);
-		sub_mod(res, op1, op2, prime, NUM_LIMBS);
+		mpz_mod(res_gmp, res_gmp, mod_gmp);
+		sub_mod(res, op1, op2, mod, NUM_LIMBS);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num_gmp(op1_gmp, NUM_LIMBS);
 			print_num(op1, NUM_LIMBS);
 			print_num_gmp(op2_gmp, NUM_LIMBS);
 			print_num(op2, NUM_LIMBS);
-			print_num_gmp(prime_gmp, NUM_LIMBS);
-			print_num(prime, NUM_LIMBS);
+			print_num_gmp(mod_gmp, NUM_LIMBS);
+			print_num(mod, NUM_LIMBS);
 			print_num_gmp(res_gmp, NUM_LIMBS);
 			print_num(res, NUM_LIMBS);
 			success = false;
@@ -577,7 +577,7 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
-	mpz_clear(prime_gmp);
+	mpz_clear(mod_gmp);
 	mpz_clear(res_gmp);
 	gmp_randclear(gmp_random_state);
 
