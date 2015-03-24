@@ -8,7 +8,7 @@
 
 unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
 	// we need to temporarily store the output of each operation, because it is
-	// possible that c is the same array as a.
+	// possible that c is the same array as a or b.
 	uint64_t c_tmp;
 	unsigned int carry_out;
 
@@ -25,7 +25,28 @@ unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     return carry_out;
 }
 
+unsigned int add_num_64(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs, unsigned int const carry_in) {
+	// we need to temporarily store the output of each operation, because it is
+	// possible that c is the same array as a.
+	uint64_t c_tmp;
+	unsigned int carry_out;
+
+    c_tmp = a[0] + b + carry_in;
+    carry_out = (c_tmp < a[0]);
+    c[0] = c_tmp;
+
+    for (unsigned int i = 1; i < num_limbs; i++) {
+        c_tmp = a[i] + carry_out;
+        carry_out = (c_tmp < a[i]);
+        c[i] = c_tmp;
+    }
+
+    return carry_out;
+}
+
 unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
+	// we need to temporarily store the output of each operation, because it is
+	// possible that c is the same array as a or b.
 	uint64_t c_tmp;
 	unsigned int borrow_out;
 
@@ -69,10 +90,26 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
 	clear_num(c, num_limbs);
 
-	for (unsigned int i = 0; i < num_limbs; i++) {
-		for (unsigned int j = 0; j < num_limbs; j++) {
+	uint64_t inner_product[2] = {0, 0};
+	uint64_t inner_product_lo = 0;
+	uint64_t inner_product_hi = 0;
 
+	for (unsigned int i = 0; i < num_limbs; i++) {
+		inner_product_hi = 0;
+		for (unsigned int j = 0; j < num_limbs; j++) {
+			// inner_product = c[i + j] + (a[i] * b[j]) + inner_product_hi
+			// 1. (a[i] * b[j])
+			mul64_to_128(&inner_product[1], &inner_product[0], a[i], b[j]);
+			// 2. (a[i] * b[j]) + inner_product_hi
+			add_num_64(inner_product, inner_product, inner_product_hi, 2, 0);
+			// 3. c[i + j] + (a[i] * b[j]) + inner_product_hi
+			add_num_64(inner_product, inner_product, c[i + j], 2, 0);
+
+			inner_product_lo = inner_product[0];
+			inner_product_hi = inner_product[1];
+			c[i + j] = inner_product_lo;
 		}
+		c[i + num_limbs] = inner_product_lo;
 	}
 }
 

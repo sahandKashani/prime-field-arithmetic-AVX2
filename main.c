@@ -111,6 +111,54 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	return success;
 }
 
+bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
+	gmp_randstate_t gmp_random_state;
+	gmp_randinit_default(gmp_random_state);
+	gmp_randseed_ui(gmp_random_state, seed);
+
+	mpz_t op1_gmp;
+	mpz_t op2_gmp;
+	mpz_t res_gmp;
+	mpz_init(op1_gmp);
+	mpz_init(op2_gmp);
+	mpz_init(res_gmp);
+
+	uint64_t op1[NUM_LIMBS];
+	uint64_t op2;
+	uint64_t res[NUM_LIMBS];
+
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+		generate_random_gmp(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, PRIME_MODULUS, NUM_LIMBS, gmp_random_state);
+		mpz_urandomb(op2_gmp, gmp_random_state, 64);
+
+		clear_num(op1, NUM_LIMBS);
+		op2 = 0;
+		clear_num(res, NUM_LIMBS);
+
+		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
+		convert_gmp_to_num(&op2, op2_gmp, 1);
+
+		mpz_add(res_gmp, op1_gmp, op2_gmp);
+		add_num_64(res, op1, op2, NUM_LIMBS, 0);
+
+		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+			print_num(op1, NUM_LIMBS);
+			printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op2);
+			print_num(res, NUM_LIMBS);
+			success = false;
+		}
+	}
+
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
+
+	return success;
+}
+
 bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	gmp_randstate_t gmp_random_state;
 	gmp_randinit_default(gmp_random_state);
@@ -303,8 +351,11 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 		mul(res, op1, op2, NUM_LIMBS);
 
 		if (!is_equal_num_gmp(res, res_gmp, 2 * NUM_LIMBS)) {
+			print_num_gmp(op1_gmp, NUM_LIMBS);
 			print_num(op1, NUM_LIMBS);
+			print_num_gmp(op2_gmp, NUM_LIMBS);
 			print_num(op2, NUM_LIMBS);
+			print_num_gmp(res_gmp, 2 * NUM_LIMBS);
 			print_num(res, 2 * NUM_LIMBS);
 			success = false;
 		}
@@ -481,6 +532,14 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 int main(void) {
 	printf("Add:\n");
 	if (test_add(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+	printf("\n");
+
+	printf("add_num_64:\n");
+	if (test_add_num_64(NUM_ITERATIONS, SEED)) {
 		printf("Success\n");
 	} else {
 		printf("Failed\n");
