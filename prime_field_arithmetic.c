@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include "constants.h"
 #include "utilities.h"
+#include "prime_field_arithmetic.h"
 
 unsigned int add(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS], unsigned int const carry_in) {
 	// we need to temporarily store the output of each operation, because it is possible that c is the same array as a.
@@ -38,7 +39,7 @@ unsigned int sub(uint64_t c[NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t co
     return borrow_out;
 }
 
-void mul() {
+void mul(uint64_t c[2 * NUM_LIMBS], uint64_t const a[NUM_LIMBS], uint64_t const b[NUM_LIMBS]) {
 
 }
 
