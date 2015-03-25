@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdint.h>
 
-#define PRIME_FIELD_BINARY_BIT_LENGTH (131)
+#define PRIME_FIELD_BINARY_BIT_LENGTH (65)
 
 #define LIMB_SIZE_IN_BITS (64)
 #define LIMB_SIZE_IN_BYTES (LIMB_SIZE_IN_BITS / 8)

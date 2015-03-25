@@ -8,7 +8,7 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
-#define NUM_ITERATIONS (10000000L)
+#define NUM_ITERATIONS (100000L)
 #define SEED (12345)
 
 bool test_add(unsigned int number_of_tests, unsigned int seed) {
@@ -686,7 +686,8 @@ void check_sub_mod() {
 
 int main(void) {
 	// Important condition for "basic" operations like addition not to overflow
-	assert((PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS)!= 0);
+	assert(PRIME_FIELD_BINARY_BIT_LENGTH > LIMB_SIZE_IN_BITS);
+	assert((PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS) != 0);
 
 	check_add();
 	check_add_num_64();
