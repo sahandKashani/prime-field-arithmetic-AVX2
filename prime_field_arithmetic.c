@@ -88,7 +88,7 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 }
 
 void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
-	clear_num(c, num_limbs);
+	clear_num(c, 2 * num_limbs);
 
 	uint64_t inner_product[2] = {0, 0};
 	uint64_t inner_product_lo = 0;
@@ -109,7 +109,7 @@ void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b,
 			inner_product_hi = inner_product[1];
 			c[i + j] = inner_product_lo;
 		}
-		c[i + num_limbs] = inner_product_lo;
+		c[i + num_limbs] = inner_product_hi;
 	}
 }
 
