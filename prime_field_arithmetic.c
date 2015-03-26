@@ -88,8 +88,6 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 }
 
 void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
-	clear_num(c, 2 * num_limbs);
-
 	uint64_t inner_product[2] = {0, 0};
 	uint64_t inner_product_lo = 0;
 	uint64_t inner_product_hi = 0;
@@ -126,18 +124,14 @@ bool equals_zero(uint64_t const * const num, unsigned int const num_limbs) {
 // returns  0 if a == b
 // returns +1 if a > b
 int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
-	uint64_t *tmp = calloc(num_limbs, sizeof(uint64_t));
-	assert(tmp != NULL);
+	uint64_t tmp[num_limbs];
 	unsigned int borrow_out = sub(tmp, a, b, num_limbs, 0);
 
 	if (borrow_out) {
-		free(tmp);
 		return -1;
 	} else if (equals_zero(tmp, num_limbs)) {
-		free(tmp);
 		return 0;
 	} else {
-		free(tmp);
 		return 1;
 	}
 }
