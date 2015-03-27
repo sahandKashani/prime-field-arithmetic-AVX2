@@ -1,6 +1,6 @@
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include "utilities.h"
 #include "constants.h"
 #include "prime_field_arithmetic.h"

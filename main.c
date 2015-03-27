@@ -1,5 +1,5 @@
-#include <assert.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -685,10 +685,6 @@ void check_sub_mod() {
 }
 
 int main(void) {
-	// Important condition for "basic" operations like addition not to overflow
-	assert(PRIME_FIELD_BINARY_BIT_LENGTH > LIMB_SIZE_IN_BITS);
-	assert((PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS) != 0);
-
 	check_add();
 	check_add_num_64();
 	check_sub();
