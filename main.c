@@ -32,7 +32,7 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
@@ -87,7 +87,7 @@ bool test_add_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		mpz_set(op1_gmp_before, op1_gmp);
@@ -144,7 +144,7 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		mpz_urandomb(op2_gmp, gmp_random_state, 64);
 
@@ -199,7 +199,7 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
@@ -260,7 +260,7 @@ bool test_sub_overlap_operands(unsigned int number_of_tests, unsigned int seed) 
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
@@ -375,7 +375,7 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
@@ -427,7 +427,7 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
@@ -482,7 +482,7 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 
@@ -544,7 +544,7 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 		generate_random_gmp_less_than(op1_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 		generate_random_gmp_less_than(op2_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, mod_gmp, gmp_random_state);
 

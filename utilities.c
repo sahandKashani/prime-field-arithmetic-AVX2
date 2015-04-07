@@ -61,6 +61,12 @@ void generate_random_gmp_less_than(mpz_t num_gmp, unsigned int const precision_i
 	} while (mpz_cmp(strict_upper_bound_gmp, num_gmp) != 1);
 }
 
-void generate_random_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+void generate_random_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
 	mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
+}
+
+void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+	do {
+		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
+	} while (mpz_probab_prime_p(num_gmp, 25) != 2);
 }
