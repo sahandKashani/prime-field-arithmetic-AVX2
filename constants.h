@@ -12,6 +12,7 @@
 #define LIMB_SIZE_IN_HEX (LIMB_SIZE_IN_BITS / 4)
 #define NUM_LIMBS ((unsigned int) ceil((PRIME_FIELD_BINARY_BIT_LENGTH)/ ((double) LIMB_SIZE_IN_BITS)))
 #define PRIME_FIELD_FULL_HEX_LENGTH (NUM_LIMBS * LIMB_SIZE_IN_HEX)
+#define NUM_MONTGOMERY_SHIFT_LIMBS (NUM_LIMBS) // shift amount "n" in limbs such that ((n * LIMB_SIZE_IN_BITS) > PRIME_FIELD_BINARY_BIT_LENGTH) && (gcd(prime_modulus, 2^(n * LIMB_SIZE_IN_BITS)) == 1)
 
 #if (PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS) == 0
 #error "PRIME_FIELD_BINARY_BIT_LENGTH must not be a multiple of LIMB_SIZE_IN_BITS"
