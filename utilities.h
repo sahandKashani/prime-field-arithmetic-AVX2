@@ -17,8 +17,10 @@ void convert_num_to_gmp(mpz_t num_gmp, uint64_t const * const num, unsigned int 
 bool is_equal_num_num(uint64_t const * const num1, uint64_t const * const num2, unsigned int const num_limbs);
 bool is_equal_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs);
 int cmp_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs);
-void generate_random_gmp_less_than(mpz_t num_gmp, unsigned int const precision_in_bits, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state);
+void generate_random_gmp_less_than(mpz_t num_gmp, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state);
 void generate_random_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state);
 void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state);
+void standard_to_montgomery(mpz_t montgomery, mpz_t standard, mpz_t mod);
+void montgomery_to_standard(mpz_t standard, mpz_t montgomery, mpz_t mod);
 
 #endif

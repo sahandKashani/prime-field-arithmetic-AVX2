@@ -55,18 +55,43 @@ int cmp_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int co
 	return result;
 }
 
-void generate_random_gmp_less_than(mpz_t num_gmp, unsigned int const precision_in_bits, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
-	do {
-		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
-	} while (mpz_cmp(strict_upper_bound_gmp, num_gmp) != 1);
+void generate_random_gmp_less_than(mpz_t num_gmp, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
+	mpz_urandomm(num_gmp, gmp_random_state, strict_upper_bound_gmp);
 }
 
 void generate_random_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
-	mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
+	mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
 }
 
 void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
 	do {
-		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
-	} while (mpz_probab_prime_p(num_gmp, 25) != 2);
+		mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
+	} while (mpz_probab_prime_p(num_gmp, 25) == 0); // definitely not composite
+}
+
+void standard_to_montgomery(mpz_t montgomery, mpz_t standard, mpz_t mod) {
+	mpz_t R;
+	mpz_init(R);
+	mpz_ui_pow_ui(R, 2, NUM_MONTGOMERY_SHIFT_LIMBS * LIMB_SIZE_IN_BITS);
+
+	mpz_mul(montgomery, standard, R);
+	mpz_mod(montgomery, montgomery, mod);
+
+	mpz_clear(R);
+}
+
+void montgomery_to_standard(mpz_t standard, mpz_t montgomery, mpz_t mod) {
+	mpz_t R;
+	mpz_init(R);
+	mpz_ui_pow_ui(R, 2, NUM_MONTGOMERY_SHIFT_LIMBS * LIMB_SIZE_IN_BITS);
+
+	mpz_t invR;
+	mpz_init(invR);
+	mpz_invert(invR, R, mod);
+
+	mpz_mul(standard, montgomery, invR);
+	mpz_mod(standard, standard, mod);
+
+	mpz_clear(R);
+	mpz_clear(invR);
 }
