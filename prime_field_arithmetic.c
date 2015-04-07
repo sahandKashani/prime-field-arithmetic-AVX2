@@ -91,6 +91,10 @@ void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b,
 	uint64_t inner_product_lo = 0;
 	uint64_t inner_product_hi = 0;
 
+	for (unsigned int i = 0; i < 2 * num_limbs; i++) {
+		c[i] = 0;
+	}
+
 	for (unsigned int i = 0; i < num_limbs; i++) {
 		inner_product_hi = 0;
 		for (unsigned int j = 0; j < num_limbs; j++) {
