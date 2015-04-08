@@ -18,4 +18,8 @@
 #error "PRIME_FIELD_BINARY_BIT_LENGTH must not be a multiple of LIMB_SIZE_IN_BITS"
 #endif
 
+#if (PRIME_FIELD_BINARY_BIT_LENGTH < LIMB_SIZE_IN_BITS)
+#error "PRIME_FIELD_BINARY_BIT_LENGTH must be larger than LIMB_SIZE_IN_BITS"
+#endif
+
 #endif
