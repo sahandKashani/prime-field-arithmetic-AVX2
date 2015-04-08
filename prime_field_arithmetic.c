@@ -141,6 +141,12 @@ int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const n
 	}
 }
 
+void and(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
+	for (unsigned int i = 0; i < num_limbs; i++) {
+		c[i] = a[i] & b[i];
+	}
+}
+
 void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs) {
 	add(c, a, b, num_limbs, 0);
 	if (cmp(c, m, num_limbs) >= 0) {
@@ -149,10 +155,19 @@ void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * cons
 }
 
 void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs) {
+#ifdef BRANCHLESS_MODULAR_SUBTRACTION
+	uint64_t mask[num_limbs];
+	clear_num(mask, num_limbs);
+	unsigned int borrow_out = sub(c, a, b, num_limbs, 0);
+	sub(mask, mask, mask, num_limbs, borrow_out);
+	and(mask, m, mask, num_limbs);
+	add(c, c, mask, num_limbs, 0);
+#else
 	unsigned int borrow_out = sub(c, a, b, num_limbs, 0);
 	if (borrow_out) {
 		add(c, c, m, num_limbs, 0);
 	}
+#endif
 }
 
 /*
