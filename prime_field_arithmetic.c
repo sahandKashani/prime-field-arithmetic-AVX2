@@ -103,29 +103,13 @@ void mul_num_64(uint64_t * const c, uint64_t const * const a, uint64_t const b, 
 }
 
 void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
-	uint64_t inner_product[2] = {0, 0};
-	uint64_t inner_product_lo = 0;
-	uint64_t inner_product_hi = 0;
-
 	uint64_t res[2 * num_limbs];
 	clear_num(res, 2 * num_limbs);
 
 	for (unsigned int i = 0; i < num_limbs; i++) {
-		inner_product_hi = 0;
-		for (unsigned int j = 0; j < num_limbs; j++) {
-			// inner_product = c[i + j] + (a[i] * b[j]) + inner_product_hi
-			// 1. (a[i] * b[j])
-			mul64_to_128(&inner_product[1], &inner_product[0], a[i], b[j]);
-			// 2. (a[i] * b[j]) + inner_product_hi
-			add_num_64(inner_product, inner_product, inner_product_hi, 2, 0);
-			// 3. c[i + j] + (a[i] * b[j]) + inner_product_hi
-			add_num_64(inner_product, inner_product, res[i + j], 2, 0);
-
-			inner_product_lo = inner_product[0];
-			inner_product_hi = inner_product[1];
-			res[i + j] = inner_product_lo;
-		}
-		res[i + num_limbs] = inner_product_hi;
+		uint64_t tmp[num_limbs + 1];
+		mul_num_64(tmp, a, b[i], num_limbs);
+		add(res + i, res + i, tmp, num_limbs + 1, 0);
 	}
 
 	copy_num(c, res, 2 * num_limbs);
@@ -197,9 +181,19 @@ void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * cons
 #endif
 }
 
-/*
- * (2^n - 1)*(2^n - 1) + (2^n - 1) < (2^(2*n) - 1) for all n > 0
- */
-void montgomery_reduction() {
+//void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const * const y, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs) {
+//	uint64_t A[num_limbs + 1];
+//	clear_num(A, num_limbs + 1);
+//
+//	for (unsigned int i = 0; i < num_limbs; i++) {
+//		uint64_t u = (A[0] + x[i] * y[0]) * m_prime;
+//		add(A, A, );
+//	}
+//}
 
-}
+///*
+// * (2^n - 1)*(2^n - 1) + (2^n - 1) < (2^(2*n) - 1) for all n > 0
+// */
+//void montgomery_reduction() {
+//
+//}
