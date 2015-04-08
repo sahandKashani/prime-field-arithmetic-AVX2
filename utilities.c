@@ -103,6 +103,12 @@ void clear_three_sorted_gmp(three_sorted_gmp x) {
 	mpz_clear(x.small);
 }
 
+void copy_num(uint64_t * const b, uint64_t const * const a, unsigned int const num_limbs) {
+	for (unsigned int i = 0; i < num_limbs; i++) {
+		b[i] = a[i];
+	}
+}
+
 void standard_to_montgomery(mpz_t montgomery, mpz_t standard, mpz_t mod) {
 	mpz_t R;
 	mpz_init(R);
