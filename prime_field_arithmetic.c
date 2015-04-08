@@ -25,11 +25,13 @@ unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * 
 unsigned int add_num_64(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs, unsigned int const carry_in) {
 	// we need to temporarily store the output of each operation, because it is
 	// possible that c is the same array as a.
-	uint64_t c_tmp;
-	unsigned int carry_out;
+	uint64_t c_tmp = 0;
+	unsigned int carry_out = 0;
 
-    c_tmp = a[0] + b + carry_in;
+    c_tmp = a[0] + carry_in;
     carry_out = (c_tmp < a[0]);
+    c_tmp += b;
+    carry_out |= (c_tmp < b);
     c[0] = c_tmp;
 
     for (unsigned int i = 1; i < num_limbs; i++) {
