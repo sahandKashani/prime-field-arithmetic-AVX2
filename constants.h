@@ -2,11 +2,8 @@
 #define CONSTANTS_H_
 
 #include <math.h>
+#include "settings.h"
 
-// Modify PRIME_FIELD_BINARY_BIT_LENGTH at will
-#define PRIME_FIELD_BINARY_BIT_LENGTH (131)
-
-// Do not modify anything below
 #define LIMB_SIZE_IN_BITS (64)
 #define LIMB_SIZE_IN_BYTES (LIMB_SIZE_IN_BITS / 8)
 #define LIMB_SIZE_IN_HEX (LIMB_SIZE_IN_BITS / 4)
