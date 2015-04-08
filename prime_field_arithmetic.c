@@ -93,7 +93,8 @@ void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b,
 	uint64_t inner_product_lo = 0;
 	uint64_t inner_product_hi = 0;
 
-	clear_num(c, 2 * num_limbs);
+	uint64_t res[2 * num_limbs];
+	clear_num(res, 2 * num_limbs);
 
 	for (unsigned int i = 0; i < num_limbs; i++) {
 		inner_product_hi = 0;
@@ -104,14 +105,16 @@ void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b,
 			// 2. (a[i] * b[j]) + inner_product_hi
 			add_num_64(inner_product, inner_product, inner_product_hi, 2, 0);
 			// 3. c[i + j] + (a[i] * b[j]) + inner_product_hi
-			add_num_64(inner_product, inner_product, c[i + j], 2, 0);
+			add_num_64(inner_product, inner_product, res[i + j], 2, 0);
 
 			inner_product_lo = inner_product[0];
 			inner_product_hi = inner_product[1];
-			c[i + j] = inner_product_lo;
+			res[i + j] = inner_product_lo;
 		}
-		c[i + num_limbs] = inner_product_hi;
+		res[i + num_limbs] = inner_product_hi;
 	}
+
+	copy_num(c, res, 2 * num_limbs);
 }
 
 bool equals_zero(uint64_t const * const num, unsigned int const num_limbs) {
