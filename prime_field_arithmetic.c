@@ -6,12 +6,13 @@
 #include "prime_field_arithmetic.h"
 
 unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
-	// we need to temporarily store the output of each operation, because it is
-	// possible that c is the same array as a or b.
-	uint64_t c_tmp = 0;
 	unsigned int carry_out = carry_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
+		// we need to temporarily store the output of each operation, because it is
+		// possible that c is the same array as a or b.
+		uint64_t c_tmp = 0;
+
         c_tmp = a[i] + carry_out;
         carry_out = (c_tmp < a[i]);
         c_tmp += b[i];
@@ -44,18 +45,19 @@ unsigned int add_num_64(uint64_t * const c, uint64_t const * const a, uint64_t c
 }
 
 unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
-	// we need to temporarily store the output of each operation, because it is
-	// possible that c is the same array as a or b.
-	uint64_t c_tmp;
-	unsigned int borrow_out;
+	unsigned int borrow_out = borrow_in;
 
-    c_tmp = a[0] - b[0] - borrow_in;
-    borrow_out = (c_tmp > a[0]);
-    c[0] = c_tmp;
+    for (unsigned int i = 0; i < num_limbs; i++) {
+		// we need to temporarily store the output of each operation, because it is
+		// possible that c is the same array as a or b.
+		uint64_t c_tmp = 0;
+		uint64_t c_tmp_old = 0;
 
-    for (unsigned int i = 1; i < num_limbs; i++) {
-        c_tmp = a[i] - b[i] - borrow_out;
+        c_tmp = a[i] - borrow_out;
+        c_tmp_old = c_tmp;
         borrow_out = (c_tmp > a[i]);
+        c_tmp -= b[i];
+        borrow_out |= (c_tmp > c_tmp_old);
         c[i] = c_tmp;
     }
 
