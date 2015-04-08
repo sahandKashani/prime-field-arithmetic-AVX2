@@ -7,13 +7,15 @@
 
 void print_num(uint64_t const * const num, unsigned int const num_limbs) {
 	for (unsigned int i = 0; i < num_limbs; i++) {
-		printf("%0*" PRIx64, LIMB_SIZE_IN_HEX, num[num_limbs - i - 1]);
+		printf("%0*" PRIx64 " ", LIMB_SIZE_IN_HEX, num[num_limbs - i - 1]);
 	}
 	printf("\n");
 }
 
 void print_num_gmp(mpz_t const num_gmp, unsigned int const num_limbs) {
-	gmp_printf("%0*Zx\n", num_limbs * LIMB_SIZE_IN_HEX, num_gmp);
+	uint64_t tmp[num_limbs];
+	convert_gmp_to_num(tmp, num_gmp, num_limbs);
+	print_num(tmp, num_limbs);
 }
 
 void clear_num(uint64_t * const num, unsigned int const num_limbs) {
