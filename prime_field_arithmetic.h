@@ -11,6 +11,7 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
 bool equals_zero(uint64_t const * const num, unsigned int const num_limbs);
 int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
+void and(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
 void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs);
 void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs);
 
