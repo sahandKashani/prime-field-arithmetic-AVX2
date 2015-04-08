@@ -91,7 +91,7 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
 		three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		mpz_set(op1_gmp, operands.small);
+		mpz_set(op1_gmp, operands.middle);
 		mpz_set(mod_gmp, operands.big);
 
 		generate_random_gmp_number(op2_gmp, 64, gmp_random_state);
@@ -233,6 +233,65 @@ bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
 	mpz_clear(op1_gmp);
 	mpz_clear(op2_gmp);
 	mpz_clear(res_gmp);
+	gmp_randclear(gmp_random_state);
+
+	return success;
+}
+
+bool test_mul_num_64(unsigned int number_of_tests, unsigned int seed) {
+	gmp_randstate_t gmp_random_state;
+	gmp_randinit_default(gmp_random_state);
+	gmp_randseed_ui(gmp_random_state, seed);
+
+	mpz_t op1_gmp;
+	mpz_t op2_gmp;
+	mpz_t res_gmp;
+	mpz_t mod_gmp;
+	mpz_init(op1_gmp);
+	mpz_init(op2_gmp);
+	mpz_init(res_gmp);
+	mpz_init(mod_gmp);
+
+	uint64_t op1[NUM_LIMBS];
+	uint64_t op2;
+	uint64_t res[NUM_LIMBS + 1];
+
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+		three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		mpz_set(op1_gmp, operands.middle);
+		mpz_set(mod_gmp, operands.big);
+
+		generate_random_gmp_number(op2_gmp, 64, gmp_random_state);
+
+		clear_num(op1, NUM_LIMBS);
+		op2 = 0;
+		clear_num(res, NUM_LIMBS);
+
+		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
+		convert_gmp_to_num(&op2, op2_gmp, 1);
+
+		mpz_mul(res_gmp, op1_gmp, op2_gmp);
+		mul_num_64(res, op1, op2, NUM_LIMBS);
+
+		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS + 1)) {
+			print_num_gmp(op1_gmp, NUM_LIMBS);
+			print_num(op1, NUM_LIMBS);
+			print_num_gmp(op2_gmp, NUM_LIMBS);
+			printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op2);
+			print_num_gmp(res_gmp, NUM_LIMBS + 1);
+			print_num(res, NUM_LIMBS + 1);
+			success = false;
+		}
+
+		clear_three_sorted_gmp(operands);
+	}
+
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(res_gmp);
+	mpz_clear(mod_gmp);
 	gmp_randclear(gmp_random_state);
 
 	return success;
@@ -518,6 +577,16 @@ void check_mul64_to_128() {
 	printf("\n");
 }
 
+void check_mul_num_64() {
+	printf("mul_num_64:\n");
+	if (test_mul_num_64(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+	printf("\n");
+}
+
 void check_mul() {
 	printf("Mul:\n");
 	if (test_mul(NUM_ITERATIONS, SEED)) {
@@ -563,6 +632,7 @@ int main(void) {
 	check_add_num_64();
 	check_sub();
 	check_mul64_to_128();
+	check_mul_num_64();
 	check_mul();
 	check_cmp();
 	check_add_mod();
