@@ -80,17 +80,19 @@ three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randst
 	mpz_init(output.middle);
 	mpz_init(output.small);
 
-	generate_random_gmp_number(output.big   , precision_in_bits, gmp_random_state);
-	generate_random_gmp_number(output.middle, precision_in_bits, gmp_random_state);
-	generate_random_gmp_number(output.small , precision_in_bits, gmp_random_state);
+	do {
+		generate_random_gmp_number(output.big, precision_in_bits, gmp_random_state);
+		generate_random_gmp_number(output.middle, precision_in_bits, gmp_random_state);
+		generate_random_gmp_number(output.small, precision_in_bits, gmp_random_state);
 
-	// How to sort 3 values in descending order (a > b > c)
-	//	if (a > b) swap(a, b)
-	//	if (a > c) swap(a, c)
-	//	if (b > c) swap(b, c);
-	if (mpz_cmp(output.small, output.middle)  == 1) mpz_swap(output.small, output.middle);
-	if (mpz_cmp(output.small, output.big) == 1) mpz_swap(output.small, output.big);
-	if (mpz_cmp(output.middle, output.big)  == 1) mpz_swap(output.middle, output.big);
+		// How to sort 3 values in descending order (a > b > c)
+		//	if (a > b) swap(a, b)
+		//	if (a > c) swap(a, c)
+		//	if (b > c) swap(b, c);
+		if (mpz_cmp(output.small, output.middle) == 1) mpz_swap(output.small, output.middle);
+		if (mpz_cmp(output.small, output.big) == 1) mpz_swap(output.small, output.big);
+		if (mpz_cmp(output.middle, output.big) == 1) mpz_swap(output.middle, output.big);
+	} while ((mpz_cmp(output.big, output.middle) == 0) || (mpz_cmp(output.big, output.small) == 0));
 
 	return output;
 }
