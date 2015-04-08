@@ -60,13 +60,43 @@ void generate_random_gmp_less_than(mpz_t num_gmp, mpz_t strict_upper_bound_gmp, 
 }
 
 void generate_random_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+	// random number with long chain of consecutive 0s and 1s for testing
 	mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
 }
 
 void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
 	do {
-		mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
+		// finding a random prime number with a long chain of 0s and 1s is hard,
+		// so we use a more "general" random number
+		mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
 	} while (mpz_probab_prime_p(num_gmp, 25) == 0); // definitely not composite
+}
+
+three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
+	three_sorted_gmp output;
+	mpz_init(output.big);
+	mpz_init(output.middle);
+	mpz_init(output.small);
+
+	generate_random_gmp_number(output.big   , precision_in_bits, gmp_random_state);
+	generate_random_gmp_number(output.middle, precision_in_bits, gmp_random_state);
+	generate_random_gmp_number(output.small , precision_in_bits, gmp_random_state);
+
+	// How to sort 3 values in descending order (a > b > c)
+	//	if (a > b) swap(a, b)
+	//	if (a > c) swap(a, c)
+	//	if (b > c) swap(b, c);
+	if (mpz_cmp(output.small, output.middle)  == 1) mpz_swap(output.small, output.middle);
+	if (mpz_cmp(output.small, output.big) == 1) mpz_swap(output.small, output.big);
+	if (mpz_cmp(output.middle, output.big)  == 1) mpz_swap(output.middle, output.big);
+
+	return output;
+}
+
+void clear_three_sorted_gmp(three_sorted_gmp x) {
+	mpz_clear(x.big);
+	mpz_clear(x.middle);
+	mpz_clear(x.small);
 }
 
 void standard_to_montgomery(mpz_t montgomery, mpz_t standard, mpz_t mod) {
