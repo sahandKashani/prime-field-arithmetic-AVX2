@@ -15,6 +15,8 @@ typedef struct {
 	mpz_t small;
 } three_sorted_gmp;
 
+unsigned int max(unsigned int a, unsigned int b);
+unsigned int min(unsigned int a, unsigned int b);
 void print_num(uint64_t const * const num, unsigned int const num_limbs);
 void print_num_gmp(mpz_t const num_gmp, unsigned int const num_limbs);
 void clear_num(uint64_t * const num, unsigned int const num_limbs);

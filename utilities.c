@@ -5,6 +5,14 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
+unsigned int max(unsigned int a, unsigned int b) {
+	return (a > b) ? a : b;
+}
+
+unsigned int min(unsigned int a, unsigned int b) {
+	return (a < b) ? a : b;
+}
+
 void print_num(uint64_t const * const num, unsigned int const num_limbs) {
 	for (unsigned int i = 0; i < num_limbs; i++) {
 		printf("%0*" PRIx64 " ", LIMB_SIZE_IN_HEX, num[num_limbs - i - 1]);
