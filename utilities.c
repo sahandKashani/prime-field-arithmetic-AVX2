@@ -116,30 +116,3 @@ void copy_num(uint64_t * const b, uint64_t const * const a, unsigned int const n
 		b[i] = a[i];
 	}
 }
-
-void standard_to_montgomery(mpz_t montgomery, mpz_t standard, mpz_t mod) {
-	mpz_t R;
-	mpz_init(R);
-	mpz_ui_pow_ui(R, 2, NUM_MONTGOMERY_SHIFT_LIMBS * LIMB_SIZE_IN_BITS);
-
-	mpz_mul(montgomery, standard, R);
-	mpz_mod(montgomery, montgomery, mod);
-
-	mpz_clear(R);
-}
-
-void montgomery_to_standard(mpz_t standard, mpz_t montgomery, mpz_t mod) {
-	mpz_t R;
-	mpz_init(R);
-	mpz_ui_pow_ui(R, 2, NUM_MONTGOMERY_SHIFT_LIMBS * LIMB_SIZE_IN_BITS);
-
-	mpz_t invR;
-	mpz_init(invR);
-	mpz_invert(invR, R, mod);
-
-	mpz_mul(standard, montgomery, invR);
-	mpz_mod(standard, standard, mod);
-
-	mpz_clear(R);
-	mpz_clear(invR);
-}

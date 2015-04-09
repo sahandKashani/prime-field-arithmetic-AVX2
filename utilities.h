@@ -31,7 +31,5 @@ void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precisio
 three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);
 void clear_three_sorted_gmp(three_sorted_gmp x);
 void copy_num(uint64_t * const b, uint64_t const * const a, unsigned int const num_limbs);
-void standard_to_montgomery(mpz_t montgomery, mpz_t standard, mpz_t mod);
-void montgomery_to_standard(mpz_t standard, mpz_t montgomery, mpz_t mod);
 
 #endif
