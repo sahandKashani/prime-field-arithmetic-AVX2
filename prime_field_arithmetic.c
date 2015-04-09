@@ -1,3 +1,4 @@
+#include <immintrin.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -65,6 +66,15 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
 }
 
 void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a, uint64_t const b) {
+#ifdef MULX
+	unsigned long long x = a;
+	unsigned long long y = b;
+	unsigned long long hi;
+	unsigned long long lo;
+	lo = _mulx_u64(x, y, &hi);
+	*c_hi = hi;
+	*c_lo = lo;
+#else
 	uint32_t a_32[2] = {a & 0xffffffff, (uint32_t) (a >> 32)};
 	uint32_t b_32[2] = {b & 0xffffffff, (uint32_t) (b >> 32)};
 	uint32_t c_32[4] = {0, 0, 0, 0};
@@ -86,6 +96,7 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 
 	*c_lo = (((uint64_t) c_32[1]) << 32) + c_32[0];
 	*c_hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
+#endif
 }
 
 void mul_num_64(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs) {
