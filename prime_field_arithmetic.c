@@ -219,10 +219,3 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 
 	copy_num(z, A, num_limbs);
 }
-
-///*
-// * (2^n - 1)*(2^n - 1) + (2^n - 1) < (2^(2*n) - 1) for all n > 0
-// */
-//void montgomery_reduction() {
-//
-//}
