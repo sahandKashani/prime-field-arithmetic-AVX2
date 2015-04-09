@@ -212,10 +212,14 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 		A[num_limbs] = 0;
 	}
 
+#ifdef BRANCHLESS_MONTGOMERY_MULTIPLICATION
+	sub_mod(A, A, m, m, num_limbs);
+#else
 	// A[num_limbs] = 0, so it is like if A and m have the same number of limbs.
 	if (cmp(A, m, num_limbs) >= 0) {
 		sub(A, A, m, num_limbs, 0);
 	}
+#endif
 
 	copy_num(z, A, num_limbs);
 }
