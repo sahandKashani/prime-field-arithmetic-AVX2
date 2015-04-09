@@ -15,6 +15,6 @@ int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const n
 void and(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
 void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs);
 void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs);
-void mul_montgomery(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs);
+void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const * const y, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs);
 
 #endif

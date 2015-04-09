@@ -740,15 +740,15 @@ void check_mul_montgomery() {
 }
 
 int main(void) {
-//	check_add();
-//	check_add_num_64();
-//	check_sub();
-//	check_mul64_to_128();
-//	check_mul_num_64();
-//	check_mul();
-//	check_cmp();
-//	check_add_mod();
-//	check_sub_mod();
+	check_add();
+	check_add_num_64();
+	check_sub();
+	check_mul64_to_128();
+	check_mul_num_64();
+	check_mul();
+	check_cmp();
+	check_add_mod();
+	check_sub_mod();
 	check_mul_montgomery();
 
 	return EXIT_SUCCESS;
