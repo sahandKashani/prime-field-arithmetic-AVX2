@@ -537,6 +537,108 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
 	return success;
 }
 
+bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
+	gmp_randstate_t gmp_random_state;
+	gmp_randinit_default(gmp_random_state);
+	gmp_randseed_ui(gmp_random_state, seed);
+
+	mpz_t op1_gmp;
+	mpz_t op2_gmp;
+	mpz_t mod_gmp;
+	mpz_t mod_prime_gmp;
+	mpz_t res_gmp;
+	mpz_t base_gmp;
+	mpz_t R_gmp;
+	mpz_t invR_gmp;
+	mpz_init(op1_gmp);
+	mpz_init(op2_gmp);
+	mpz_init(mod_gmp);
+	mpz_init(mod_prime_gmp);
+	mpz_init(res_gmp);
+	mpz_init(base_gmp);
+	mpz_init(R_gmp);
+	mpz_init(invR_gmp);
+
+	mpz_ui_pow_ui(base_gmp, 2, 64);
+	mpz_ui_pow_ui(R_gmp, 2, 64 * NUM_LIMBS);
+
+	uint64_t op1[NUM_LIMBS];
+	uint64_t op2[NUM_LIMBS];
+	uint64_t mod[NUM_LIMBS];
+	uint64_t mod_prime;
+	uint64_t res[NUM_LIMBS];
+
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+		three_sorted_gmp operands;
+
+		bool operands_ok;
+		do {
+			operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+			mpz_set(op1_gmp, operands.small);
+			mpz_set(op2_gmp, operands.middle);
+			mpz_set(mod_gmp, operands.big);
+
+			operands_ok = true;
+
+			int inverse_exists = mpz_invert(mod_prime_gmp, mod_gmp, base_gmp);
+
+			if (!inverse_exists) {
+				operands_ok = false;
+				clear_three_sorted_gmp(operands);
+			}
+		} while (!operands_ok);
+
+		mpz_neg(mod_prime_gmp, mod_prime_gmp);
+		mpz_mod(mod_prime_gmp, mod_prime_gmp, base_gmp);
+		mpz_invert(invR_gmp, R_gmp, mod_gmp);
+
+		clear_num(op1, NUM_LIMBS);
+		clear_num(op2, NUM_LIMBS);
+		clear_num(mod, NUM_LIMBS);
+		mod_prime = 0;
+		clear_num(res, NUM_LIMBS);
+
+		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
+		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
+		convert_gmp_to_num(mod, mod_gmp, NUM_LIMBS);
+		convert_gmp_to_num(&mod_prime, mod_prime_gmp, 1);
+
+		// montgomery multiplication
+		mpz_mul(res_gmp, op1_gmp, op2_gmp);
+		mpz_mul(res_gmp, res_gmp, invR_gmp);
+		mpz_mod(res_gmp, res_gmp, mod_gmp);
+		mul_montgomery(res, op1, op2, mod, mod_prime, NUM_LIMBS);
+
+		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+			print_num_gmp(op1_gmp, NUM_LIMBS);
+			print_num(op1, NUM_LIMBS);
+			print_num_gmp(op2_gmp, NUM_LIMBS);
+			print_num(op2, NUM_LIMBS);
+			print_num_gmp(mod_gmp, NUM_LIMBS);
+			print_num(mod, NUM_LIMBS);
+			print_num_gmp(res_gmp, NUM_LIMBS);
+			print_num(res, NUM_LIMBS);
+			success = false;
+		}
+
+		clear_three_sorted_gmp(operands);
+	}
+
+	mpz_clear(op1_gmp);
+	mpz_clear(op2_gmp);
+	mpz_clear(mod_gmp);
+	mpz_clear(mod_prime_gmp);
+	mpz_clear(res_gmp);
+	mpz_clear(base_gmp);
+	mpz_clear(R_gmp);
+	mpz_clear(invR_gmp);
+	gmp_randclear(gmp_random_state);
+
+	return success;
+}
+
 void check_add() {
 	printf("Add:\n");
 	if (test_add(NUM_ITERATIONS, SEED)) {
@@ -627,16 +729,27 @@ void check_sub_mod() {
 	printf("\n");
 }
 
+void check_mul_montgomery() {
+	printf("Mul Montgomery:\n");
+	if (test_mul_montgomery(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+	printf("\n");
+}
+
 int main(void) {
-	check_add();
-	check_add_num_64();
-	check_sub();
-	check_mul64_to_128();
-	check_mul_num_64();
-	check_mul();
-	check_cmp();
-	check_add_mod();
-	check_sub_mod();
+//	check_add();
+//	check_add_num_64();
+//	check_sub();
+//	check_mul64_to_128();
+//	check_mul_num_64();
+//	check_mul();
+//	check_cmp();
+//	check_add_mod();
+//	check_sub_mod();
+	check_mul_montgomery();
 
 	return EXIT_SUCCESS;
 }

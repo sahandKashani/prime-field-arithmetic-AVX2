@@ -181,15 +181,44 @@ void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * cons
 #endif
 }
 
-//void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const * const y, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs) {
-//	uint64_t A[num_limbs + 1];
-//	clear_num(A, num_limbs + 1);
-//
-//	for (unsigned int i = 0; i < num_limbs; i++) {
-//		uint64_t u = (A[0] + x[i] * y[0]) * m_prime;
-//		add(A, A, );
-//	}
-//}
+void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const * const y, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs) {
+	uint64_t A[num_limbs + 1];
+	clear_num(A, num_limbs + 1);
+
+	for (unsigned int i = 0; i < num_limbs; i++) {
+		// u_i = (a_0 + (x_i * y_0)) * m' mod b
+		uint64_t ui = (A[0] + x[i] * y[0]) * m_prime;
+
+		// A = (A + (x_i * y) + (u_i * m)) / b
+
+		// x_i * y
+		uint64_t xi_y[num_limbs + 1];
+		mul_num_64(xi_y, y, x[i], num_limbs);
+
+		// u_i * m
+		uint64_t ui_m[num_limbs + 1];
+		mul_num_64(ui_m, m, ui, num_limbs);
+
+		// A = A + (x_i * y)
+		add(A, A, xi_y, num_limbs + 1, 0);
+
+		// A = A + (x_i * y) + (u_i * m)
+		add(A, A, ui_m, num_limbs + 1, 0);
+
+		// A = (A + (x_i * y) + (u_i * m)) / b
+		for (unsigned int j = 0; j < num_limbs; j++) {
+			A[j] = A[j + 1];
+		}
+		A[num_limbs] = 0;
+	}
+
+	// A[num_limbs] = 0, so it is like if A and m have the same number of limbs.
+	if (cmp(A, m, num_limbs) >= 0) {
+		sub(A, A, m, num_limbs, 0);
+	}
+
+	copy_num(z, A, num_limbs);
+}
 
 ///*
 // * (2^n - 1)*(2^n - 1) + (2^n - 1) < (2^(2*n) - 1) for all n > 0
