@@ -94,7 +94,7 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 		mpz_set(op1_gmp, operands.middle);
 		mpz_set(mod_gmp, operands.big);
 
-		generate_random_gmp_number(op2_gmp, 64, gmp_random_state);
+		generate_random_gmp_number(op2_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		op2 = 0;
@@ -206,8 +206,8 @@ bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
 	bool success = true;
 
 	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		generate_random_gmp_number(op1_gmp, 64, gmp_random_state);
-		generate_random_gmp_number(op2_gmp, 64, gmp_random_state);
+		generate_random_gmp_number(op1_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
+		generate_random_gmp_number(op2_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
 
 		op1 = 0;
 		op2 = 0;
@@ -263,7 +263,7 @@ bool test_mul_num_64(unsigned int number_of_tests, unsigned int seed) {
 		mpz_set(op1_gmp, operands.middle);
 		mpz_set(mod_gmp, operands.big);
 
-		generate_random_gmp_number(op2_gmp, 64, gmp_random_state);
+		generate_random_gmp_number(op2_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
 
 		clear_num(op1, NUM_LIMBS);
 		op2 = 0;
@@ -559,8 +559,8 @@ bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
 	mpz_init(R_gmp);
 	mpz_init(invR_gmp);
 
-	mpz_ui_pow_ui(base_gmp, 2, 64);
-	mpz_ui_pow_ui(R_gmp, 2, 64 * NUM_LIMBS);
+	mpz_ui_pow_ui(base_gmp, 2, LIMB_SIZE_IN_BITS);
+	mpz_ui_pow_ui(R_gmp, 2, LIMB_SIZE_IN_BITS * NUM_LIMBS);
 
 	uint64_t op1[NUM_LIMBS];
 	uint64_t op2[NUM_LIMBS];
