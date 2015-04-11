@@ -739,7 +739,91 @@ void check_mul_montgomery() {
 	printf("\n");
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+bool test_add_vector(unsigned int number_of_tests, unsigned int seed) {
+	gmp_randstate_t gmp_random_state;
+	gmp_randinit_default(gmp_random_state);
+	gmp_randseed_ui(gmp_random_state, seed);
+
+	unsigned int const num_operands = 4;
+	mpz_t op1_gmp[num_operands];
+	mpz_t op2_gmp[num_operands];
+	mpz_t res_gmp[num_operands];
+	mpz_t mod_gmp[num_operands];
+	for (unsigned int i = 0; i < num_operands; i++) {
+		mpz_init(op1_gmp[i]);
+		mpz_init(op2_gmp[i]);
+		mpz_init(res_gmp[i]);
+		mpz_init(mod_gmp[i]);
+	}
+
+	uint64_t op1[NUM_LIMBS];
+	uint64_t op2[NUM_LIMBS];
+	uint64_t res[NUM_LIMBS];
+
+	bool success = true;
+
+	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+		for (unsigned int j = 0; j < num_operands; j++) {
+
+		}
+		three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
+		mpz_set(op1_gmp, operands.small);
+		mpz_set(op2_gmp, operands.middle);
+		mpz_set(mod_gmp, operands.big);
+
+		clear_num(op1, NUM_LIMBS);
+		clear_num(op2, NUM_LIMBS);
+		clear_num(res, NUM_LIMBS);
+
+		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
+		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
+
+		mpz_add(res_gmp, op1_gmp, op2_gmp);
+		add(res, op1, op2, NUM_LIMBS, 0);
+
+		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+			print_num_gmp(op1_gmp, NUM_LIMBS);
+			print_num(op1, NUM_LIMBS);
+			print_num_gmp(op2_gmp, NUM_LIMBS);
+			print_num(op2, NUM_LIMBS);
+			print_num_gmp(res_gmp, NUM_LIMBS);
+			print_num(res, NUM_LIMBS);
+			success = false;
+		}
+
+		clear_three_sorted_gmp(operands);
+	}
+
+	for (unsigned int i = 0; i < num_operands; i++) {
+		mpz_clear(op1_gmp[i]);
+		mpz_clear(op2_gmp[i]);
+		mpz_clear(res_gmp[i]);
+		mpz_clear(mod_gmp[i]);
+	}
+	gmp_randclear(gmp_random_state);
+
+	return success;
+}
+
+void check_add_vector() {
+	printf("Add Vector:\n");
+	if (test_add_vector(NUM_ITERATIONS, SEED)) {
+		printf("Success\n");
+	} else {
+		printf("Failed\n");
+	}
+	printf("\n");
+}
+
 int main(void) {
+#ifdef VECTORIZED_CODE
+	check_add_vector();
+#else
 	check_add();
 	check_add_num_64();
 	check_sub();
@@ -750,6 +834,7 @@ int main(void) {
 	check_add_mod();
 	check_sub_mod();
 	check_mul_montgomery();
+#endif
 
 	return EXIT_SUCCESS;
 }

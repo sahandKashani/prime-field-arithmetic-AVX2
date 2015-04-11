@@ -234,3 +234,30 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 
 	copy_num(z, A, num_limbs);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+void add_vector(uint64_t (*c)[4], uint64_t const * const a, uint64_t const * const b, uint64_t * const carry, unsigned int const num_limbs) {
+	__m256i x = _mm256_lddqu_si256((__m256i *) a);
+	__m256i y = _mm256_lddqu_si256((__m256i *) b);
+	__m256i z = _mm256_lddqu_si256((__m256i *) a);
+
+//	unsigned int carry_out = carry_in;
+//
+//    for (unsigned int i = 0; i < num_limbs; i++) {
+//		// we need to temporarily store the output of each operation, because it is
+//		// possible that c is the same array as a or b.
+//		uint64_t c_tmp = 0;
+//
+//        c_tmp = a[i] + carry_out;
+//        carry_out = (c_tmp < a[i]);
+//        c_tmp += b[i];
+//        carry_out |= (c_tmp < b[i]);
+//        c[i] = c_tmp;
+//    }
+//
+//    return carry_out;
+}
