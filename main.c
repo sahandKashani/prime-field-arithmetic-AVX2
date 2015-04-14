@@ -1,8 +1,12 @@
+#include <assert.h>
+#include <immintrin.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include <gmp.h>
 #include "utilities.h"
 #include "constants.h"
@@ -744,85 +748,164 @@ void check_mul_montgomery() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-bool test_add_vector(unsigned int number_of_tests, unsigned int seed) {
-	gmp_randstate_t gmp_random_state;
-	gmp_randinit_default(gmp_random_state);
-	gmp_randseed_ui(gmp_random_state, seed);
+//bool test_add_vector(unsigned int number_of_tests, unsigned int seed) {
+//	return true;
+//}
+//
+//void check_add_vector() {
+//	printf("Add Vector:\n");
+//	if (test_add_vector(NUM_ITERATIONS, SEED)) {
+//		printf("Success\n");
+//	} else {
+//		printf("Failed\n");
+//	}
+//	printf("\n");
+//}
 
-	unsigned int const num_operands = 4;
-	mpz_t op1_gmp[num_operands];
-	mpz_t op2_gmp[num_operands];
-	mpz_t res_gmp[num_operands];
-	mpz_t mod_gmp[num_operands];
-	for (unsigned int i = 0; i < num_operands; i++) {
-		mpz_init(op1_gmp[i]);
-		mpz_init(op2_gmp[i]);
-		mpz_init(res_gmp[i]);
-		mpz_init(mod_gmp[i]);
-	}
-
-	uint64_t op1[NUM_LIMBS];
-	uint64_t op2[NUM_LIMBS];
-	uint64_t res[NUM_LIMBS];
-
-	bool success = true;
-
-	for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-		for (unsigned int j = 0; j < num_operands; j++) {
-
-		}
-		three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-		mpz_set(op1_gmp, operands.small);
-		mpz_set(op2_gmp, operands.middle);
-		mpz_set(mod_gmp, operands.big);
-
-		clear_num(op1, NUM_LIMBS);
-		clear_num(op2, NUM_LIMBS);
-		clear_num(res, NUM_LIMBS);
-
-		convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
-		convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
-
-		mpz_add(res_gmp, op1_gmp, op2_gmp);
-		add(res, op1, op2, NUM_LIMBS, 0);
-
-		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-			print_num_gmp(op1_gmp, NUM_LIMBS);
-			print_num(op1, NUM_LIMBS);
-			print_num_gmp(op2_gmp, NUM_LIMBS);
-			print_num(op2, NUM_LIMBS);
-			print_num_gmp(res_gmp, NUM_LIMBS);
-			print_num(res, NUM_LIMBS);
-			success = false;
-		}
-
-		clear_three_sorted_gmp(operands);
-	}
-
-	for (unsigned int i = 0; i < num_operands; i++) {
-		mpz_clear(op1_gmp[i]);
-		mpz_clear(op2_gmp[i]);
-		mpz_clear(res_gmp[i]);
-		mpz_clear(mod_gmp[i]);
-	}
-	gmp_randclear(gmp_random_state);
-
-	return success;
+bool is_power_of_2(unsigned int x) {
+	return x && !(x & (x - 1));
 }
 
-void check_add_vector() {
-	printf("Add Vector:\n");
-	if (test_add_vector(NUM_ITERATIONS, SEED)) {
-		printf("Success\n");
-	} else {
-		printf("Failed\n");
+typedef struct {
+	void *orig;
+	void *aligned;
+} aligned_memory;
+
+aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes) {
+	assert(is_power_of_2(alignment_in_bytes));
+	aligned_memory mem;
+
+	mem.orig = malloc(size + alignment_in_bytes - 1);
+	assert(mem.orig != NULL);
+
+	uintptr_t mask = ~ ((uintptr_t) ((1 << ((unsigned int) log2(alignment_in_bytes))) - 1));
+	mem.aligned = (void *) (((uintptr_t) mem.orig + alignment_in_bytes - 1) & mask);
+
+	return mem;
+}
+
+void free_aligned_memory(aligned_memory mem) {
+	free(mem.orig);
+}
+
+void fill_arrays(uint64_t *x_array, uint64_t *y_array, unsigned int length) {
+	srand(SEED);
+	for (unsigned int i = 0; i < length; i++) {
+		x_array[i] = ((uint64_t) rand()) * ((uint64_t) rand());
+		y_array[i] = ((uint64_t) rand()) * ((uint64_t) rand());
 	}
-	printf("\n");
+}
+
+// AVX2 vectorized version
+void avx_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, unsigned int length) {
+	for (unsigned int i = 0; i < length; i += 4) {
+#ifdef AVX_ALIGNED_MEMORY
+		__m256i x = _mm256_load_si256((__m256i *) &x_array[i]);
+		__m256i y = _mm256_load_si256((__m256i *) &y_array[i]);
+#else
+		__m256i x = _mm256_lddqu_si256((__m256i *) &x_array[i]);
+		__m256i y = _mm256_lddqu_si256((__m256i *) &y_array[i]);
+#endif
+
+		__m256i z = _mm256_add_epi64(x, y);
+
+#ifdef AVX_ALIGNED_MEMORY
+		_mm256_store_si256((__m256i *) &z_array[i], z);
+#else
+		_mm256_storeu_si256((__m256i *) &z_array[i], z);
+#endif
+	}
+}
+
+void C_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, unsigned int length) {
+	// Classical non-vectorized version
+	for (unsigned int i = 0; i < length; i++) {
+		z_array[i] = x_array[i] + y_array[i];
+	}
 }
 
 int main(void) {
 #ifdef VECTORIZED_CODE
-	check_add_vector();
+//	check_add_vector();
+
+#define NUM_AVX2_BENCHMARK_VECTORS ((unsigned int) pow(2, 30))
+#define NUM_AVX2_BENCHMARK_TESTS ((unsigned int) pow(2, 0))
+#define AVX2_ALIGNMENT (32)
+
+	double *elapsed_time_fill = malloc(NUM_AVX2_BENCHMARK_TESTS * sizeof(*elapsed_time_fill));
+	double *elapsed_time_avx = malloc(NUM_AVX2_BENCHMARK_TESTS * sizeof(*elapsed_time_avx));
+	double *elapsed_time_C = malloc(NUM_AVX2_BENCHMARK_TESTS * sizeof(*elapsed_time_C));
+
+	for (unsigned int test_iteration = 0; test_iteration < NUM_AVX2_BENCHMARK_TESTS; test_iteration++) {
+
+#ifdef AVX_ALIGNED_MEMORY
+		aligned_memory x_aligned_memory = alloc_aligned_memory(NUM_AVX2_BENCHMARK_VECTORS * sizeof(uint64_t), AVX2_ALIGNMENT);
+		aligned_memory y_aligned_memory = alloc_aligned_memory(NUM_AVX2_BENCHMARK_VECTORS * sizeof(uint64_t), AVX2_ALIGNMENT);
+		aligned_memory z_aligned_memory = alloc_aligned_memory(NUM_AVX2_BENCHMARK_VECTORS * sizeof(uint64_t), AVX2_ALIGNMENT);
+		uint64_t *x_array = x_aligned_memory.aligned;
+		uint64_t *y_array = y_aligned_memory.aligned;
+		uint64_t *z_array = z_aligned_memory.aligned;
+#else
+		uint64_t *x_array = malloc(NUM_AVX2_BENCHMARK_VECTORS * sizeof(*x_array));
+		uint64_t *y_array = malloc(NUM_AVX2_BENCHMARK_VECTORS * sizeof(*y_array));
+		uint64_t *z_array = malloc(NUM_AVX2_BENCHMARK_VECTORS * sizeof(*z_array));
+		assert(x_array != NULL);
+		assert(y_array != NULL);
+		assert(z_array != NULL);
+#endif
+
+//		clock_t start_fill = clock();
+//		fill_arrays(x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
+//		clock_t end_fill = clock();
+//		elapsed_time_fill[test_iteration] = (end_fill - start_fill) / ((double) CLOCKS_PER_SEC);
+
+		clock_t start_avx = clock();
+		avx_add_benchmark(z_array, x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
+		clock_t end_avx = clock();
+		elapsed_time_avx[test_iteration] = (end_avx - start_avx) / ((double) CLOCKS_PER_SEC);
+
+		clock_t start_C = clock();
+		C_add_benchmark(z_array, x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
+		clock_t end_C = clock();
+		elapsed_time_C[test_iteration] = (end_C - start_C) / ((double) CLOCKS_PER_SEC);
+
+
+	//	for (unsigned int i = 0; i < NUM_AVX2_BENCHMARK_VECTORS; i++) {
+	//		printf("x_array[%0*u] = %0*" PRIx64 "\n", (unsigned int) ceil(log10(NUM_AVX2_BENCHMARK_VECTORS)) , i, LIMB_SIZE_IN_HEX, x_array[i]);
+	//		printf("y_array[%0*u] = %0*" PRIx64 "\n", (unsigned int) ceil(log10(NUM_AVX2_BENCHMARK_VECTORS)) , i, LIMB_SIZE_IN_HEX, y_array[i]);
+	//		printf("z_array[%0*u] = %0*" PRIx64 "\n", (unsigned int) ceil(log10(NUM_AVX2_BENCHMARK_VECTORS)) , i, LIMB_SIZE_IN_HEX, z_array[i]);
+	//		printf("\n");
+	//	}
+
+#ifdef AVX_ALIGNED_MEMORY
+		free_aligned_memory(x_aligned_memory);
+		free_aligned_memory(y_aligned_memory);
+		free_aligned_memory(z_aligned_memory);
+#else
+		free(x_array);
+		free(y_array);
+		free(z_array);
+#endif
+	}
+
+//	double elapsed_time_fill_tot = 0;
+	double elapsed_time_avx_tot = 0;
+	double elapsed_time_C_tot = 0;
+	for (unsigned int i = 0; i < NUM_AVX2_BENCHMARK_TESTS; i++) {
+//		elapsed_time_fill_tot += elapsed_time_fill[i];
+		elapsed_time_avx_tot += elapsed_time_avx[i];
+		elapsed_time_C_tot += elapsed_time_C[i];
+	}
+//	printf("elapsed_time_fill_tot = %lf\n", elapsed_time_fill_tot);
+	printf("elapsed_time_avx_tot  = %lf\n", elapsed_time_avx_tot);
+	printf("elapsed_time_C_tot    = %lf\n", elapsed_time_C_tot);
+
+	free(elapsed_time_fill);
+	free(elapsed_time_avx);
+	free(elapsed_time_C);
+
+	printf("Done AVX2 test\n");
+
 #else
 	check_add();
 	check_add_num_64();

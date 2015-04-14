@@ -240,11 +240,11 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void add_vector(uint64_t (*c)[4], uint64_t const * const a, uint64_t const * const b, uint64_t * const carry, unsigned int const num_limbs) {
-	__m256i x = _mm256_lddqu_si256((__m256i *) a);
-	__m256i y = _mm256_lddqu_si256((__m256i *) b);
-	__m256i z = _mm256_lddqu_si256((__m256i *) a);
-
+//void add_vector(uint64_t (*c)[4], uint64_t const * const a, uint64_t const * const b, uint64_t * const carry, unsigned int const num_limbs) {
+//	__m256i x = _mm256_lddqu_si256((__m256i *) a);
+//	__m256i y = _mm256_lddqu_si256((__m256i *) b);
+//	__m256i z = _mm256_lddqu_si256((__m256i *) a);
+//
 //	unsigned int carry_out = carry_in;
 //
 //    for (unsigned int i = 0; i < num_limbs; i++) {
@@ -260,4 +260,4 @@ void add_vector(uint64_t (*c)[4], uint64_t const * const a, uint64_t const * con
 //    }
 //
 //    return carry_out;
-}
+//}
