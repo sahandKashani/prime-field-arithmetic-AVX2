@@ -36,7 +36,12 @@ void convert_gmp_to_num(uint64_t * const num, mpz_t const num_gmp, unsigned int 
 	// must clear the number, because GMP will only fill enough words that is
 	// needed, so the last words of num may not be set automatically.
 	clear_num(num, num_limbs);
+
+#if BASE_2_63_REPRESENTATION
+	mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, 1, num_gmp);
+#else
 	mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, 0, num_gmp);
+#endif
 }
 
 void convert_num_to_gmp(mpz_t num_gmp, uint64_t const * const num, unsigned int const num_limbs) {

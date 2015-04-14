@@ -108,7 +108,7 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
 		convert_gmp_to_num(&op2, op2_gmp, 1);
 
 		mpz_add(res_gmp, op1_gmp, op2_gmp);
-		add_num_64(res, op1, op2, NUM_LIMBS, 0);
+		add_num_limb(res, op1, op2, NUM_LIMBS, 0);
 
 		if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
 			print_num_gmp(op1_gmp, NUM_LIMBS);
@@ -799,7 +799,7 @@ void fill_arrays(uint64_t *x_array, uint64_t *y_array, unsigned int length) {
 // AVX2 vectorized version
 void avx_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, unsigned int length) {
 	for (unsigned int i = 0; i < length; i += 4) {
-#ifdef AVX_ALIGNED_MEMORY
+#if AVX_ALIGNED_MEMORY
 		__m256i x = _mm256_load_si256((__m256i *) &x_array[i]);
 		__m256i y = _mm256_load_si256((__m256i *) &y_array[i]);
 #else
@@ -809,7 +809,7 @@ void avx_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, 
 
 		__m256i z = _mm256_add_epi64(x, y);
 
-#ifdef AVX_ALIGNED_MEMORY
+#if AVX_ALIGNED_MEMORY
 		_mm256_store_si256((__m256i *) &z_array[i], z);
 #else
 		_mm256_storeu_si256((__m256i *) &z_array[i], z);
@@ -825,7 +825,7 @@ void C_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, un
 }
 
 int main(void) {
-#ifdef VECTORIZED_CODE
+#if VECTORIZED_CODE
 //	check_add_vector();
 
 #define NUM_AVX2_BENCHMARK_VECTORS ((unsigned int) pow(2, 30))
@@ -838,7 +838,7 @@ int main(void) {
 
 	for (unsigned int test_iteration = 0; test_iteration < NUM_AVX2_BENCHMARK_TESTS; test_iteration++) {
 
-#ifdef AVX_ALIGNED_MEMORY
+#if AVX_ALIGNED_MEMORY
 		aligned_memory x_aligned_memory = alloc_aligned_memory(NUM_AVX2_BENCHMARK_VECTORS * sizeof(uint64_t), AVX2_ALIGNMENT);
 		aligned_memory y_aligned_memory = alloc_aligned_memory(NUM_AVX2_BENCHMARK_VECTORS * sizeof(uint64_t), AVX2_ALIGNMENT);
 		aligned_memory z_aligned_memory = alloc_aligned_memory(NUM_AVX2_BENCHMARK_VECTORS * sizeof(uint64_t), AVX2_ALIGNMENT);
@@ -877,7 +877,7 @@ int main(void) {
 	//		printf("\n");
 	//	}
 
-#ifdef AVX_ALIGNED_MEMORY
+#if AVX_ALIGNED_MEMORY
 		free_aligned_memory(x_aligned_memory);
 		free_aligned_memory(y_aligned_memory);
 		free_aligned_memory(z_aligned_memory);
