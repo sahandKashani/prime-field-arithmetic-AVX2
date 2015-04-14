@@ -778,8 +778,8 @@ aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes
 	mem.orig = malloc(size + alignment_in_bytes - 1);
 	assert(mem.orig != NULL);
 
-	uintptr_t mask = ~ ((uintptr_t) ((1 << ((unsigned int) log2(alignment_in_bytes))) - 1));
-	mem.aligned = (void *) (((uintptr_t) mem.orig + alignment_in_bytes - 1) & mask);
+	uintptr_t mask = (uintptr_t) (alignment_in_bytes - 1);
+	mem.aligned = (void *) (((uintptr_t) mem.orig + alignment_in_bytes - 1) & ~mask);
 
 	return mem;
 }
