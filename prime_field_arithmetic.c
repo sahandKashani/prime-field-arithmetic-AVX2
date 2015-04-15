@@ -14,16 +14,16 @@ unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * 
         // possible that c is the same array as a or b.
         uint64_t c_tmp = 0;
 
-#if BASE_2_63_REPRESENTATION
-        c_tmp = a[i] + b[i] + carry_out;
-        carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
-        c[i] = c_tmp;
-#else
+#if FULL_LIMB_PRECISION
         c_tmp = a[i] + carry_out;
         carry_out = (c_tmp < a[i]);
         c_tmp += b[i];
         carry_out |= (c_tmp < b[i]);
+        c[i] = c_tmp;
+#else
+        c_tmp = a[i] + b[i] + carry_out;
+        carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
+        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
         c[i] = c_tmp;
 #endif
     }
@@ -37,28 +37,28 @@ unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t
     uint64_t c_tmp = 0;
     unsigned int carry_out = 0;
 
-#if BASE_2_63_REPRESENTATION
-    c_tmp = a[0] + b + carry_in;
-    carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-    c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
-    c[0] = c_tmp;
-#else
+#if FULL_LIMB_PRECISION
     c_tmp = a[0] + carry_in;
     carry_out = (c_tmp < a[0]);
     c_tmp += b;
     carry_out |= (c_tmp < b);
     c[0] = c_tmp;
+#else
+    c_tmp = a[0] + b + carry_in;
+    carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
+    c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
+    c[0] = c_tmp;
 #endif
 
     for (unsigned int i = 1; i < num_limbs; i++) {
-#if BASE_2_63_REPRESENTATION
+#if FULL_LIMB_PRECISION
         c_tmp = a[i] + carry_out;
-        carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
+        carry_out = (c_tmp < a[i]);
         c[i] = c_tmp;
 #else
         c_tmp = a[i] + carry_out;
-        carry_out = (c_tmp < a[i]);
+        carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
+        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
         c[i] = c_tmp;
 #endif
     }
@@ -73,12 +73,7 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     unsigned int borrow_out = borrow_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
-#if BASE_2_63_REPRESENTATION
-        c_tmp = a[i] - b[i] - borrow_out;
-        borrow_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
-        c[i] = c_tmp;
-#else
+#if FULL_LIMB_PRECISION
         uint64_t c_tmp_old = 0;
 
         c_tmp = a[i] - borrow_out;
@@ -86,6 +81,11 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
         borrow_out = (c_tmp > a[i]);
         c_tmp -= b[i];
         borrow_out |= (c_tmp > c_tmp_old);
+        c[i] = c_tmp;
+#else
+        c_tmp = a[i] - b[i] - borrow_out;
+        borrow_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
+        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
         c[i] = c_tmp;
 #endif
     }
@@ -126,7 +126,7 @@ void mul_limb_limb(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const 
     *c_hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
 #endif
 
-#if BASE_2_63_REPRESENTATION
+#if !FULL_LIMB_PRECISION
     *c_hi <<= 1;
     *c_hi |= (*c_lo >> BASE_EXPONENT);
     *c_lo &= ~((uint64_t) 1 << BASE_EXPONENT);
@@ -232,10 +232,10 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         // u_i = (a_0 + (x_i * y_0)) * m' mod b
-#if BASE_2_63_REPRESENTATION
-        uint64_t ui = ((A[0] + x[i] * y[0]) * m_prime) & ~((uint64_t) 1 << BASE_EXPONENT);
-#else
+#if FULL_LIMB_PRECISION
         uint64_t ui = (A[0] + x[i] * y[0]) * m_prime;
+#else
+        uint64_t ui = ((A[0] + x[i] * y[0]) * m_prime) & ~((uint64_t) 1 << BASE_EXPONENT);
 #endif
 
         // A = (A + (x_i * y) + (u_i * m)) / b

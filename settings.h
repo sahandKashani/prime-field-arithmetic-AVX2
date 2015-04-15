@@ -2,8 +2,8 @@
 #define SETTINGS_H_
 
 #define PRIME_FIELD_BINARY_BIT_LENGTH        (131)
+#define BASE_EXPONENT                        (63)
 
-#define BASE_2_63_REPRESENTATION             (1)
 #define BRANCHLESS_MODULAR_ADDITION          (1)
 #define BRANCHLESS_MODULAR_SUBTRACTION       (1)
 #define BRANCHLESS_MONTGOMERY_MULTIPLICATION (1)

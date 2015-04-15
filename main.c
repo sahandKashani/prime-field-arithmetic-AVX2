@@ -882,16 +882,16 @@ int main(void) {
     printf("Done AVX2 test\n");
 
 #else
-//    check_add();
-//    check_add_num_limb();
-//    check_sub();
-//    check_mul64_to_128();
-//    check_mul_num_64();
+    check_add();
+    check_add_num_limb();
+    check_sub();
+    check_mul_limb_limb();
+    check_mul_num_limb();
     check_mul();
-//    check_cmp();
-//    check_add_mod();
-//    check_sub_mod();
-//    check_mul_montgomery();
+    check_cmp();
+    check_add_mod();
+    check_sub_mod();
+    check_mul_montgomery();
 #endif
 
     return EXIT_SUCCESS;
