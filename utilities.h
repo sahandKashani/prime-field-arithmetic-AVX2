@@ -10,9 +10,9 @@
 // typedef unsigned __int128 uint128_t;
 
 typedef struct {
-	mpz_t big;
-	mpz_t middle;
-	mpz_t small;
+    mpz_t big;
+    mpz_t middle;
+    mpz_t small;
 } three_sorted_gmp;
 
 unsigned int max(unsigned int a, unsigned int b);
