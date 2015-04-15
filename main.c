@@ -210,8 +210,8 @@ bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
     bool success = true;
 
     for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-        generate_random_gmp_number(op1_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
-        generate_random_gmp_number(op2_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
+        generate_random_gmp_number(op1_gmp, BASE_EXPONENT, gmp_random_state);
+        generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         op1 = 0;
         op2 = 0;
