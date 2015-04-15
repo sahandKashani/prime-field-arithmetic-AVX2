@@ -232,7 +232,11 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         // u_i = (a_0 + (x_i * y_0)) * m' mod b
+#if BASE_2_63_REPRESENTATION
+        uint64_t ui = ((A[0] + x[i] * y[0]) * m_prime) & ~((uint64_t) 1 << BASE_EXPONENT);
+#else
         uint64_t ui = (A[0] + x[i] * y[0]) * m_prime;
+#endif
 
         // A = (A + (x_i * y) + (u_i * m)) / b
 

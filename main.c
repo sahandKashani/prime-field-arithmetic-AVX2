@@ -563,8 +563,8 @@ bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(R_gmp);
     mpz_init(invR_gmp);
 
-    mpz_ui_pow_ui(base_gmp, 2, LIMB_SIZE_IN_BITS);
-    mpz_ui_pow_ui(R_gmp, 2, LIMB_SIZE_IN_BITS * NUM_LIMBS);
+    mpz_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
+    mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
 
     uint64_t op1[NUM_LIMBS];
     uint64_t op2[NUM_LIMBS];
