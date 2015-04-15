@@ -67,19 +67,18 @@ unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t
 }
 
 unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
+    // we need to temporarily store the output of each operation, because it is
+    // possible that c is the same array as a or b.
+    uint64_t c_tmp = 0;
     unsigned int borrow_out = borrow_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
 #if BASE_2_63_REPRESENTATION
-        uint64_t c_tmp = 0;
         c_tmp = a[i] - b[i] - borrow_out;
         borrow_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
         c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
         c[i] = c_tmp;
 #else
-        // we need to temporarily store the output of each operation, because it is
-        // possible that c is the same array as a or b.
-        uint64_t c_tmp = 0;
         uint64_t c_tmp_old = 0;
 
         c_tmp = a[i] - borrow_out;
