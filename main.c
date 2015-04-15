@@ -267,7 +267,7 @@ bool test_mul_num_64(unsigned int number_of_tests, unsigned int seed) {
         mpz_set(op1_gmp, operands.middle);
         mpz_set(mod_gmp, operands.big);
 
-        generate_random_gmp_number(op2_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
+        generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         clear_num(op1, NUM_LIMBS);
         op2 = 0;
