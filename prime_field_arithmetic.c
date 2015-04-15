@@ -128,9 +128,9 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 #endif
 
 #if BASE_2_63_REPRESENTATION
-*c_hi <<= 1;
-*c_hi |= (*c_lo >> BASE_EXPONENT);
-*c_lo &= ~((uint64_t) 1 << BASE_EXPONENT);
+    *c_hi <<= 1;
+    *c_hi |= (*c_lo >> BASE_EXPONENT);
+    *c_lo &= ~((uint64_t) 1 << BASE_EXPONENT);
 #endif
 }
 
