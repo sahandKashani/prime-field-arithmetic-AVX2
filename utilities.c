@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <inttypes.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "utilities.h"
 #include "constants.h"
@@ -120,4 +122,25 @@ void copy_num(uint64_t * const b, uint64_t const * const a, unsigned int const n
     for (unsigned int i = 0; i < num_limbs; i++) {
         b[i] = a[i];
     }
+}
+
+bool is_power_of_2(unsigned int x) {
+    return x && !(x & (x - 1));
+}
+
+aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes) {
+    assert(is_power_of_2(alignment_in_bytes));
+    aligned_memory mem;
+
+    mem.orig = malloc(size + alignment_in_bytes - 1);
+    assert(mem.orig != NULL);
+
+    uintptr_t mask = (uintptr_t) (alignment_in_bytes - 1);
+    mem.aligned = (void *) (((uintptr_t) mem.orig + alignment_in_bytes - 1) & ~mask);
+
+    return mem;
+}
+
+void free_aligned_memory(aligned_memory mem) {
+    free(mem.orig);
 }

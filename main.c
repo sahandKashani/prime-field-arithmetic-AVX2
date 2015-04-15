@@ -762,32 +762,6 @@ void check_mul_montgomery() {
 //  printf("\n");
 //}
 
-bool is_power_of_2(unsigned int x) {
-    return x && !(x & (x - 1));
-}
-
-typedef struct {
-    void *orig;
-    void *aligned;
-} aligned_memory;
-
-aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes) {
-    assert(is_power_of_2(alignment_in_bytes));
-    aligned_memory mem;
-
-    mem.orig = malloc(size + alignment_in_bytes - 1);
-    assert(mem.orig != NULL);
-
-    uintptr_t mask = (uintptr_t) (alignment_in_bytes - 1);
-    mem.aligned = (void *) (((uintptr_t) mem.orig + alignment_in_bytes - 1) & ~mask);
-
-    return mem;
-}
-
-void free_aligned_memory(aligned_memory mem) {
-    free(mem.orig);
-}
-
 void fill_arrays(uint64_t *x_array, uint64_t *y_array, unsigned int length) {
     srand(SEED);
     for (unsigned int i = 0; i < length; i++) {
@@ -796,7 +770,7 @@ void fill_arrays(uint64_t *x_array, uint64_t *y_array, unsigned int length) {
     }
 }
 
-// AVX2 vectorized version
+#if AVX
 void avx_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, unsigned int length) {
     for (unsigned int i = 0; i < length; i += 4) {
 #if AVX_ALIGNED_MEMORY
@@ -816,6 +790,7 @@ void avx_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, 
 #endif
     }
 }
+#endif
 
 void C_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, unsigned int length) {
     // Classical non-vectorized version
@@ -825,7 +800,7 @@ void C_add_benchmark(uint64_t *z_array, uint64_t *x_array, uint64_t *y_array, un
 }
 
 int main(void) {
-#if VECTORIZED_CODE
+#if AVX
 //  check_add_vector();
 
 #define NUM_AVX2_BENCHMARK_VECTORS ((unsigned int) pow(2, 30))

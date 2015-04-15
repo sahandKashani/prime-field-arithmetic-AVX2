@@ -15,6 +15,11 @@ typedef struct {
     mpz_t small;
 } three_sorted_gmp;
 
+typedef struct {
+    void *orig;
+    void *aligned;
+} aligned_memory;
+
 unsigned int max(unsigned int a, unsigned int b);
 unsigned int min(unsigned int a, unsigned int b);
 void print_num(uint64_t const * const num, unsigned int const num_limbs);
@@ -31,5 +36,8 @@ void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precisio
 three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);
 void clear_three_sorted_gmp(three_sorted_gmp x);
 void copy_num(uint64_t * const b, uint64_t const * const a, unsigned int const num_limbs);
+bool is_power_of_2(unsigned int x);
+aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes);
+void free_aligned_memory(aligned_memory mem);
 
 #endif
