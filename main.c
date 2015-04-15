@@ -12,7 +12,7 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
-#define NUM_ITERATIONS (100000L)
+#define NUM_ITERATIONS (10000L)
 #define SEED (12345)
 
 bool test_add(unsigned int number_of_tests, unsigned int seed) {
@@ -98,7 +98,7 @@ bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
         mpz_set(op1_gmp, operands.middle);
         mpz_set(mod_gmp, operands.big);
 
-        generate_random_gmp_number(op2_gmp, LIMB_SIZE_IN_BITS, gmp_random_state);
+        generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         clear_num(op1, NUM_LIMBS);
         op2 = 0;
@@ -653,8 +653,8 @@ void check_add() {
     printf("\n");
 }
 
-void check_add_num_64() {
-    printf("add_num_64:\n");
+void check_add_num_limb() {
+    printf("add_num_limb:\n");
     if (test_add_num_64(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
@@ -883,15 +883,15 @@ int main(void) {
 
 #else
     check_add();
-    check_add_num_64();
+    check_add_num_limb();
     check_sub();
-    check_mul64_to_128();
-    check_mul_num_64();
-    check_mul();
-    check_cmp();
-    check_add_mod();
-    check_sub_mod();
-    check_mul_montgomery();
+//    check_mul64_to_128();
+//    check_mul_num_64();
+//    check_mul();
+//    check_cmp();
+//    check_add_mod();
+//    check_sub_mod();
+//    check_mul_montgomery();
 #endif
 
     return EXIT_SUCCESS;
