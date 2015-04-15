@@ -93,7 +93,7 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     return borrow_out;
 }
 
-void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a, uint64_t const b) {
+void mul_limb_limb(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a, uint64_t const b) {
 #if MULX
     unsigned long long x = a;
     unsigned long long y = b;
@@ -133,14 +133,14 @@ void mul64_to_128(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a
 #endif
 }
 
-void mul_num_64(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs) {
+void mul_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs) {
     uint64_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
     uint64_t inner_product[2] = {0, 0};
     unsigned int carry_out = 0;
     for (unsigned int i = 0; i < num_limbs; i++) {
-        mul64_to_128(&inner_product[1], &inner_product[0], a[i], b);
+        mul_limb_limb(&inner_product[1], &inner_product[0], a[i], b);
         carry_out = add(res + i, res + i, inner_product, 2, carry_out);
     }
 
@@ -153,7 +153,7 @@ void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b,
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         uint64_t tmp[num_limbs + 1];
-        mul_num_64(tmp, a, b[i], num_limbs);
+        mul_num_limb(tmp, a, b[i], num_limbs);
         add(res + i, res + i, tmp, num_limbs + 1, 0);
     }
 
@@ -238,11 +238,11 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 
         // x_i * y
         uint64_t xi_y[num_limbs + 1];
-        mul_num_64(xi_y, y, x[i], num_limbs);
+        mul_num_limb(xi_y, y, x[i], num_limbs);
 
         // u_i * m
         uint64_t ui_m[num_limbs + 1];
-        mul_num_64(ui_m, m, ui, num_limbs);
+        mul_num_limb(ui_m, m, ui, num_limbs);
 
         // A = A + (x_i * y)
         add(A, A, xi_y, num_limbs + 1, 0);

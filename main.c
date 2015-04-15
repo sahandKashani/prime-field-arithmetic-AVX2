@@ -12,7 +12,7 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
-#define NUM_ITERATIONS (10000L)
+#define NUM_ITERATIONS (100000L)
 #define SEED (12345)
 
 bool test_add(unsigned int number_of_tests, unsigned int seed) {
@@ -73,7 +73,7 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_add_num_64(unsigned int number_of_tests, unsigned int seed) {
+bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -191,7 +191,7 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
+bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -221,7 +221,7 @@ bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(&op2, op2_gmp, 1);
 
         mpz_mul(res_gmp, op1_gmp, op2_gmp);
-        mul64_to_128(res + 1, res, op1, op2);
+        mul_limb_limb(res + 1, res, op1, op2);
 
         if (!is_equal_num_gmp(res, res_gmp, 2)) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
@@ -242,7 +242,7 @@ bool test_mul64_to_128(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_mul_num_64(unsigned int number_of_tests, unsigned int seed) {
+bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -277,7 +277,7 @@ bool test_mul_num_64(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(&op2, op2_gmp, 1);
 
         mpz_mul(res_gmp, op1_gmp, op2_gmp);
-        mul_num_64(res, op1, op2, NUM_LIMBS);
+        mul_num_limb(res, op1, op2, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS + 1)) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
@@ -655,7 +655,7 @@ void check_add() {
 
 void check_add_num_limb() {
     printf("add_num_limb:\n");
-    if (test_add_num_64(NUM_ITERATIONS, SEED)) {
+    if (test_add_num_limb(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -673,9 +673,9 @@ void check_sub() {
     printf("\n");
 }
 
-void check_mul64_to_128() {
-    printf("mul64_to_128:\n");
-    if (test_mul64_to_128(NUM_ITERATIONS, SEED)) {
+void check_mul_limb_limb() {
+    printf("mul_limb_limb:\n");
+    if (test_mul_limb_limb(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -683,9 +683,9 @@ void check_mul64_to_128() {
     printf("\n");
 }
 
-void check_mul_num_64() {
-    printf("mul_num_64:\n");
-    if (test_mul_num_64(NUM_ITERATIONS, SEED)) {
+void check_mul_num_limb() {
+    printf("mul_num_limb:\n");
+    if (test_mul_num_limb(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -882,12 +882,12 @@ int main(void) {
     printf("Done AVX2 test\n");
 
 #else
-    check_add();
-    check_add_num_limb();
-    check_sub();
+//    check_add();
+//    check_add_num_limb();
+//    check_sub();
 //    check_mul64_to_128();
 //    check_mul_num_64();
-//    check_mul();
+    check_mul();
 //    check_cmp();
 //    check_add_mod();
 //    check_sub_mod();
