@@ -9,7 +9,7 @@
 #define BRANCHLESS_MONTGOMERY_MULTIPLICATION (1)
 #define MULX                                 (0)
 #define AVX                                  (0)
-#define AVX_ALIGNED_MEMORY                   (1)
+#define AVX_ALIGNED_MEMORY                   (0)
 #define SIMD_PARALLEL_WALKS                  (0)
 
 #endif

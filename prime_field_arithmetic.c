@@ -22,8 +22,8 @@ unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * 
         c[i] = c_tmp;
 #else
         c_tmp = a[i] + b[i] + carry_out;
-        carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
+        carry_out = carry(c_tmp);
+        c_tmp = reduce_to_base(c_tmp);
         c[i] = c_tmp;
 #endif
     }
@@ -45,8 +45,8 @@ unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t
     c[0] = c_tmp;
 #else
     c_tmp = a[0] + b + carry_in;
-    carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-    c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
+    carry_out = carry(c_tmp);
+    c_tmp = reduce_to_base(c_tmp);
     c[0] = c_tmp;
 #endif
 
@@ -57,8 +57,8 @@ unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t
         c[i] = c_tmp;
 #else
         c_tmp = a[i] + carry_out;
-        carry_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
+        carry_out = carry(c_tmp);
+        c_tmp = reduce_to_base(c_tmp);
         c[i] = c_tmp;
 #endif
     }
@@ -84,8 +84,8 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
         c[i] = c_tmp;
 #else
         c_tmp = a[i] - b[i] - borrow_out;
-        borrow_out = (unsigned int) (c_tmp >> BASE_EXPONENT);
-        c_tmp &= ~((uint64_t) 1 << BASE_EXPONENT);
+        borrow_out = carry(c_tmp);
+        c_tmp = reduce_to_base(c_tmp);
         c[i] = c_tmp;
 #endif
     }
@@ -127,9 +127,9 @@ void mul_limb_limb(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const 
 #endif
 
 #if !FULL_LIMB_PRECISION
-    *c_hi <<= 1;
+    *c_hi <<= (LIMB_SIZE_IN_BITS - BASE_EXPONENT);
     *c_hi |= (*c_lo >> BASE_EXPONENT);
-    *c_lo &= ~((uint64_t) 1 << BASE_EXPONENT);
+    *c_lo = reduce_to_base(*c_lo);
 #endif
 }
 
@@ -235,7 +235,7 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 #if FULL_LIMB_PRECISION
         uint64_t ui = (A[0] + x[i] * y[0]) * m_prime;
 #else
-        uint64_t ui = ((A[0] + x[i] * y[0]) * m_prime) & ~((uint64_t) 1 << BASE_EXPONENT);
+        uint64_t ui = reduce_to_base((A[0] + x[i] * y[0]) * m_prime);
 #endif
 
         // A = (A + (x_i * y) + (u_i * m)) / b

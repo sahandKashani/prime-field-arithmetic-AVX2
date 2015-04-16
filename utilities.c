@@ -7,6 +7,16 @@
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
+#if !FULL_LIMB_PRECISION
+unsigned int carry(uint64_t limb) {
+    return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
+}
+
+uint64_t reduce_to_base(uint64_t limb) {
+    return limb & (((uint64_t) 1 << BASE_EXPONENT) - 1);
+}
+#endif
+
 unsigned int max(unsigned int a, unsigned int b) {
     return (a > b) ? a : b;
 }

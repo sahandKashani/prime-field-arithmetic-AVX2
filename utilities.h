@@ -20,6 +20,11 @@ typedef struct {
     void *aligned;
 } aligned_memory;
 
+#if !FULL_LIMB_PRECISION
+unsigned int carry(uint64_t limb);
+uint64_t reduce_to_base(uint64_t limb);
+#endif
+
 unsigned int max(unsigned int a, unsigned int b);
 unsigned int min(unsigned int a, unsigned int b);
 void print_num(uint64_t const * const num, unsigned int const num_limbs);
