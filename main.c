@@ -803,8 +803,8 @@ int main(void) {
 #if AVX
 //  check_add_vector();
 
-#define NUM_AVX2_BENCHMARK_VECTORS ((unsigned int) pow(2, 30))
-#define NUM_AVX2_BENCHMARK_TESTS ((unsigned int) pow(2, 0))
+#define NUM_AVX2_BENCHMARK_VECTORS ((unsigned int) pow(2, 20))
+#define NUM_AVX2_BENCHMARK_TESTS ((unsigned int) pow(2, 3))
 #define AVX2_ALIGNMENT (32)
 
     double *elapsed_time_fill = malloc(NUM_AVX2_BENCHMARK_TESTS * sizeof(*elapsed_time_fill));
@@ -834,11 +834,13 @@ int main(void) {
 //      clock_t end_fill = clock();
 //      elapsed_time_fill[test_iteration] = (end_fill - start_fill) / ((double) CLOCKS_PER_SEC);
 
+        avx_add_benchmark(z_array, x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
         clock_t start_avx = clock();
         avx_add_benchmark(z_array, x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
         clock_t end_avx = clock();
         elapsed_time_avx[test_iteration] = (end_avx - start_avx) / ((double) CLOCKS_PER_SEC);
 
+        C_add_benchmark(z_array, x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
         clock_t start_C = clock();
         C_add_benchmark(z_array, x_array, y_array, NUM_AVX2_BENCHMARK_VECTORS);
         clock_t end_C = clock();
