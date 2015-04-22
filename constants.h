@@ -22,7 +22,7 @@
 ///////////////
 // constants //
 ///////////////
-#define BASE_EXPONENT               ((FULL_LIMB_PRECISION * LIMB_SIZE_IN_BITS) + (!FULL_LIMB_PRECISION * (LIMB_SIZE_IN_BITS - 1)))
+#define BASE_EXPONENT               ((FULL_LIMB_PRECISION * LIMB_SIZE_IN_BITS) + ((!FULL_LIMB_PRECISION) * (LIMB_SIZE_IN_BITS - 1)))
 #define NUM_LIMBS                   ((unsigned int) ceil((PRIME_FIELD_BINARY_BIT_LENGTH)/ ((double) BASE_EXPONENT)))
 #define LIMB_SIZE_IN_BYTES          (LIMB_SIZE_IN_BITS / 8)
 #define LIMB_SIZE_IN_HEX            (LIMB_SIZE_IN_BITS / 4)
