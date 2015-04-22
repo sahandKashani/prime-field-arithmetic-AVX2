@@ -3,10 +3,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "arithmetic.h"
+#include "constants.h"
 #include "limb.h"
 #include "utilities.h"
-#include "constants.h"
-#include "prime_field_arithmetic.h"
 
 #if !FULL_LIMB_PRECISION
 unsigned int carry(limb_t limb) {

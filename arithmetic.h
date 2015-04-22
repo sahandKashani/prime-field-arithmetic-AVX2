@@ -1,5 +1,5 @@
-#ifndef PRIME_FIELD_ARITHMETIC_H_
-#define PRIME_FIELD_ARITHMETIC_H_
+#ifndef ARITHMETIC_H_
+#define ARITHMETIC_H_
 
 #include <stdbool.h>
 #include "limb.h"

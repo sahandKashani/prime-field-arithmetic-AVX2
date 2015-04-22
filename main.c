@@ -8,9 +8,9 @@
 #include <stdbool.h>
 #include <time.h>
 #include <gmp.h>
+#include "arithmetic.h"
 #include "utilities.h"
 #include "constants.h"
-#include "prime_field_arithmetic.h"
 
 #define NUM_ITERATIONS (100000L)
 #define SEED (12345)

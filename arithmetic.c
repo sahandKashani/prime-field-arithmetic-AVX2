@@ -1,11 +1,11 @@
 #include <immintrin.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "arithmetic.h"
 #include "constants.h"
 #include "limb.h"
 #include "utilities.h"
 #include "settings.h"
-#include "prime_field_arithmetic.h"
 
 unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
     unsigned int carry_out = carry_in;
