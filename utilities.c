@@ -14,7 +14,7 @@ unsigned int carry(limb_t limb) {
 }
 
 limb_t reduce_to_base(limb_t limb) {
-    return limb & (((limb_t) 1 << BASE_EXPONENT) - 1);
+    return limb & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
 }
 #endif
 
