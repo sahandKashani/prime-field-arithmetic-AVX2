@@ -1,20 +1,20 @@
 #ifndef PRIME_FIELD_ARITHMETIC_H_
 #define PRIME_FIELD_ARITHMETIC_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include "limb.h"
 
-unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const carry_in);
-unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs, unsigned int const carry_in);
-unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in);
-void mul_limb_limb(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a, uint64_t const b);
-void mul_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs);
-void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
-bool equals_zero(uint64_t const * const num, unsigned int const num_limbs);
-int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
-void and(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs);
-void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs);
-void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs);
-void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const * const y, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs);
+unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in);
+unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, unsigned int const carry_in);
+unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in);
+void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, limb_t const b);
+void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs);
+void mul(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs);
+bool equals_zero(limb_t const * const num, unsigned int const num_limbs);
+int cmp(limb_t const * const a, limb_t const * const b, unsigned int const num_limbs);
+void and(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs);
+void add_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs);
+void sub_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs);
+void mul_montgomery(limb_t * const z, limb_t const * const x, limb_t const * const y, limb_t const * const m, limb_t m_prime, unsigned int const num_limbs);
 
 #endif

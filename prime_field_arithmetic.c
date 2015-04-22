@@ -1,18 +1,19 @@
 #include <immintrin.h>
-#include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "constants.h"
+#include "limb.h"
 #include "utilities.h"
+#include "settings.h"
 #include "prime_field_arithmetic.h"
 
-unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
+unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
     unsigned int carry_out = carry_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
-        // we need to temporarily store the output of each operation, because it is
-        // possible that c is the same array as a or b.
-        uint64_t c_tmp = 0;
+        // we need to temporarily store the output of each operation, because it
+        // is possible that c is the same array as a or b.
+        limb_t c_tmp = 0;
 
 #if FULL_LIMB_PRECISION
         c_tmp = a[i] + carry_out;
@@ -31,10 +32,10 @@ unsigned int add(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     return carry_out;
 }
 
-unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs, unsigned int const carry_in) {
+unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, unsigned int const carry_in) {
     // we need to temporarily store the output of each operation, because it is
     // possible that c is the same array as a.
-    uint64_t c_tmp = 0;
+    limb_t c_tmp = 0;
     unsigned int carry_out = 0;
 
 #if FULL_LIMB_PRECISION
@@ -66,15 +67,15 @@ unsigned int add_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t
     return carry_out;
 }
 
-unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
+unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
     // we need to temporarily store the output of each operation, because it is
     // possible that c is the same array as a or b.
-    uint64_t c_tmp = 0;
+    limb_t c_tmp = 0;
     unsigned int borrow_out = borrow_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
 #if FULL_LIMB_PRECISION
-        uint64_t c_tmp_old = 0;
+        limb_t c_tmp_old = 0;
 
         c_tmp = a[i] - borrow_out;
         c_tmp_old = c_tmp;
@@ -93,51 +94,19 @@ unsigned int sub(uint64_t * const c, uint64_t const * const a, uint64_t const * 
     return borrow_out;
 }
 
-void mul_limb_limb(uint64_t * const c_hi, uint64_t * const c_lo, uint64_t const a, uint64_t const b) {
-#if MULX
-    unsigned long long x = a;
-    unsigned long long y = b;
-    unsigned long long hi;
-    unsigned long long lo;
-    lo = _mulx_u64(x, y, &hi);
-    *c_hi = hi;
-    *c_lo = lo;
-#else
-    uint32_t a_32[2] = {a & 0xffffffff, (uint32_t) (a >> 32)};
-    uint32_t b_32[2] = {b & 0xffffffff, (uint32_t) (b >> 32)};
-    uint32_t c_32[4] = {0, 0, 0, 0};
+void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, limb_t const b) {
+    dlimb_t res = (dlimb_t) a * b;
 
-    uint64_t inner_product = 0;
-    uint32_t inner_product_lo = 0;
-    uint32_t inner_product_hi = 0;
-
-    for (unsigned int i = 0; i < 2; i++) {
-        inner_product_hi = 0;
-        for (unsigned int j = 0; j < 2; j++) {
-            inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi;
-            inner_product_lo = inner_product & (0xffffffff);
-            inner_product_hi = (uint32_t) (inner_product >> 32);
-            c_32[i + j] = inner_product_lo;
-        }
-        c_32[i + 2] = inner_product_hi;
-    }
-
-    *c_lo = (((uint64_t) c_32[1]) << 32) + c_32[0];
-    *c_hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
-#endif
-
-#if !FULL_LIMB_PRECISION
-    *c_hi <<= (LIMB_SIZE_IN_BITS - BASE_EXPONENT);
-    *c_hi |= (*c_lo >> BASE_EXPONENT);
-    *c_lo = reduce_to_base(*c_lo);
-#endif
+    // -1 = 0xff..ff
+    *c_lo = res & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
+    *c_hi = (limb_t) (res >> BASE_EXPONENT);
 }
 
-void mul_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t const b, unsigned int const num_limbs) {
-    uint64_t res[num_limbs + 1];
+void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs) {
+    limb_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
-    uint64_t inner_product[2] = {0, 0};
+    limb_t inner_product[2] = {0, 0};
     unsigned int carry_out = 0;
     for (unsigned int i = 0; i < num_limbs; i++) {
         mul_limb_limb(&inner_product[1], &inner_product[0], a[i], b);
@@ -147,12 +116,12 @@ void mul_num_limb(uint64_t * const c, uint64_t const * const a, uint64_t const b
     copy_num(c, res, num_limbs + 1);
 }
 
-void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
-    uint64_t res[2 * num_limbs];
+void mul(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
+    limb_t res[2 * num_limbs];
     clear_num(res, 2 * num_limbs);
 
     for (unsigned int i = 0; i < num_limbs; i++) {
-        uint64_t tmp[num_limbs + 1];
+        limb_t tmp[num_limbs + 1];
         mul_num_limb(tmp, a, b[i], num_limbs);
         add(res + i, res + i, tmp, num_limbs + 1, 0);
     }
@@ -160,7 +129,7 @@ void mul(uint64_t * const c, uint64_t const * const a, uint64_t const * const b,
     copy_num(c, res, 2 * num_limbs);
 }
 
-bool equals_zero(uint64_t const * const num, unsigned int const num_limbs) {
+bool equals_zero(limb_t const * const num, unsigned int const num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         if (num[i] != 0) {
             return false;
@@ -172,8 +141,8 @@ bool equals_zero(uint64_t const * const num, unsigned int const num_limbs) {
 // returns -1 if a < b
 // returns  0 if a == b
 // returns +1 if a > b
-int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
-    uint64_t tmp[num_limbs];
+int cmp(limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
+    limb_t tmp[num_limbs];
     unsigned int borrow_out = sub(tmp, a, b, num_limbs, 0);
 
     if (borrow_out) {
@@ -185,15 +154,15 @@ int cmp(uint64_t const * const a, uint64_t const * const b, unsigned int const n
     }
 }
 
-void and(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, unsigned int const num_limbs) {
+void and(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         c[i] = a[i] & b[i];
     }
 }
 
-void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs) {
+void add_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs) {
 #if BRANCHLESS_MODULAR_ADDITION
-    uint64_t mask[num_limbs];
+    limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
     add(c, a, b, num_limbs, 0);
@@ -209,9 +178,9 @@ void add_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * cons
 #endif
 }
 
-void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * const b, uint64_t const * const m, unsigned int const num_limbs) {
+void sub_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs) {
 #if BRANCHLESS_MODULAR_SUBTRACTION
-    uint64_t mask[num_limbs];
+    limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
     unsigned int borrow_out = sub(c, a, b, num_limbs, 0);
@@ -226,26 +195,26 @@ void sub_mod(uint64_t * const c, uint64_t const * const a, uint64_t const * cons
 #endif
 }
 
-void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const * const y, uint64_t const * const m, uint64_t m_prime, unsigned int const num_limbs) {
-    uint64_t A[num_limbs + 1];
+void mul_montgomery(limb_t * const z, limb_t const * const x, limb_t const * const y, limb_t const * const m, limb_t m_prime, unsigned int const num_limbs) {
+    limb_t A[num_limbs + 1];
     clear_num(A, num_limbs + 1);
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         // u_i = (a_0 + (x_i * y_0)) * m' mod b
 #if FULL_LIMB_PRECISION
-        uint64_t ui = (A[0] + x[i] * y[0]) * m_prime;
+        limb_t ui = (A[0] + x[i] * y[0]) * m_prime;
 #else
-        uint64_t ui = reduce_to_base((A[0] + x[i] * y[0]) * m_prime);
+        limb_t ui = reduce_to_base((A[0] + x[i] * y[0]) * m_prime);
 #endif
 
         // A = (A + (x_i * y) + (u_i * m)) / b
 
         // x_i * y
-        uint64_t xi_y[num_limbs + 1];
+        limb_t xi_y[num_limbs + 1];
         mul_num_limb(xi_y, y, x[i], num_limbs);
 
         // u_i * m
-        uint64_t ui_m[num_limbs + 1];
+        limb_t ui_m[num_limbs + 1];
         mul_num_limb(ui_m, m, ui, num_limbs);
 
         // A = A + (x_i * y)
@@ -272,30 +241,3 @@ void mul_montgomery(uint64_t * const z, uint64_t const * const x, uint64_t const
 
     copy_num(z, A, num_limbs);
 }
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-//void add_vector(uint64_t (*c)[4], uint64_t const * const a, uint64_t const * const b, uint64_t * const carry, unsigned int const num_limbs) {
-//  __m256i x = _mm256_lddqu_si256((__m256i *) a);
-//  __m256i y = _mm256_lddqu_si256((__m256i *) b);
-//  __m256i z = _mm256_lddqu_si256((__m256i *) a);
-//
-//  unsigned int carry_out = carry_in;
-//
-//    for (unsigned int i = 0; i < num_limbs; i++) {
-//      // we need to temporarily store the output of each operation, because it is
-//      // possible that c is the same array as a or b.
-//      uint64_t c_tmp = 0;
-//
-//        c_tmp = a[i] + carry_out;
-//        carry_out = (c_tmp < a[i]);
-//        c_tmp += b[i];
-//        carry_out |= (c_tmp < b[i]);
-//        c[i] = c_tmp;
-//    }
-//
-//    return carry_out;
-//}
