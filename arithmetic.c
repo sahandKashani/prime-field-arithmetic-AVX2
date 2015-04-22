@@ -20,13 +20,12 @@ unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const 
         carry_out = (c_tmp < a[i]);
         c_tmp += b[i];
         carry_out |= (c_tmp < b[i]);
-        c[i] = c_tmp;
 #else
         c_tmp = a[i] + b[i] + carry_out;
         carry_out = carry(c_tmp);
         c_tmp = reduce_to_base(c_tmp);
-        c[i] = c_tmp;
 #endif
+        c[i] = c_tmp;
     }
 
     return carry_out;
@@ -43,25 +42,22 @@ unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const
     carry_out = (c_tmp < a[0]);
     c_tmp += b;
     carry_out |= (c_tmp < b);
-    c[0] = c_tmp;
 #else
     c_tmp = a[0] + b + carry_in;
     carry_out = carry(c_tmp);
     c_tmp = reduce_to_base(c_tmp);
-    c[0] = c_tmp;
 #endif
+    c[0] = c_tmp;
 
     for (unsigned int i = 1; i < num_limbs; i++) {
+        c_tmp = a[i] + carry_out;
 #if FULL_LIMB_PRECISION
-        c_tmp = a[i] + carry_out;
         carry_out = (c_tmp < a[i]);
-        c[i] = c_tmp;
 #else
-        c_tmp = a[i] + carry_out;
         carry_out = carry(c_tmp);
         c_tmp = reduce_to_base(c_tmp);
-        c[i] = c_tmp;
 #endif
+        c[i] = c_tmp;
     }
 
     return carry_out;
@@ -82,13 +78,12 @@ unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const 
         borrow_out = (c_tmp > a[i]);
         c_tmp -= b[i];
         borrow_out |= (c_tmp > c_tmp_old);
-        c[i] = c_tmp;
 #else
         c_tmp = a[i] - b[i] - borrow_out;
         borrow_out = carry(c_tmp);
         c_tmp = reduce_to_base(c_tmp);
-        c[i] = c_tmp;
 #endif
+        c[i] = c_tmp;
     }
 
     return borrow_out;
@@ -201,10 +196,11 @@ void mul_montgomery(limb_t * const z, limb_t const * const x, limb_t const * con
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         // u_i = (a_0 + (x_i * y_0)) * m' mod b
+        limb_t A0_Xi_Y0_Mprime = (A[0] + x[i] * y[0]) * m_prime;
 #if FULL_LIMB_PRECISION
-        limb_t ui = (A[0] + x[i] * y[0]) * m_prime;
+        limb_t ui = A0_Xi_Y0_Mprime;
 #else
-        limb_t ui = reduce_to_base((A[0] + x[i] * y[0]) * m_prime);
+        limb_t ui = reduce_to_base(A0_Xi_Y0_Mprime);
 #endif
 
         // A = (A + (x_i * y) + (u_i * m)) / b
