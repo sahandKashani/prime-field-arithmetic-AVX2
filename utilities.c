@@ -3,17 +3,18 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "limb.h"
 #include "utilities.h"
 #include "constants.h"
 #include "prime_field_arithmetic.h"
 
 #if !FULL_LIMB_PRECISION
-unsigned int carry(uint64_t limb) {
+unsigned int carry(limb_t limb) {
     return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
 }
 
-uint64_t reduce_to_base(uint64_t limb) {
-    return limb & (((uint64_t) 1 << BASE_EXPONENT) - 1);
+limb_t reduce_to_base(limb_t limb) {
+    return limb & (((limb_t) 1 << BASE_EXPONENT) - 1);
 }
 #endif
 
@@ -25,37 +26,37 @@ unsigned int min(unsigned int a, unsigned int b) {
     return (a < b) ? a : b;
 }
 
-void print_num(uint64_t const * const num, unsigned int const num_limbs) {
+void print_num(limb_t const * const num, unsigned int const num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
-        printf("%0*" PRIx64 " ", LIMB_SIZE_IN_HEX, num[num_limbs - i - 1]);
+        printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, num[num_limbs - i - 1]);
     }
     printf("\n");
 }
 
 void print_num_gmp(mpz_t const num_gmp, unsigned int const num_limbs) {
-    uint64_t tmp[num_limbs];
+    limb_t tmp[num_limbs];
     convert_gmp_to_num(tmp, num_gmp, num_limbs);
     print_num(tmp, num_limbs);
 }
 
-void clear_num(uint64_t * const num, unsigned int const num_limbs) {
+void clear_num(limb_t * const num, unsigned int const num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         num[i] = 0;
     }
 }
 
-void convert_gmp_to_num(uint64_t * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
+void convert_gmp_to_num(limb_t * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
     // must clear the number, because GMP will only fill enough words that is
     // needed, so the last words of num may not be set automatically.
     clear_num(num, num_limbs);
     mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, LIMB_SIZE_IN_BITS - BASE_EXPONENT, num_gmp);
 }
 
-void convert_num_to_gmp(mpz_t num_gmp, uint64_t const * const num, unsigned int const num_limbs) {
+void convert_num_to_gmp(mpz_t num_gmp, limb_t const * const num, unsigned int const num_limbs) {
     mpz_import(num_gmp, num_limbs, -1, LIMB_SIZE_IN_BYTES, 0, LIMB_SIZE_IN_BITS - BASE_EXPONENT, num);
 }
 
-bool is_equal_num_num(uint64_t const * const num1, uint64_t const * const num2, unsigned int const num_limbs) {
+bool is_equal_num_num(limb_t const * const num1, limb_t const * const num2, unsigned int const num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         if (num1[i] != num2[i]) {
             return false;
@@ -64,11 +65,11 @@ bool is_equal_num_num(uint64_t const * const num1, uint64_t const * const num2, 
     return true;
 }
 
-bool is_equal_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
+bool is_equal_num_gmp(limb_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
     return cmp_num_gmp(num, num_gmp, num_limbs) == 0;
 }
 
-int cmp_num_gmp(uint64_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
+int cmp_num_gmp(limb_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
     mpz_t tmp;
     mpz_init(tmp);
     convert_num_to_gmp(tmp, num, num_limbs);
@@ -123,7 +124,7 @@ void clear_three_sorted_gmp(three_sorted_gmp x) {
     mpz_clear(x.small);
 }
 
-void copy_num(uint64_t * const b, uint64_t const * const a, unsigned int const num_limbs) {
+void copy_num(limb_t * const b, limb_t const * const a, unsigned int const num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         b[i] = a[i];
     }
