@@ -68,12 +68,12 @@ unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const
 }
 
 unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
-    // we need to temporarily store the output of each operation, because it is
-    // possible that c is the same array as a or b.
-    limb_t c_tmp = 0;
     unsigned int borrow_out = borrow_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
+        // we need to temporarily store the output of each operation, because it
+        // is possible that c is the same array as a or b.
+        limb_t c_tmp = 0;
 #if FULL_LIMB_PRECISION
         limb_t c_tmp_old = 0;
 
@@ -106,9 +106,9 @@ void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsi
     limb_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
-    limb_t inner_product[2] = {0, 0};
     unsigned int carry_out = 0;
     for (unsigned int i = 0; i < num_limbs; i++) {
+        limb_t inner_product[2] = {0, 0};
         mul_limb_limb(&inner_product[1], &inner_product[0], a[i], b);
         carry_out = add(res + i, res + i, inner_product, 2, carry_out);
     }
