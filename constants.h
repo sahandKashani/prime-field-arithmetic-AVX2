@@ -4,14 +4,11 @@
 #include <math.h>
 #include "settings.h"
 
-#define LIMB_SIZE_IN_BITS           (64)
-#define LIMB_SIZE_IN_BYTES          (LIMB_SIZE_IN_BITS / 8)
-#define LIMB_SIZE_IN_HEX            (LIMB_SIZE_IN_BITS / 4)
-#define NUM_LIMBS                   ((unsigned int) ceil((PRIME_FIELD_BINARY_BIT_LENGTH)/ ((double) BASE_EXPONENT)))
-#define PRIME_FIELD_FULL_HEX_LENGTH (NUM_LIMBS * LIMB_SIZE_IN_HEX)
-
-#if BASE_EXPONENT == LIMB_SIZE_IN_BITS
-#define FULL_LIMB_PRECISION (1)
+///////////////////////////////////////////////
+// compile-time checks for settings validity //
+///////////////////////////////////////////////
+#if LIMB_SIZE_IN_BITS != 32 && LIMB_SIZE_IN_BITS != 64
+#error "LIMB_SIZE_IN_BITS must be 32 or 64"
 #endif
 
 #if (PRIME_FIELD_BINARY_BIT_LENGTH % LIMB_SIZE_IN_BITS) == 0
@@ -22,8 +19,13 @@
 #error "PRIME_FIELD_BINARY_BIT_LENGTH must be larger than LIMB_SIZE_IN_BITS"
 #endif
 
-#if !((0 < BASE_EXPONENT) && (BASE_EXPONENT <= LIMB_SIZE_IN_BITS))
-#error "BASE_EXPONENT must satisfy 0 < BASE_EXPONENT <= LIMB_SIZE_IN_BITS"
-#endif
+///////////////
+// constants //
+///////////////
+#define BASE_EXPONENT               ((FULL_LIMB_PRECISION * LIMB_SIZE_IN_BITS) + (!FULL_LIMB_PRECISION * (LIMB_SIZE_IN_BITS - 1)))
+#define NUM_LIMBS                   ((unsigned int) ceil((PRIME_FIELD_BINARY_BIT_LENGTH)/ ((double) BASE_EXPONENT)))
+#define LIMB_SIZE_IN_BYTES          (LIMB_SIZE_IN_BITS / 8)
+#define LIMB_SIZE_IN_HEX            (LIMB_SIZE_IN_BITS / 4)
+#define PRIME_FIELD_FULL_HEX_LENGTH (NUM_LIMBS * LIMB_SIZE_IN_HEX)
 
 #endif
