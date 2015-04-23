@@ -2,6 +2,7 @@
 #define LIMB_H_
 
 #include <inttypes.h>
+#include <immintrin.h>
 #include "settings.h"
 
 #if LIMB_SIZE_IN_BITS == 32
@@ -18,5 +19,7 @@ typedef uint128_t dlimb_t;
 #define PRI_LIMB PRIx64
 
 #endif
+
+typedef __m256i limb_vec_t;
 
 #endif
