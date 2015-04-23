@@ -9,6 +9,7 @@
 #include <time.h>
 #include <gmp.h>
 #include "arithmetic.h"
+#include "arithmetic_vector.h"
 #include "limb.h"
 #include "utilities.h"
 #include "constants.h"
@@ -885,17 +886,28 @@ int main(void) {
     printf("Done AVX2 test\n");
 
 #else
-    check_add();
-    check_add_num_limb();
-    check_sub();
-    check_mul_limb_limb();
-    check_mul_num_limb();
-    check_mul();
-    check_cmp();
-    check_add_mod();
-    check_sub_mod();
-    check_mul_montgomery();
+//    check_add();
+//    check_add_num_limb();
+//    check_sub();
+//    check_mul_limb_limb();
+//    check_mul_num_limb();
+//    check_mul();
+//    check_cmp();
+//    check_add_mod();
+//    check_sub_mod();
+//    check_mul_montgomery();
 #endif
+
+    limb_vec_t c[NUM_LIMBS], a[NUM_LIMBS], b[NUM_LIMBS], carry;
+
+    carry = _mm256_setzero_si256();
+    for (unsigned int i = 0; i < NUM_LIMBS; i++) {
+        c[i] = _mm256_setzero_si256();
+        a[i] = _mm256_setzero_si256();
+        b[i] = _mm256_setzero_si256();
+    }
+
+    add_simd(c, a, b, NUM_LIMBS, carry);
 
     return EXIT_SUCCESS;
 }
