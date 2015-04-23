@@ -9,6 +9,7 @@
 #include <time.h>
 #include <gmp.h>
 #include "arithmetic.h"
+#include "limb.h"
 #include "utilities.h"
 #include "constants.h"
 
@@ -29,9 +30,9 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(res_gmp);
     mpz_init(mod_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
-    uint64_t res[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
+    limb_t res[NUM_LIMBS];
 
     bool success = true;
 
@@ -87,9 +88,9 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(res_gmp);
     mpz_init(mod_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2;
-    uint64_t res[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2;
+    limb_t res[NUM_LIMBS];
 
     bool success = true;
 
@@ -114,7 +115,7 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
-            printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op2);
+            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op2);
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
@@ -146,9 +147,9 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(res_gmp);
     mpz_init(mod_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
-    uint64_t res[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
+    limb_t res[NUM_LIMBS];
 
     bool success = true;
 
@@ -203,9 +204,9 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(op2_gmp);
     mpz_init(res_gmp);
 
-    uint64_t op1;
-    uint64_t op2;
-    uint64_t res[2];
+    limb_t op1;
+    limb_t op2;
+    limb_t res[2];
 
     bool success = true;
 
@@ -225,9 +226,9 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
 
         if (!is_equal_num_gmp(res, res_gmp, 2)) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
-            printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op1);
+            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op1);
             print_num_gmp(op2_gmp, NUM_LIMBS);
-            printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op2);
+            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op2);
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, 2);
             success = false;
@@ -256,9 +257,9 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(res_gmp);
     mpz_init(mod_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2;
-    uint64_t res[NUM_LIMBS + 1];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2;
+    limb_t res[NUM_LIMBS + 1];
 
     bool success = true;
 
@@ -283,7 +284,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
-            printf("%0*" PRIx64 "\n", LIMB_SIZE_IN_HEX, op2);
+            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op2);
             print_num_gmp(res_gmp, NUM_LIMBS + 1);
             print_num(res, NUM_LIMBS + 1);
             success = false;
@@ -315,9 +316,9 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(res_gmp);
     mpz_init(mod_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
-    uint64_t res[2 * NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
+    limb_t res[2 * NUM_LIMBS];
 
     bool success = true;
 
@@ -371,8 +372,8 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(op2_gmp);
     mpz_init(mod_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
 
     bool success = true;
 
@@ -424,10 +425,10 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(mod_gmp);
     mpz_init(res_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
-    uint64_t mod[NUM_LIMBS];
-    uint64_t res[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
+    limb_t mod[NUM_LIMBS];
+    limb_t res[NUM_LIMBS];
 
     bool success = true;
 
@@ -490,10 +491,10 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
     mpz_init(mod_gmp);
     mpz_init(res_gmp);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
-    uint64_t mod[NUM_LIMBS];
-    uint64_t res[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
+    limb_t mod[NUM_LIMBS];
+    limb_t res[NUM_LIMBS];
 
     bool success = true;
 
@@ -566,11 +567,11 @@ bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
     mpz_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
     mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
 
-    uint64_t op1[NUM_LIMBS];
-    uint64_t op2[NUM_LIMBS];
-    uint64_t mod[NUM_LIMBS];
-    uint64_t mod_prime;
-    uint64_t res[NUM_LIMBS];
+    limb_t op1[NUM_LIMBS];
+    limb_t op2[NUM_LIMBS];
+    limb_t mod[NUM_LIMBS];
+    limb_t mod_prime;
+    limb_t res[NUM_LIMBS];
 
     bool success = true;
 
