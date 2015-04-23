@@ -4,6 +4,13 @@
 #include <stdbool.h>
 #include "limb.h"
 
+#if !FULL_LIMB_PRECISION
+
+unsigned int carry(limb_t limb);
+limb_t reduce_to_base(limb_t limb);
+
+#endif
+
 unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in);
 unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, unsigned int const carry_in);
 unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in);

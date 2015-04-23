@@ -7,6 +7,18 @@
 #include "utilities.h"
 #include "settings.h"
 
+#if !FULL_LIMB_PRECISION
+
+unsigned int carry(limb_t limb) {
+    return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
+}
+
+limb_t reduce_to_base(limb_t limb) {
+    return limb & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
+}
+
+#endif
+
 unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
     unsigned int carry_out = carry_in;
 
