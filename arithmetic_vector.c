@@ -8,14 +8,12 @@
 #if !FULL_LIMB_PRECISION
 
 limb_vec_t carry_vector(limb_vec_t limb) {
-    // return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
     limb_vec_t mask = set_vector(0x1);
     limb_vec_t tmp = srli_vector(limb, BASE_EXPONENT);
     return and_vector(tmp, mask);
 }
 
 limb_vec_t reduce_to_base_vector(limb_vec_t limb) {
-    // return limb & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
     limb_vec_t mask = set_vector((limb_t) -1);
     mask = srli_vector(mask, LIMB_SIZE_IN_BITS - BASE_EXPONENT);
     return and_vector(limb, mask);
@@ -104,7 +102,6 @@ limb_vec_t add_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t
     for (unsigned int i = 0; i < num_limbs; i++) {
         // we need to temporarily store the output of each operation, because it
         // is possible that c is the same array as a or b.
-        // limb_t c_tmp = 0;
         limb_vec_t c_tmp = zero_vector();
 
         limb_vec_t a_i = load_vector(a + i);
@@ -112,27 +109,15 @@ limb_vec_t add_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t
 
         #if FULL_LIMB_PRECISION
 
-        // c_tmp = a[i] + carry_out;
         c_tmp = add_vector(a_i, carry_out);
-
-        // carry_out = (c_tmp < a[i]);
         carry_out = cmpgt_vector(a_i, c_tmp);
-
-        // c_tmp += b[i];
         c_tmp = add_vector(c_tmp, b_i);
-
-        // carry_out |= (c_tmp < b[i]);
         carry_out = or_vector(carry_out, cmpgt_vector(b_i, c_tmp));
 
         #else
 
-        // c_tmp = a[i] + b[i] + carry_out;
         c_tmp = add_vector(a_i, add_vector(b_i, carry_out));
-
-        // carry_out = carry(c_tmp);
         carry_out = carry_vector(c_tmp);
-
-        // c_tmp = reduce_to_base(c_tmp);
         c_tmp = reduce_to_base_vector(c_tmp);
 
         #endif
@@ -153,56 +138,37 @@ limb_vec_t add_num_limb_simd(limb_vec_t * const c, limb_vec_t const * const a, l
 
     #if FULL_LIMB_PRECISION
 
-    // c_tmp = a[0] + carry_in;
     c_tmp = add_vector(a_0, carry_in);
-
-    // carry_out = (c_tmp < a[0]);
     carry_out = cmpgt_vector(a_0, c_tmp);
-
-    // c_tmp += b;
     c_tmp = add_vector(c_tmp, b);
-
-    // carry_out |= (c_tmp < b);
     carry_out = or_vector(carry_out, cmpgt_vector(b, c_tmp));
 
     #else
 
-    // c_tmp = a[0] + b + carry_in;
     c_tmp = add_vector(a_0, add_vector(b, carry_in));
-
-    // carry_out = carry(c_tmp);
     carry_out = carry_vector(c_tmp);
-
-    // c_tmp = reduce_to_base(c_tmp);
     c_tmp = reduce_to_base_vector(c_tmp);
 
     #endif
 
-    // c[0] = c_tmp;
     store_vector(c, c_tmp);
 
     for (unsigned int i = 1; i < num_limbs; i++) {
         limb_vec_t a_i = load_vector(a + i);
 
-        // c_tmp = a[i] + carry_out;
         c_tmp = add_vector(a_i, carry_out);
 
         #if FULL_LIMB_PRECISION
 
-        // carry_out = (c_tmp < a[i]);
         carry_out = cmpgt_vector(a_i, c_tmp);
 
         #else
 
-        // carry_out = carry(c_tmp);
         carry_out = carry_vector(c_tmp);
-
-        // c_tmp = reduce_to_base(c_tmp);
         c_tmp = reduce_to_base_vector(c_tmp);
 
         #endif
 
-        // c[i] = c_tmp;
         store_vector(c + i, c_tmp);
     }
 
