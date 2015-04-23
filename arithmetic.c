@@ -15,16 +15,21 @@ unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const 
         // is possible that c is the same array as a or b.
         limb_t c_tmp = 0;
 
-#if FULL_LIMB_PRECISION
+        #if FULL_LIMB_PRECISION
+
         c_tmp = a[i] + carry_out;
         carry_out = (c_tmp < a[i]);
         c_tmp += b[i];
         carry_out |= (c_tmp < b[i]);
-#else
+
+        #else
+
         c_tmp = a[i] + b[i] + carry_out;
         carry_out = carry(c_tmp);
         c_tmp = reduce_to_base(c_tmp);
-#endif
+
+        #endif
+
         c[i] = c_tmp;
     }
 
@@ -37,26 +42,37 @@ unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const
     limb_t c_tmp = 0;
     unsigned int carry_out = 0;
 
-#if FULL_LIMB_PRECISION
+    #if FULL_LIMB_PRECISION
+
     c_tmp = a[0] + carry_in;
     carry_out = (c_tmp < a[0]);
     c_tmp += b;
     carry_out |= (c_tmp < b);
-#else
+
+    #else
+
     c_tmp = a[0] + b + carry_in;
     carry_out = carry(c_tmp);
     c_tmp = reduce_to_base(c_tmp);
-#endif
+
+    #endif
+
     c[0] = c_tmp;
 
     for (unsigned int i = 1; i < num_limbs; i++) {
         c_tmp = a[i] + carry_out;
-#if FULL_LIMB_PRECISION
+
+        #if FULL_LIMB_PRECISION
+
         carry_out = (c_tmp < a[i]);
-#else
+
+        #else
+
         carry_out = carry(c_tmp);
         c_tmp = reduce_to_base(c_tmp);
-#endif
+
+        #endif
+
         c[i] = c_tmp;
     }
 
@@ -70,19 +86,24 @@ unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const 
         // we need to temporarily store the output of each operation, because it
         // is possible that c is the same array as a or b.
         limb_t c_tmp = 0;
-#if FULL_LIMB_PRECISION
-        limb_t c_tmp_old = 0;
 
+        #if FULL_LIMB_PRECISION
+
+        limb_t c_tmp_old = 0;
         c_tmp = a[i] - borrow_out;
         c_tmp_old = c_tmp;
         borrow_out = (c_tmp > a[i]);
         c_tmp -= b[i];
         borrow_out |= (c_tmp > c_tmp_old);
-#else
+
+        #else
+
         c_tmp = a[i] - b[i] - borrow_out;
         borrow_out = carry(c_tmp);
         c_tmp = reduce_to_base(c_tmp);
-#endif
+
+        #endif
+
         c[i] = c_tmp;
     }
 
@@ -156,7 +177,8 @@ void and(limb_t * const c, limb_t const * const a, limb_t const * const b, unsig
 }
 
 void add_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs) {
-#if BRANCHLESS_MODULAR_ADDITION
+    #if BRANCHLESS_MODULAR_ADDITION
+
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
@@ -165,16 +187,20 @@ void add_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, l
     sub(mask, mask, mask, num_limbs, borrow_out);
     and(mask, m, mask, num_limbs);
     add(c, c, mask, num_limbs, 0);
-#else
+
+    #else
+
     add(c, a, b, num_limbs, 0);
     if (cmp(c, m, num_limbs) >= 0) {
         sub(c, c, m, num_limbs, 0);
     }
-#endif
+
+    #endif
 }
 
 void sub_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs) {
-#if BRANCHLESS_MODULAR_SUBTRACTION
+    #if BRANCHLESS_MODULAR_SUBTRACTION
+
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
@@ -182,12 +208,15 @@ void sub_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, l
     sub(mask, mask, mask, num_limbs, borrow_out);
     and(mask, m, mask, num_limbs);
     add(c, c, mask, num_limbs, 0);
-#else
+
+    #else
+
     unsigned int borrow_out = sub(c, a, b, num_limbs, 0);
     if (borrow_out) {
         add(c, c, m, num_limbs, 0);
     }
-#endif
+
+    #endif
 }
 
 void mul_montgomery(limb_t * const z, limb_t const * const x, limb_t const * const y, limb_t const * const m, limb_t m_prime, unsigned int const num_limbs) {
@@ -197,11 +226,16 @@ void mul_montgomery(limb_t * const z, limb_t const * const x, limb_t const * con
     for (unsigned int i = 0; i < num_limbs; i++) {
         // u_i = (a_0 + (x_i * y_0)) * m' mod b
         limb_t A0_Xi_Y0_Mprime = (A[0] + x[i] * y[0]) * m_prime;
-#if FULL_LIMB_PRECISION
+
+        #if FULL_LIMB_PRECISION
+
         limb_t ui = A0_Xi_Y0_Mprime;
-#else
+
+        #else
+
         limb_t ui = reduce_to_base(A0_Xi_Y0_Mprime);
-#endif
+
+        #endif
 
         // A = (A + (x_i * y) + (u_i * m)) / b
 
@@ -226,14 +260,18 @@ void mul_montgomery(limb_t * const z, limb_t const * const x, limb_t const * con
         A[num_limbs] = 0;
     }
 
-#if BRANCHLESS_MONTGOMERY_MULTIPLICATION
+    #if BRANCHLESS_MONTGOMERY_MULTIPLICATION
+
     sub_mod(A, A, m, m, num_limbs);
-#else
+
+    #else
+
     // A[num_limbs] = 0, so it is like if A and m have the same number of limbs.
     if (cmp(A, m, num_limbs) >= 0) {
         sub(A, A, m, num_limbs, 0);
     }
-#endif
+
+    #endif
 
     copy_num(z, A, num_limbs);
 }
