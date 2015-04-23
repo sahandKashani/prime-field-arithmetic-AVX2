@@ -9,19 +9,31 @@
 
 limb_vec_t carry_vector(limb_vec_t limb) {
     // return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
-    limb_vec_t mask = _mm256_set1_epi32(0x1);
-    limb_vec_t tmp = _mm256_srli_epi32(limb, BASE_EXPONENT);
-    return _mm256_and_si256(tmp, mask);
+    limb_vec_t mask = set_vector(0x1);
+    limb_vec_t tmp = srli_vector(limb, BASE_EXPONENT);
+    return and_vector(tmp, mask);
 }
 
 limb_vec_t reduce_to_base_vector(limb_vec_t limb) {
     // return limb & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
-    limb_vec_t mask = _mm256_set1_epi32(-1);
-    mask = _mm256_srli_epi32(mask, LIMB_SIZE_IN_BITS - BASE_EXPONENT);
-    return _mm256_and_si256(limb, mask);
+    limb_vec_t mask = set_vector((limb_t) -1);
+    mask = srli_vector(mask, LIMB_SIZE_IN_BITS - BASE_EXPONENT);
+    return and_vector(limb, mask);
 }
 
 #endif
+
+limb_vec_t srli_vector(limb_vec_t a, int amount) {
+    #if LIMB_SIZE_IN_BITS == 32
+
+    return _mm256_srli_epi32(a, amount);
+
+    #elif LIMB_SIZE_IN_BITS == 64
+
+    return _mm256_srli_epi64(a, amount);
+
+    #endif
+}
 
 limb_vec_t set_vector(limb_t a) {
     #if LIMB_SIZE_IN_BITS == 32

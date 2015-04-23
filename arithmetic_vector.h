@@ -10,6 +10,7 @@ limb_vec_t reduce_to_base_vector(limb_vec_t limb);
 
 #endif
 
+limb_vec_t srli_vector(limb_vec_t a, int amount);
 limb_vec_t set_vector(limb_t a);
 limb_vec_t add_vector(limb_vec_t a, limb_vec_t b);
 limb_vec_t cmpgt_vector(limb_vec_t a, limb_vec_t b);
