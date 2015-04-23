@@ -21,5 +21,6 @@ limb_vec_t and_vector(limb_vec_t a, limb_vec_t b);
 void store_vector(limb_vec_t * const addr, limb_vec_t data);
 
 limb_vec_t add_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const * const b, unsigned int const num_limbs, limb_vec_t const carry_in);
+limb_vec_t add_num_limb_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const b, unsigned int const num_limbs, limb_vec_t const carry_in);
 
 #endif

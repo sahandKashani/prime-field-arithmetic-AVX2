@@ -140,3 +140,69 @@ limb_vec_t add_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t
 
     return carry_out;
 }
+
+limb_vec_t add_num_limb_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const b, unsigned int const num_limbs, limb_vec_t const carry_in) {
+    // we need to temporarily store the output of each operation, because it is
+    // possible that c is the same array as a.
+    limb_vec_t c_tmp = zero_vector();
+    limb_vec_t carry_out = zero_vector();
+
+    limb_vec_t a_0 = load_vector(a);
+
+    #if FULL_LIMB_PRECISION
+
+    // c_tmp = a[0] + carry_in;
+    c_tmp = add_vector(a_0, carry_in);
+
+    // carry_out = (c_tmp < a[0]);
+    carry_out = cmpgt_vector(a_0, c_tmp);
+
+    // c_tmp += b;
+    c_tmp = add_vector(c_tmp, b);
+
+    // carry_out |= (c_tmp < b);
+    carry_out = or_vector(carry_out, cmpgt_vector(b, c_tmp));
+
+    #else
+
+    // c_tmp = a[0] + b + carry_in;
+    c_tmp = add_vector(a_0, add_vector(b, carry_in));
+
+    // carry_out = carry(c_tmp);
+    carry_out = carry_vector(c_tmp);
+
+    // c_tmp = reduce_to_base(c_tmp);
+    c_tmp = reduce_to_base_vector(c_tmp);
+
+    #endif
+
+    // c[0] = c_tmp;
+    store_vector(c, c_tmp);
+
+    for (unsigned int i = 1; i < num_limbs; i++) {
+        limb_vec_t a_i = load_vector(a + i);
+
+        // c_tmp = a[i] + carry_out;
+        c_tmp = add_vector(a_i, carry_out);
+
+        #if FULL_LIMB_PRECISION
+
+        // carry_out = (c_tmp < a[i]);
+        carry_out = cmpgt_vector(a_i, c_tmp);
+
+        #else
+
+        // carry_out = carry(c_tmp);
+        carry_out = carry_vector(c_tmp);
+
+        // c_tmp = reduce_to_base(c_tmp);
+        c_tmp = reduce_to_base_vector(c_tmp);
+
+        #endif
+
+        // c[i] = c_tmp;
+        store_vector(c + i, c_tmp);
+    }
+
+    return carry_out;
+}
