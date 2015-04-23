@@ -9,6 +9,7 @@
 #include "utilities.h"
 
 #if !FULL_LIMB_PRECISION
+
 unsigned int carry(limb_t limb) {
     return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
 }
@@ -16,6 +17,7 @@ unsigned int carry(limb_t limb) {
 limb_t reduce_to_base(limb_t limb) {
     return limb & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
 }
+
 #endif
 
 unsigned int max(unsigned int a, unsigned int b) {

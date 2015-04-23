@@ -18,8 +18,10 @@ typedef struct {
 } aligned_memory;
 
 #if !FULL_LIMB_PRECISION
+
 unsigned int carry(limb_t limb);
 limb_t reduce_to_base(limb_t limb);
+
 #endif
 
 unsigned int max(unsigned int a, unsigned int b);
