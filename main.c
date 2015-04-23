@@ -115,7 +115,7 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
-            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op2);
+            print_num(&op2, 1);
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
@@ -226,9 +226,9 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
 
         if (!is_equal_num_gmp(res, res_gmp, 2)) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
-            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op1);
+            print_num(&op1, 1);
             print_num_gmp(op2_gmp, NUM_LIMBS);
-            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op2);
+            print_num(&op2, 1);
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, 2);
             success = false;
@@ -284,7 +284,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
-            printf("%0*" PRI_LIMB "\n", LIMB_SIZE_IN_HEX, op2);
+            print_num(&op2, 1);
             print_num_gmp(res_gmp, NUM_LIMBS + 1);
             print_num(res, NUM_LIMBS + 1);
             success = false;
