@@ -73,6 +73,8 @@ limb_vec_t cmpgt_vector(limb_vec_t a, limb_vec_t b) {
 
     #endif
 
+    // we apply a mask because _mm256_cmpgt_epixx returns 0xff..ff or 0x00..00,
+    // but we want to have only 0x1 or 0x0 as a result.
     return and_vector(tmp, mask);
 }
 
