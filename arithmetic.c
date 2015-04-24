@@ -141,8 +141,9 @@ void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, lim
 
     #else
 
-    uint32_t a_32[2] = {a & 0xffffffff, (uint32_t) (a >> 32)};
-    uint32_t b_32[2] = {b & 0xffffffff, (uint32_t) (b >> 32)};
+    // -1 = 0xff..ff
+    uint32_t a_32[2] = {a & ((uint32_t) -1), (uint32_t) (a >> 32)};
+    uint32_t b_32[2] = {b & ((uint32_t) -1), (uint32_t) (b >> 32)};
     uint32_t c_32[4] = {0, 0, 0, 0};
 
     uint64_t inner_product = 0;
@@ -153,7 +154,7 @@ void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, lim
         inner_product_hi = 0;
         for (unsigned int j = 0; j < 2; j++) {
             inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi;
-            inner_product_lo = inner_product & (0xffffffff);
+            inner_product_lo = inner_product & ((uint32_t) -1);
             inner_product_hi = (uint32_t) (inner_product >> 32);
             c_32[i + j] = inner_product_lo;
         }
@@ -171,7 +172,7 @@ void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, lim
 
     *c_hi <<= NUM_EXCESS_BASE_BITS;
     *c_hi |= excess_base_bits(*c_lo);
-    *c_lo &= ((limb_t) -1) >> NUM_EXCESS_BASE_BITS;
+    *c_lo = reduce_to_base(*c_lo);
 
     #endif
 }
