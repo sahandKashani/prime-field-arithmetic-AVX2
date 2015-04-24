@@ -25,5 +25,6 @@ void store_vector(limb_vec_t * const addr, limb_vec_t data);
 limb_vec_t add_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const * const b, unsigned int const num_limbs, limb_vec_t const carry_in);
 limb_vec_t add_num_limb_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const b, unsigned int const num_limbs, limb_vec_t const carry_in);
 limb_vec_t sub_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const * const b, unsigned int const num_limbs, limb_vec_t const borrow_in);
+void mul_limb_limb_simd(limb_vec_t * const c_hi, limb_vec_t * const c_lo, limb_vec_t const a, limb_vec_t const b);
 
 #endif
