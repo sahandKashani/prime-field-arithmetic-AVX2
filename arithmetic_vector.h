@@ -7,6 +7,7 @@
 
 limb_vec_t carry_vector(limb_vec_t limb);
 limb_vec_t reduce_to_base_vector(limb_vec_t limb);
+limb_vec_t excess_base_bits_vector(limb_vec_t limb);
 
 #endif
 

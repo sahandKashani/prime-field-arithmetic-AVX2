@@ -19,6 +19,13 @@ limb_vec_t reduce_to_base_vector(limb_vec_t limb) {
     return and_vector(limb, mask);
 }
 
+limb_vec_t excess_base_bits_vector(limb_vec_t limb) {
+    limb_vec_t mask = set_vector((limb_t) -1);
+    mask = srli_vector(mask, NUM_EXCESS_BASE_BITS);
+    limb = srli_vector(limb, BASE_EXPONENT);
+    return and_vector(limb, mask);
+}
+
 #endif
 
 limb_vec_t srli_vector(limb_vec_t a, int amount) {
