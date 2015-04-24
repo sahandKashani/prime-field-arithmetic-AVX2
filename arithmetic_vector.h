@@ -14,6 +14,7 @@ limb_vec_t excess_base_bits_vector(limb_vec_t limb);
 limb_vec_t srli_vector(limb_vec_t a, int amount);
 limb_vec_t set_vector(limb_t a);
 limb_vec_t add_vector(limb_vec_t a, limb_vec_t b);
+limb_vec_t sub_vector(limb_vec_t a, limb_vec_t b);
 limb_vec_t cmpgt_vector(limb_vec_t a, limb_vec_t b);
 limb_vec_t load_vector(limb_vec_t const *addr);
 limb_vec_t zero_vector();
@@ -23,5 +24,6 @@ void store_vector(limb_vec_t * const addr, limb_vec_t data);
 
 limb_vec_t add_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const * const b, unsigned int const num_limbs, limb_vec_t const carry_in);
 limb_vec_t add_num_limb_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const b, unsigned int const num_limbs, limb_vec_t const carry_in);
+limb_vec_t sub_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const * const b, unsigned int const num_limbs, limb_vec_t const borrow_in);
 
 #endif

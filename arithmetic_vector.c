@@ -64,6 +64,18 @@ limb_vec_t add_vector(limb_vec_t a, limb_vec_t b) {
     #endif
 }
 
+limb_vec_t sub_vector(limb_vec_t a, limb_vec_t b) {
+    #if LIMB_SIZE_IN_BITS == 32
+
+    return _mm256_sub_epi32(a, b);
+
+    #elif LIMB_SIZE_IN_BITS == 64
+
+    return _mm256_sub_epi64(a, b);
+
+    #endif
+}
+
 limb_vec_t cmpgt_vector(limb_vec_t a, limb_vec_t b) {
     limb_vec_t tmp;
     limb_vec_t mask = set_vector(0x1);
@@ -180,4 +192,38 @@ limb_vec_t add_num_limb_simd(limb_vec_t * const c, limb_vec_t const * const a, l
     }
 
     return carry_out;
+}
+
+limb_vec_t sub_simd(limb_vec_t * const c, limb_vec_t const * const a, limb_vec_t const * const b, unsigned int const num_limbs, limb_vec_t const borrow_in) {
+    limb_vec_t borrow_out = borrow_in;
+
+    for (unsigned int i = 0; i < num_limbs; i++) {
+        // we need to temporarily store the output of each operation, because it
+        // is possible that c is the same array as a or b.
+        limb_vec_t c_tmp = zero_vector();
+
+        limb_vec_t a_i = load_vector(a + i);
+        limb_vec_t b_i = load_vector(b + i);
+
+        #if FULL_LIMB_PRECISION
+
+        limb_vec_t c_tmp_old = zero_vector();
+        c_tmp = sub_vector(a_i, borrow_out);
+        c_tmp_old = c_tmp;
+        borrow_out = cmpgt_vector(c_tmp, a_i);
+        c_tmp = sub_vector(c_tmp, b_i);
+        borrow_out = or_vector(borrow_out, cmpgt_vector(c_tmp, c_tmp_old));
+
+        #else
+
+        c_tmp = sub_vector(a_i, sub_vector(b_i, borrow_out));
+        borrow_out = carry_vector(c_tmp);
+        c_tmp = reduce_to_base_vector(c_tmp);
+
+        #endif
+
+        store_vector(c + i, c_tmp);
+    }
+
+    return borrow_out;
 }
