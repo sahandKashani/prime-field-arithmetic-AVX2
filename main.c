@@ -226,11 +226,12 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
         mul_limb_limb(res + 1, res, op1, op2);
 
         if (!is_equal_num_gmp(res, res_gmp, 2)) {
-            print_num_gmp(op1_gmp, NUM_LIMBS);
+            mul_limb_limb(res + 1, res, op1, op2);
+            print_num_gmp(op1_gmp, 1);
             print_num(&op1, 1);
-            print_num_gmp(op2_gmp, NUM_LIMBS);
+            print_num_gmp(op2_gmp, 1);
             print_num(&op2, 1);
-            print_num_gmp(res_gmp, NUM_LIMBS);
+            print_num_gmp(res_gmp, 2);
             print_num(res, 2);
             success = false;
         }
