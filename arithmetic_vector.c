@@ -15,7 +15,7 @@ limb_vec_t carry_vector(limb_vec_t limb) {
 
 limb_vec_t reduce_to_base_vector(limb_vec_t limb) {
     limb_vec_t mask = set_vector((limb_t) -1);
-    mask = srli_vector(mask, LIMB_SIZE_IN_BITS - BASE_EXPONENT);
+    mask = srli_vector(mask, EXCESS_BASE_BITS);
     return and_vector(limb, mask);
 }
 

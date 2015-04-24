@@ -39,11 +39,11 @@ void convert_gmp_to_num(limb_t * const num, mpz_t const num_gmp, unsigned int co
     // must clear the number, because GMP will only fill enough words that is
     // needed, so the last words of num may not be set automatically.
     clear_num(num, num_limbs);
-    mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, LIMB_SIZE_IN_BITS - BASE_EXPONENT, num_gmp);
+    mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, EXCESS_BASE_BITS, num_gmp);
 }
 
 void convert_num_to_gmp(mpz_t num_gmp, limb_t const * const num, unsigned int const num_limbs) {
-    mpz_import(num_gmp, num_limbs, -1, LIMB_SIZE_IN_BYTES, 0, LIMB_SIZE_IN_BITS - BASE_EXPONENT, num);
+    mpz_import(num_gmp, num_limbs, -1, LIMB_SIZE_IN_BYTES, 0, EXCESS_BASE_BITS, num);
 }
 
 bool is_equal_num_num(limb_t const * const num1, limb_t const * const num2, unsigned int const num_limbs) {
