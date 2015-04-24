@@ -6,14 +6,14 @@
 
 #if !FULL_LIMB_PRECISION
 
-unsigned int carry(limb_t limb);
+limb_t carry(limb_t limb);
 limb_t reduce_to_base(limb_t limb);
 
 #endif
 
-unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in);
-unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, unsigned int const carry_in);
-unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in);
+limb_t add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, limb_t const carry_in);
+limb_t add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, limb_t const carry_in);
+limb_t sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, limb_t const borrow_in);
 void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, limb_t const b);
 void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs);
 void mul(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs);

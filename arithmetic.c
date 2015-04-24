@@ -9,8 +9,8 @@
 
 #if !FULL_LIMB_PRECISION
 
-unsigned int carry(limb_t limb) {
-    return (unsigned int) (limb >> BASE_EXPONENT) & 0x1;
+limb_t carry(limb_t limb) {
+    return (limb >> BASE_EXPONENT) & 0x1;
 }
 
 limb_t reduce_to_base(limb_t limb) {
@@ -23,8 +23,8 @@ limb_t excess_base_bits(limb_t limb) {
 
 #endif
 
-unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const carry_in) {
-    unsigned int carry_out = carry_in;
+limb_t add(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, limb_t const carry_in) {
+    limb_t carry_out = carry_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         // we need to temporarily store the output of each operation, because it
@@ -52,11 +52,11 @@ unsigned int add(limb_t * const c, limb_t const * const a, limb_t const * const 
     return carry_out;
 }
 
-unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, unsigned int const carry_in) {
+limb_t add_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs, limb_t const carry_in) {
     // we need to temporarily store the output of each operation, because it is
     // possible that c is the same array as a.
     limb_t c_tmp = 0;
-    unsigned int carry_out = 0;
+    limb_t carry_out = 0;
 
     #if FULL_LIMB_PRECISION
 
@@ -95,8 +95,8 @@ unsigned int add_num_limb(limb_t * const c, limb_t const * const a, limb_t const
     return carry_out;
 }
 
-unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, unsigned int const borrow_in) {
-    unsigned int borrow_out = borrow_in;
+limb_t sub(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs, limb_t const borrow_in) {
+    limb_t borrow_out = borrow_in;
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         // we need to temporarily store the output of each operation, because it
@@ -181,7 +181,7 @@ void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsi
     limb_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
-    unsigned int carry_out = 0;
+    limb_t carry_out = 0;
     for (unsigned int i = 0; i < num_limbs; i++) {
         limb_t inner_product[2] = {0, 0};
         mul_limb_limb(&inner_product[1], &inner_product[0], a[i], b);
@@ -218,7 +218,7 @@ bool equals_zero(limb_t const * const num, unsigned int const num_limbs) {
 // returns +1 if a > b
 int cmp(limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
     limb_t tmp[num_limbs];
-    unsigned int borrow_out = sub(tmp, a, b, num_limbs, 0);
+    limb_t borrow_out = sub(tmp, a, b, num_limbs, 0);
 
     if (borrow_out) {
         return -1;
@@ -242,7 +242,7 @@ void add_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, l
     clear_num(mask, num_limbs);
 
     add(c, a, b, num_limbs, 0);
-    unsigned int borrow_out = sub(c, c, m, num_limbs, 0);
+    limb_t borrow_out = sub(c, c, m, num_limbs, 0);
     sub(mask, mask, mask, num_limbs, borrow_out);
     and(mask, m, mask, num_limbs);
     add(c, c, mask, num_limbs, 0);
@@ -263,7 +263,7 @@ void sub_mod(limb_t * const c, limb_t const * const a, limb_t const * const b, l
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
-    unsigned int borrow_out = sub(c, a, b, num_limbs, 0);
+    limb_t borrow_out = sub(c, a, b, num_limbs, 0);
     sub(mask, mask, mask, num_limbs, borrow_out);
     and(mask, m, mask, num_limbs);
     add(c, c, mask, num_limbs, 0);
