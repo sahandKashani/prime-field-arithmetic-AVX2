@@ -14,7 +14,11 @@ unsigned int carry(limb_t limb) {
 }
 
 limb_t reduce_to_base(limb_t limb) {
-    return limb & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
+    return limb & (((limb_t) -1) >> EXCESS_BASE_BITS);
+}
+
+limb_t excess_base_bits(limb_t limb) {
+    return (limb >> BASE_EXPONENT) & (((limb_t) -1) >> EXCESS_BASE_BITS);
 }
 
 #endif
@@ -123,11 +127,53 @@ unsigned int sub(limb_t * const c, limb_t const * const a, limb_t const * const 
 }
 
 void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, limb_t const b) {
-    dlimb_t res = (dlimb_t) a * b;
+    #if LIMB_SIZE_IN_BITS == 32
 
-    // -1 = 0xff..ff
-    *c_lo = res & (((limb_t) -1) >> (LIMB_SIZE_IN_BITS - BASE_EXPONENT));
-    *c_hi = (limb_t) (res >> BASE_EXPONENT);
+    uint64_t res = (uint64_t) a * b;
+    *c_lo = res & ((uint32_t) -1);
+    *c_hi = (uint32_t) (res >> 32);
+
+    #elif LIMB_SIZE_IN_BITS == 64
+
+    #if MULX
+
+    *c_lo = _mulx_u64((unsigned long long) a, (unsigned long long) b, (unsigned long long *) c_hi);
+
+    #else
+
+    uint32_t a_32[2] = {a & 0xffffffff, (uint32_t) (a >> 32)};
+    uint32_t b_32[2] = {b & 0xffffffff, (uint32_t) (b >> 32)};
+    uint32_t c_32[4] = {0, 0, 0, 0};
+
+    uint64_t inner_product = 0;
+    uint32_t inner_product_lo = 0;
+    uint32_t inner_product_hi = 0;
+
+    for (unsigned int i = 0; i < 2; i++) {
+        inner_product_hi = 0;
+        for (unsigned int j = 0; j < 2; j++) {
+            inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi;
+            inner_product_lo = inner_product & (0xffffffff);
+            inner_product_hi = (uint32_t) (inner_product >> 32);
+            c_32[i + j] = inner_product_lo;
+        }
+        c_32[i + 2] = inner_product_hi;
+    }
+
+    *c_lo = (((uint64_t) c_32[1]) << 32) + c_32[0];
+    *c_hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
+
+    #endif // MULX
+
+    #endif // LIMB_SIZE_IN_BITS
+
+    #if !FULL_LIMB_PRECISION
+
+    *c_hi <<= EXCESS_BASE_BITS;
+    *c_hi |= excess_base_bits(*c_lo);
+    *c_lo &= ((limb_t) -1) >> EXCESS_BASE_BITS;
+
+    #endif
 }
 
 void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs) {
