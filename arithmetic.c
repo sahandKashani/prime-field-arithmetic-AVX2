@@ -14,11 +14,11 @@ unsigned int carry(limb_t limb) {
 }
 
 limb_t reduce_to_base(limb_t limb) {
-    return limb & (((limb_t) -1) >> EXCESS_BASE_BITS);
+    return limb & (((limb_t) -1) >> NUM_EXCESS_BASE_BITS);
 }
 
 limb_t excess_base_bits(limb_t limb) {
-    return (limb >> BASE_EXPONENT) & (((limb_t) -1) >> EXCESS_BASE_BITS);
+    return (limb >> BASE_EXPONENT) & (((limb_t) -1) >> NUM_EXCESS_BASE_BITS);
 }
 
 #endif
@@ -169,9 +169,9 @@ void mul_limb_limb(limb_t * const c_hi, limb_t * const c_lo, limb_t const a, lim
 
     #if !FULL_LIMB_PRECISION
 
-    *c_hi <<= EXCESS_BASE_BITS;
+    *c_hi <<= NUM_EXCESS_BASE_BITS;
     *c_hi |= excess_base_bits(*c_lo);
-    *c_lo &= ((limb_t) -1) >> EXCESS_BASE_BITS;
+    *c_lo &= ((limb_t) -1) >> NUM_EXCESS_BASE_BITS;
 
     #endif
 }
