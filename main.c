@@ -900,15 +900,18 @@ int main(void) {
 #endif
 
     limb_vec_t c[NUM_LIMBS], a[NUM_LIMBS], b[NUM_LIMBS], carry;
+    limb_vec_t x;
 
-    carry = _mm256_setzero_si256();
+    x = zero_vector();
+    carry = zero_vector();
     for (unsigned int i = 0; i < NUM_LIMBS; i++) {
-        c[i] = _mm256_setzero_si256();
-        a[i] = _mm256_setzero_si256();
-        b[i] = _mm256_setzero_si256();
+        c[i] = zero_vector();
+        a[i] = zero_vector();
+        b[i] = zero_vector();
     }
 
     add_simd(c, a, b, NUM_LIMBS, carry);
+    add_num_limb_simd(c, a, x, NUM_LIMBS, carry);
 
     return EXIT_SUCCESS;
 }
