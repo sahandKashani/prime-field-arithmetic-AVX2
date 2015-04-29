@@ -9,7 +9,6 @@
 #include <time.h>
 #include <gmp.h>
 #include "arithmetic.h"
-#include "arithmetic_vector.h"
 #include "limb.h"
 #include "utilities.h"
 #include "constants.h"
