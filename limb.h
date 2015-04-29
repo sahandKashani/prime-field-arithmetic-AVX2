@@ -7,16 +7,43 @@
 
 #if LIMB_SIZE_IN_BITS == 32
 
-typedef uint32_t limb_t;
-#define PRI_LIMB PRIx32
+    #define PRI_LIMB PRIx32
+    #define ALL_ONE (0xffffffff)
 
 #elif LIMB_SIZE_IN_BITS == 64
 
-typedef uint64_t limb_t;
-#define PRI_LIMB PRIx64
+    #define PRI_LIMB PRIx64
+    #define ALL_ONE (0xffffffffffffffffULL)
 
 #endif
 
-typedef __m256i limb_vec_t;
+#if SIMD_PARALLEL_WALKS
+
+    typedef __m256i limb_t;
+
+#else
+
+    #if LIMB_SIZE_IN_BITS == 32
+
+        typedef uint32_t limb_t;
+
+    #elif LIMB_SIZE_IN_BITS == 64
+
+        typedef uint64_t limb_t;
+
+    #endif
+
+#endif
+
+limb_t set_limb(unsigned long long int a);
+limb_t add_limb_limb(limb_t a, limb_t b);
+limb_t sub_limb_limb(limb_t a, limb_t b);
+limb_t cmpgt_limb_limb(limb_t a, limb_t b);
+limb_t or_limb_limb(limb_t a, limb_t b);
+limb_t and_limb_limb(limb_t a, limb_t b);
+limb_t srli_limb(limb_t a, unsigned int b);
+limb_t load_limb(limb_t *base, unsigned int i);
+void store_limb(limb_t *base, unsigned int i, limb_t data);
+void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b);
 
 #endif
