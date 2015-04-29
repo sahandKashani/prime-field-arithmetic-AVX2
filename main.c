@@ -17,7 +17,7 @@
 #define NUM_ITERATIONS (100000L)
 #define SEED (12345)
 
-bool test_add(unsigned int number_of_tests, unsigned int seed) {
+bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -51,9 +51,10 @@ bool test_add(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
         mpz_add(res_gmp, op1_gmp, op2_gmp);
-        add(res, op1, op2, NUM_LIMBS, 0);
+        add_num_num(res, op1, op2, NUM_LIMBS, 0);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+            add_num_num(res, op1, op2, NUM_LIMBS, 0);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -113,6 +114,7 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
         add_num_limb(res, op1, op2, NUM_LIMBS, 0);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+            add_num_limb(res, op1, op2, NUM_LIMBS, 0);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -134,7 +136,7 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_sub(unsigned int number_of_tests, unsigned int seed) {
+bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -169,9 +171,10 @@ bool test_sub(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
         mpz_sub(res_gmp, op1_gmp, op2_gmp);
-        sub(res, op1, op2, NUM_LIMBS, 0);
+        sub_num_num(res, op1, op2, NUM_LIMBS, 0);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+            sub_num_num(res, op1, op2, NUM_LIMBS, 0);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -283,6 +286,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
         mul_num_limb(res, op1, op2, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS + 1)) {
+            mul_num_limb(res, op1, op2, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -304,7 +308,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_mul(unsigned int number_of_tests, unsigned int seed) {
+bool test_mul_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -338,9 +342,10 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
         mpz_mul(res_gmp, op1_gmp, op2_gmp);
-        mul(res, op1, op2, NUM_LIMBS);
+        mul_num_num(res, op1, op2, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, 2 * NUM_LIMBS)) {
+            mul_num_num(res, op1, op2, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -362,7 +367,7 @@ bool test_mul(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
+bool test_cmp_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -391,9 +396,10 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
         int res_gmp = mpz_cmp(op1_gmp, op2_gmp);
-        int res = cmp(op1, op2, NUM_LIMBS);
+        int res = cmp_num_num(op1, op2, NUM_LIMBS);
 
         if (res_gmp != res) {
+            cmp_num_num(op1, op2, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -413,7 +419,7 @@ bool test_cmp(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
+bool test_add_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -452,10 +458,10 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
         // modular addition
         mpz_add(res_gmp, op1_gmp, op2_gmp);
         mpz_mod(res_gmp, res_gmp, mod_gmp);
-        add_mod(res, op1, op2, mod, NUM_LIMBS);
+        add_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            add_mod(res, op1, op2, mod, NUM_LIMBS);
+            add_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -479,7 +485,7 @@ bool test_add_mod(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
+bool test_sub_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -518,9 +524,10 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
         // modular subtraction
         mpz_sub(res_gmp, op1_gmp, op2_gmp);
         mpz_mod(res_gmp, res_gmp, mod_gmp);
-        sub_mod(res, op1, op2, mod, NUM_LIMBS);
+        sub_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+            sub_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -544,7 +551,7 @@ bool test_sub_mod(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
+bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
     gmp_randseed_ui(gmp_random_state, seed);
@@ -616,9 +623,10 @@ bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
         mpz_mul(res_gmp, op1_gmp, op2_gmp);
         mpz_mul(res_gmp, res_gmp, invR_gmp);
         mpz_mod(res_gmp, res_gmp, mod_gmp);
-        mul_montgomery(res, op1, op2, mod, mod_prime, NUM_LIMBS);
+        mul_montgomery_num_num(res, op1, op2, mod, mod_prime, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
+            mul_montgomery_num_num(res, op1, op2, mod, mod_prime, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -646,9 +654,9 @@ bool test_mul_montgomery(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-void check_add() {
+void check_add_num_num() {
     printf("Add:\n");
-    if (test_add(NUM_ITERATIONS, SEED)) {
+    if (test_add_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -666,9 +674,9 @@ void check_add_num_limb() {
     printf("\n");
 }
 
-void check_sub() {
+void check_sub_num_num() {
     printf("Sub:\n");
-    if (test_sub(NUM_ITERATIONS, SEED)) {
+    if (test_sub_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -696,9 +704,9 @@ void check_mul_num_limb() {
     printf("\n");
 }
 
-void check_mul() {
+void check_mul_num_num() {
     printf("Mul:\n");
-    if (test_mul(NUM_ITERATIONS, SEED)) {
+    if (test_mul_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -706,9 +714,9 @@ void check_mul() {
     printf("\n");
 }
 
-void check_cmp() {
+void check_cmp_num_num() {
     printf("cmp:\n");
-    if (test_cmp(NUM_ITERATIONS, SEED)) {
+    if (test_cmp_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -716,9 +724,9 @@ void check_cmp() {
     printf("\n");
 }
 
-void check_add_mod() {
+void check_add_mod_num_num() {
     printf("Add Mod:\n");
-    if (test_add_mod(NUM_ITERATIONS, SEED)) {
+    if (test_add_mod_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -726,9 +734,9 @@ void check_add_mod() {
     printf("\n");
 }
 
-void check_sub_mod() {
+void check_sub_mod_num_num() {
     printf("Sub Mod:\n");
-    if (test_sub_mod(NUM_ITERATIONS, SEED)) {
+    if (test_sub_mod_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -736,9 +744,9 @@ void check_sub_mod() {
     printf("\n");
 }
 
-void check_mul_montgomery() {
+void check_mul_montgomery_num_num() {
     printf("Mul Montgomery:\n");
-    if (test_mul_montgomery(NUM_ITERATIONS, SEED)) {
+    if (test_mul_montgomery_num_num(NUM_ITERATIONS, SEED)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -887,31 +895,31 @@ int main(void) {
     printf("Done AVX2 test\n");
 
 #else
-//    check_add();
-//    check_add_num_limb();
-//    check_sub();
+    check_add_num_num();
+    check_add_num_limb();
+    check_sub_num_num();
 //    check_mul_limb_limb();
 //    check_mul_num_limb();
-//    check_mul();
-//    check_cmp();
-//    check_add_mod();
-//    check_sub_mod();
-//    check_mul_montgomery();
+//    check_mul_num_num();
+//    check_cmp_num_num();
+//    check_add_mod_num_num();
+//    check_sub_mod_num_num();
+//    check_mul_montgomery_num_num();
 #endif
 
-    limb_vec_t c[NUM_LIMBS], a[NUM_LIMBS], b[NUM_LIMBS], carry;
-    limb_vec_t x;
-
-    x = zero_vector();
-    carry = zero_vector();
-    for (unsigned int i = 0; i < NUM_LIMBS; i++) {
-        c[i] = zero_vector();
-        a[i] = zero_vector();
-        b[i] = zero_vector();
-    }
-
-    add_simd(c, a, b, NUM_LIMBS, carry);
-    add_num_limb_simd(c, a, x, NUM_LIMBS, carry);
+//    limb_vec_t c[NUM_LIMBS], a[NUM_LIMBS], b[NUM_LIMBS], carry;
+//    limb_vec_t x;
+//
+//    x = zero_vector();
+//    carry = zero_vector();
+//    for (unsigned int i = 0; i < NUM_LIMBS; i++) {
+//        c[i] = zero_vector();
+//        a[i] = zero_vector();
+//        b[i] = zero_vector();
+//    }
+//
+//    add_simd(c, a, b, NUM_LIMBS, carry);
+//    add_num_limb_simd(c, a, x, NUM_LIMBS, carry);
 
     return EXIT_SUCCESS;
 }
