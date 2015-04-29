@@ -7,30 +7,6 @@
 #include "utilities.h"
 #include "settings.h"
 
-#if !FULL_LIMB_PRECISION
-
-    limb_t carry(limb_t a) {
-        // return (a >> BASE_EXPONENT) & 0x1;
-        limb_t tmp = srli_limb(a, BASE_EXPONENT);
-        limb_t mask = set_limb(0x1);
-        return and_limb_limb(tmp, mask);
-    }
-
-    limb_t reduce_to_base(limb_t a) {
-        // return a & (ALL_ONE >> NUM_EXCESS_BASE_BITS);
-        limb_t mask = srli_limb(set_limb(ALL_ONE), NUM_EXCESS_BASE_BITS);
-        return and_limb_limb(a, mask);
-    }
-
-    limb_t excess_base_bits(limb_t a) {
-        // return (a >> BASE_EXPONENT) & (ALL_ONE >> NUM_EXCESS_BASE_BITS);
-        limb_t tmp = srli_limb(a, BASE_EXPONENT);
-        limb_t mask = srli_limb(set_limb(ALL_ONE), NUM_EXCESS_BASE_BITS);
-        return and_limb_limb(tmp, mask);
-    }
-
-#endif
-
 limb_t add_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb_t carry_in) {
     limb_t carry_out = carry_in;
 

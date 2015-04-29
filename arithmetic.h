@@ -4,14 +4,6 @@
 #include <stdbool.h>
 #include "limb.h"
 
-#if !FULL_LIMB_PRECISION
-
-    limb_t carry(limb_t limb);
-    limb_t reduce_to_base(limb_t limb);
-    limb_t excess_base_bits(limb_t limb);
-
-#endif
-
 limb_t add_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb_t carry_in);
 limb_t add_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs, limb_t carry_in);
 limb_t sub_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb_t borrow_in);
