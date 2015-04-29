@@ -187,7 +187,7 @@ void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b) {
         #if LIMB_SIZE_IN_BITS == 32
 
             uint64_t res = (uint64_t) a * b;
-            *c_lo = res & ((uint32_t) -1);
+            *c_lo = res & ALL_ONE;
             *c_hi = (uint32_t) (res >> 32);
 
         #elif LIMB_SIZE_IN_BITS == 64
