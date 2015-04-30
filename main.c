@@ -46,7 +46,7 @@ bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
         clear_num(op1, NUM_LIMBS);
         clear_num(op2, NUM_LIMBS);
         clear_num(res, NUM_LIMBS);
-        carry_in = set_limb(0);
+        clear_num(&carry_in, 1);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
@@ -106,9 +106,9 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         clear_num(op1, NUM_LIMBS);
-        op2 = set_limb(0);
+        clear_num(&op2, 1);
         clear_num(res, NUM_LIMBS);
-        carry_in = set_limb(0);
+        clear_num(&carry_in, 1);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
         convert_gmp_to_num(&op2, op2_gmp, 1);
@@ -170,7 +170,7 @@ bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
         clear_num(op1, NUM_LIMBS);
         clear_num(op2, NUM_LIMBS);
         clear_num(res, NUM_LIMBS);
-        borrow_in = set_limb(0);
+        clear_num(&borrow_in, 1);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
@@ -223,8 +223,8 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
         generate_random_gmp_number(op1_gmp, BASE_EXPONENT, gmp_random_state);
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
-        op1 = set_limb(0);
-        op2 = set_limb(0);
+        clear_num(&op1, 1);
+        clear_num(&op2, 1);
         clear_num(res, 2);
 
         convert_gmp_to_num(&op1, op1_gmp, 1);
@@ -281,7 +281,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         clear_num(op1, NUM_LIMBS);
-        op2 = set_limb(0);
+        clear_num(&op2, 1);
         clear_num(res, NUM_LIMBS);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
@@ -616,7 +616,7 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
         clear_num(op1, NUM_LIMBS);
         clear_num(op2, NUM_LIMBS);
         clear_num(mod, NUM_LIMBS);
-        mod_prime = set_limb(0);
+        clear_num(&mod_prime, 1);
         clear_num(res, NUM_LIMBS);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
