@@ -49,8 +49,8 @@
     limb_t cmpgt_limb_limb(limb_t a, limb_t b);
     limb_t or_limb_limb(limb_t a, limb_t b);
     limb_t and_limb_limb(limb_t a, limb_t b);
-    limb_t srli_limb(limb_t a, unsigned int b);
-    limb_t slli_limb(limb_t a, unsigned int b);
+    limb_t srli_limb(limb_t a, int b);
+    limb_t slli_limb(limb_t a, int b);
     limb_t load_limb(limb_t *base, unsigned int i);
     void store_limb(limb_t *base, unsigned int i, limb_t data);
     void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b);

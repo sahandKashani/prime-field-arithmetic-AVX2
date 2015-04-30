@@ -135,7 +135,7 @@ limb_t and_limb_limb(limb_t a, limb_t b) {
     #endif // SIMD_PARALLEL_WALKS
 }
 
-limb_t srli_limb(limb_t a, unsigned int b) {
+limb_t srli_limb(limb_t a, int b) {
     #if SIMD_PARALLEL_WALKS
 
         #if LIMB_SIZE_IN_BITS == 32
@@ -155,7 +155,7 @@ limb_t srli_limb(limb_t a, unsigned int b) {
     #endif // SIMD_PARALLEL_WALKS
 }
 
-limb_t slli_limb(limb_t a, unsigned int b) {
+limb_t slli_limb(limb_t a, int b) {
     #if SIMD_PARALLEL_WALKS
 
         #if LIMB_SIZE_IN_BITS == 32
