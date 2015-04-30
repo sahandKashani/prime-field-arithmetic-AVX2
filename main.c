@@ -33,6 +33,7 @@ bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
     limb_t op1[NUM_LIMBS];
     limb_t op2[NUM_LIMBS];
     limb_t res[NUM_LIMBS];
+    limb_t carry_in;
 
     bool success = true;
 
@@ -45,15 +46,16 @@ bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
         clear_num(op1, NUM_LIMBS);
         clear_num(op2, NUM_LIMBS);
         clear_num(res, NUM_LIMBS);
+        carry_in = set_limb(0);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
         mpz_add(res_gmp, op1_gmp, op2_gmp);
-        add_num_num(res, op1, op2, NUM_LIMBS, 0);
+        add_num_num(res, op1, op2, NUM_LIMBS, carry_in);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            add_num_num(res, op1, op2, NUM_LIMBS, 0);
+            add_num_num(res, op1, op2, NUM_LIMBS, carry_in);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -92,6 +94,7 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
     limb_t op1[NUM_LIMBS];
     limb_t op2;
     limb_t res[NUM_LIMBS];
+    limb_t carry_in;
 
     bool success = true;
 
@@ -103,17 +106,18 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         clear_num(op1, NUM_LIMBS);
-        op2 = 0;
+        op2 = set_limb(0);
         clear_num(res, NUM_LIMBS);
+        carry_in = set_limb(0);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
         convert_gmp_to_num(&op2, op2_gmp, 1);
 
         mpz_add(res_gmp, op1_gmp, op2_gmp);
-        add_num_limb(res, op1, op2, NUM_LIMBS, 0);
+        add_num_limb(res, op1, op2, NUM_LIMBS, carry_in);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            add_num_limb(res, op1, op2, NUM_LIMBS, 0);
+            add_num_limb(res, op1, op2, NUM_LIMBS, carry_in);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -152,6 +156,7 @@ bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
     limb_t op1[NUM_LIMBS];
     limb_t op2[NUM_LIMBS];
     limb_t res[NUM_LIMBS];
+    limb_t borrow_in;
 
     bool success = true;
 
@@ -165,15 +170,16 @@ bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
         clear_num(op1, NUM_LIMBS);
         clear_num(op2, NUM_LIMBS);
         clear_num(res, NUM_LIMBS);
+        borrow_in = set_limb(0);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
         convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
 
         mpz_sub(res_gmp, op1_gmp, op2_gmp);
-        sub_num_num(res, op1, op2, NUM_LIMBS, 0);
+        sub_num_num(res, op1, op2, NUM_LIMBS, borrow_in);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            sub_num_num(res, op1, op2, NUM_LIMBS, 0);
+            sub_num_num(res, op1, op2, NUM_LIMBS, borrow_in);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -217,8 +223,8 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
         generate_random_gmp_number(op1_gmp, BASE_EXPONENT, gmp_random_state);
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
-        op1 = 0;
-        op2 = 0;
+        op1 = set_limb(0);
+        op2 = set_limb(0);
         clear_num(res, 2);
 
         convert_gmp_to_num(&op1, op1_gmp, 1);
@@ -275,7 +281,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
         clear_num(op1, NUM_LIMBS);
-        op2 = 0;
+        op2 = set_limb(0);
         clear_num(res, NUM_LIMBS);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
@@ -610,7 +616,7 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
         clear_num(op1, NUM_LIMBS);
         clear_num(op2, NUM_LIMBS);
         clear_num(mod, NUM_LIMBS);
-        mod_prime = 0;
+        mod_prime = set_limb(0);
         clear_num(res, NUM_LIMBS);
 
         convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
