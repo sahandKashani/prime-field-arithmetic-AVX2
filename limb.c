@@ -155,6 +155,26 @@ limb_t srli_limb(limb_t a, unsigned int b) {
     #endif
 }
 
+limb_t slli_limb(limb_t a, unsigned int b) {
+    #if SIMD_PARALLEL_WALKS
+
+        #if LIMB_SIZE_IN_BITS == 32
+
+            return _mm256_slli_epi32(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 64
+
+            return _mm256_slli_epi64(a, b);
+
+        #endif
+
+    #else
+
+        return a << b;
+
+    #endif
+}
+
 limb_t load_limb(limb_t *base, unsigned int i) {
     #if SIMD_PARALLEL_WALKS
 
