@@ -245,14 +245,16 @@ void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b) {
 
         #endif // LIMB_SIZE_IN_BITS
 
-        #if !FULL_LIMB_PRECISION
+    #endif // SIMD_PARALLEL_WALKS
 
-            *c_hi <<= NUM_EXCESS_BASE_BITS;
-            *c_hi |= excess_base_bits(*c_lo);
-            *c_lo = reduce_to_base(*c_lo);
+    #if !FULL_LIMB_PRECISION
 
-        #endif
+        // *c_hi <<= NUM_EXCESS_BASE_BITS;
+        // *c_hi |= excess_base_bits(*c_lo);
+        // *c_lo = reduce_to_base(*c_lo);
+        *c_hi = slli_limb(*c_hi, NUM_EXCESS_BASE_BITS);
+        *c_hi = or_limb_limb(*c_hi, excess_base_bits(*c_lo));
+        *c_lo = reduce_to_base(*c_lo);
 
     #endif
-
 }
