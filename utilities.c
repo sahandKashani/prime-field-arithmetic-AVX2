@@ -16,37 +16,37 @@ unsigned int min(unsigned int a, unsigned int b) {
     return (a < b) ? a : b;
 }
 
-void print_num(limb_t const * const num, unsigned int const num_limbs) {
+void print_num(limb_t *num, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, num[num_limbs - i - 1]);
     }
     printf("\n");
 }
 
-void print_num_gmp(mpz_t const num_gmp, unsigned int const num_limbs) {
+void print_num_gmp(mpz_t num_gmp, unsigned int num_limbs) {
     limb_t tmp[num_limbs];
     convert_gmp_to_num(tmp, num_gmp, num_limbs);
     print_num(tmp, num_limbs);
 }
 
-void clear_num(limb_t * const num, unsigned int const num_limbs) {
+void clear_num(limb_t *num, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         num[i] = set_limb(0);
     }
 }
 
-void convert_gmp_to_num(limb_t * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
+void convert_gmp_to_num(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
     // must clear the number, because GMP will only fill enough words that is
     // needed, so the last words of num may not be set automatically.
     clear_num(num, num_limbs);
     mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num_gmp);
 }
 
-void convert_num_to_gmp(mpz_t num_gmp, limb_t const * const num, unsigned int const num_limbs) {
+void convert_num_to_gmp(mpz_t num_gmp, limb_t *num, unsigned int num_limbs) {
     mpz_import(num_gmp, num_limbs, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num);
 }
 
-bool is_equal_num_num(limb_t const * const num1, limb_t const * const num2, unsigned int const num_limbs) {
+bool is_equal_num_num(limb_t *num1, limb_t *num2, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         if (num1[i] != num2[i]) {
             return false;
@@ -55,11 +55,11 @@ bool is_equal_num_num(limb_t const * const num1, limb_t const * const num2, unsi
     return true;
 }
 
-bool is_equal_num_gmp(limb_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
+bool is_equal_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
     return cmp_num_gmp(num, num_gmp, num_limbs) == 0;
 }
 
-int cmp_num_gmp(limb_t const * const num, mpz_t const num_gmp, unsigned int const num_limbs) {
+int cmp_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
     mpz_t tmp;
     mpz_init(tmp);
     convert_num_to_gmp(tmp, num, num_limbs);
@@ -72,12 +72,12 @@ void generate_random_gmp_less_than(mpz_t num_gmp, mpz_t strict_upper_bound_gmp, 
     mpz_urandomm(num_gmp, gmp_random_state, strict_upper_bound_gmp);
 }
 
-void generate_random_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+void generate_random_gmp_number(mpz_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
     // random number with long chain of consecutive 0s and 1s for testing
     mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
 }
 
-void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int const precision_in_bits, gmp_randstate_t gmp_random_state) {
+void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
     do {
         // finding a random prime number with a long chain of 0s and 1s is hard,
         // so we use a more "general" random number
@@ -114,7 +114,7 @@ void clear_three_sorted_gmp(three_sorted_gmp x) {
     mpz_clear(x.small);
 }
 
-void copy_num(limb_t * const b, limb_t const * const a, unsigned int const num_limbs) {
+void copy_num(limb_t *b, limb_t *a, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         b[i] = a[i];
     }
