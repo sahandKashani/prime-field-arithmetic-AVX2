@@ -102,7 +102,7 @@ limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
 
         #endif // LIMB_SIZE_IN_BITS
 
-        return and(tmp, mask);
+        return and_limb_limb(tmp, mask);
 
     #else // SIMD_PARALLEL_WALKS
 
