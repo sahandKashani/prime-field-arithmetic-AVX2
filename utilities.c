@@ -36,8 +36,9 @@ void clear_num(limb_t *num, unsigned int num_limbs) {
 }
 
 void convert_gmp_to_num(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
-    // must clear the number, because GMP will only fill enough words that is
-    // needed, so the last words of num may not be set automatically.
+    /* must clear the number, because GMP will only fill enough words that is
+     * needed, so the last words of num may not be set automatically.
+     */
     clear_num(num, num_limbs);
     mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num_gmp);
 }
@@ -73,16 +74,17 @@ void generate_random_gmp_less_than(mpz_t num_gmp, mpz_t strict_upper_bound_gmp, 
 }
 
 void generate_random_gmp_number(mpz_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
-    // random number with long chain of consecutive 0s and 1s for testing
+    /* random number with long chain of consecutive 0s and 1s for testing */
     mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
 }
 
 void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
     do {
-        // finding a random prime number with a long chain of 0s and 1s is hard,
-        // so we use a more "general" random number
+        /* finding a random prime number with a long chain of 0s and 1s is hard,
+         * so we use a more "general" random number
+         */
         mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
-    } while (mpz_probab_prime_p(num_gmp, 25) == 0); // definitely not composite
+    } while (mpz_probab_prime_p(num_gmp, 25) == 0); /* definitely not composite */
 }
 
 three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
@@ -97,10 +99,11 @@ three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randst
         generate_random_gmp_number(output.small, precision_in_bits, gmp_random_state);
     } while ((mpz_cmp(output.big, output.middle) == 0) || (mpz_cmp(output.big, output.small) == 0) || (mpz_cmp(output.middle, output.small) == 0));
 
-    // How to sort 3 values in descending order (a > b > c)
-    //  if (a > b) swap(a, b)
-    //  if (a > c) swap(a, c)
-    //  if (b > c) swap(b, c);
+    /* How to sort 3 values in descending order (a > b > c)
+     *  if (a > b) swap(a, b);
+     *  if (a > c) swap(a, c);
+     *  if (b > c) swap(b, c);
+     */
     if (mpz_cmp(output.small, output.middle) == 1) mpz_swap(output.small, output.middle);
     if (mpz_cmp(output.small, output.big) == 1) mpz_swap(output.small, output.big);
     if (mpz_cmp(output.middle, output.big) == 1) mpz_swap(output.middle, output.big);

@@ -15,13 +15,13 @@
         #define PRI_LIMB PRIx64
         #define ALL_ONE (0xffffffffffffffffULL)
 
-    #endif // LIMB_SIZE_IN_BITS
+    #endif /* LIMB_SIZE_IN_BITS */
 
     #if SIMD_PARALLEL_WALKS
 
         typedef __m256i limb_t;
 
-    #else // SIMD_PARALLEL_WALKS
+    #else /* SIMD_PARALLEL_WALKS */
 
         #if LIMB_SIZE_IN_BITS == 32
 
@@ -31,9 +31,14 @@
 
             typedef uint64_t limb_t;
 
-        #endif // LIMB_SIZE_IN_BITS
+        #endif /* LIMB_SIZE_IN_BITS */
 
-    #endif // SIMD_PARALLEL_WALKS
+    #endif /* SIMD_PARALLEL_WALKS */
+
+    struct d_limb_t {
+        limb_t lo;
+        limb_t hi;
+    };
 
     #if !FULL_LIMB_PRECISION
 
@@ -41,7 +46,7 @@
         limb_t reduce_to_base(limb_t limb);
         limb_t excess_base_bits(limb_t limb);
 
-    #endif // !FULL_LIMB_PRECISION
+    #endif /* !FULL_LIMB_PRECISION */
 
     limb_t set_limb(unsigned long long int a);
     limb_t add_limb_limb(limb_t a, limb_t b);
@@ -55,4 +60,4 @@
     void store_limb(limb_t *base, unsigned int i, limb_t data);
     void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b);
 
-#endif // LIMB_H_
+#endif /* LIMB_H_ */

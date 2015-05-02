@@ -37,4 +37,4 @@
     aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes);
     void free_aligned_memory(aligned_memory mem);
 
-#endif // UTILITIES_H_
+#endif /* UTILITIES_H_ */

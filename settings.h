@@ -9,9 +9,9 @@
     #define BRANCHLESS_MODULAR_SUBTRACTION       (1)
     #define BRANCHLESS_MONTGOMERY_MULTIPLICATION (1)
 
-    #define MULX                                 (1)
+    #define MULX                                 (0)
 
     #define SIMD_PARALLEL_WALKS                  (0)
     #define AVX_ALIGNED_MEMORY                   (0)
 
-#endif // SETTINGS_h_
+#endif /* SETTINGS_h_ */
