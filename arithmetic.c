@@ -141,7 +141,7 @@ limb_t sub_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb
     return borrow_out;
 }
 
-void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsigned int const num_limbs) {
+void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
     limb_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
@@ -155,7 +155,7 @@ void mul_num_limb(limb_t * const c, limb_t const * const a, limb_t const b, unsi
     copy_num(c, res, num_limbs + 1);
 }
 
-void mul_num_num(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
+void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     limb_t res[2 * num_limbs];
     clear_num(res, 2 * num_limbs);
 
@@ -168,7 +168,7 @@ void mul_num_num(limb_t * const c, limb_t const * const a, limb_t const * const 
     copy_num(c, res, 2 * num_limbs);
 }
 
-bool equals_zero(limb_t const * const num, unsigned int const num_limbs) {
+bool equals_zero(limb_t *num, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         if (num[i] != 0) {
             return false;
@@ -180,7 +180,7 @@ bool equals_zero(limb_t const * const num, unsigned int const num_limbs) {
 // returns -1 if a < b
 // returns  0 if a == b
 // returns +1 if a > b
-int cmp_num_num(limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
+int cmp_num_num(limb_t *a, limb_t *b, unsigned int num_limbs) {
     limb_t tmp[num_limbs];
     limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, 0);
 
@@ -193,13 +193,13 @@ int cmp_num_num(limb_t const * const a, limb_t const * const b, unsigned int con
     }
 }
 
-void and_num_num(limb_t * const c, limb_t const * const a, limb_t const * const b, unsigned int const num_limbs) {
+void and_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         c[i] = a[i] & b[i];
     }
 }
 
-void add_mod_num_num(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs) {
+void add_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
     #if BRANCHLESS_MODULAR_ADDITION
 
         limb_t mask[num_limbs];
@@ -221,7 +221,7 @@ void add_mod_num_num(limb_t * const c, limb_t const * const a, limb_t const * co
     #endif
 }
 
-void sub_mod_num_num(limb_t * const c, limb_t const * const a, limb_t const * const b, limb_t const * const m, unsigned int const num_limbs) {
+void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
     #if BRANCHLESS_MODULAR_SUBTRACTION
 
         limb_t mask[num_limbs];
@@ -234,7 +234,7 @@ void sub_mod_num_num(limb_t * const c, limb_t const * const a, limb_t const * co
 
     #else
 
-        unsigned int borrow_out = sub_num_num(c, a, b, num_limbs, 0);
+        limb_t borrow_out = sub_num_num(c, a, b, num_limbs, 0);
         if (borrow_out) {
             add_num_num(c, c, m, num_limbs, 0);
         }
@@ -242,7 +242,7 @@ void sub_mod_num_num(limb_t * const c, limb_t const * const a, limb_t const * co
     #endif
 }
 
-void mul_montgomery_num_num(limb_t * const z, limb_t const * const x, limb_t const * const y, limb_t const * const m, limb_t m_prime, unsigned int const num_limbs) {
+void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m_prime, unsigned int num_limbs) {
     limb_t A[num_limbs + 1];
     clear_num(A, num_limbs + 1);
 
