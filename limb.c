@@ -196,7 +196,9 @@ void store_limb(limb_t *base, unsigned int i, limb_t data) {
     #endif /* SIMD_PARALLEL_WALKS */
 }
 
-void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b) {
+struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
+    struct d_limb_t c;
+
     #if SIMD_PARALLEL_WALKS
 
     #else /* SIMD_PARALLEL_WALKS */
@@ -204,14 +206,14 @@ void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b) {
         #if LIMB_SIZE_IN_BITS == 32
 
             uint64_t res = (uint64_t) a * b;
-            *c_lo = res & ALL_ONE;
-            *c_hi = (uint32_t) (res >> 32);
+            c.lo = res & ALL_ONE;
+            c.hi = (uint32_t) (res >> 32);
 
         #elif LIMB_SIZE_IN_BITS == 64
 
             #if MULX
 
-                *c_lo = _mulx_u64((unsigned long long) a, (unsigned long long) b, (unsigned long long *) c_hi);
+                c.lo = _mulx_u64((unsigned long long) a, (unsigned long long) b, (unsigned long long *) &c.hi);
 
             #else /* MULX */
 
@@ -235,8 +237,8 @@ void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b) {
                     c_32[i + 2] = inner_product_hi;
                 }
 
-                *c_lo = (((uint64_t) c_32[1]) << 32) + c_32[0];
-                *c_hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
+                c.lo = (((uint64_t) c_32[1]) << 32) + c_32[0];
+                c.hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
 
             #endif /* MULX */
 
@@ -246,9 +248,11 @@ void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b) {
 
     #if !FULL_LIMB_PRECISION
 
-        *c_hi = slli_limb(*c_hi, NUM_EXCESS_BASE_BITS);
-        *c_hi = or_limb_limb(*c_hi, excess_base_bits(*c_lo));
-        *c_lo = reduce_to_base(*c_lo);
+        c.hi = slli_limb(c.hi, NUM_EXCESS_BASE_BITS);
+        c.hi = or_limb_limb(c.hi, excess_base_bits(c.lo));
+        c.lo = reduce_to_base(c.lo);
 
     #endif /* !FULL_LIMB_PRECISION */
+
+    return c;
 }

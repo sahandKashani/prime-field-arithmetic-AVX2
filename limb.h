@@ -58,6 +58,6 @@
     limb_t slli_limb(limb_t a, int b);
     limb_t load_limb(limb_t *base, unsigned int i);
     void store_limb(limb_t *base, unsigned int i, limb_t data);
-    void mul_limb_limb(limb_t *c_hi, limb_t *c_lo, limb_t a, limb_t b);
+    struct d_limb_t mul_limb_limb(limb_t a, limb_t b);
 
 #endif /* LIMB_H_ */

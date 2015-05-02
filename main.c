@@ -231,10 +231,12 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(&op2, op2_gmp, 1);
 
         mpz_mul(res_gmp, op1_gmp, op2_gmp);
-        mul_limb_limb(res + 1, res, op1, op2);
+        struct d_limb_t tmp = mul_limb_limb(op1, op2);
+        res[1] = tmp.hi;
+        res[0] = tmp.lo;
 
         if (!is_equal_num_gmp(res, res_gmp, 2)) {
-            mul_limb_limb(res + 1, res, op1, op2);
+            mul_limb_limb(op1, op2);
             print_num_gmp(op1_gmp, 1);
             print_num(&op1, 1);
             print_num_gmp(op2_gmp, 1);
