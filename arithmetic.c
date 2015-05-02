@@ -173,46 +173,24 @@ void and_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
 }
 
 void add_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
-    #if BRANCHLESS_MODULAR_ADDITION
+    limb_t mask[num_limbs];
+    clear_num(mask, num_limbs);
 
-        limb_t mask[num_limbs];
-        clear_num(mask, num_limbs);
-
-        add_num_num(c, a, b, num_limbs, 0);
-        limb_t borrow_out = sub_num_num(c, c, m, num_limbs, 0);
-        sub_num_num(mask, mask, mask, num_limbs, borrow_out);
-        and_num_num(mask, m, mask, num_limbs);
-        add_num_num(c, c, mask, num_limbs, 0);
-
-    #else
-
-        add_num_num(c, a, b, num_limbs, 0);
-        if (cmp_num_num(c, m, num_limbs) >= 0) {
-            sub_num_num(c, c, m, num_limbs, 0);
-        }
-
-    #endif
+    add_num_num(c, a, b, num_limbs, 0);
+    limb_t borrow_out = sub_num_num(c, c, m, num_limbs, 0);
+    sub_num_num(mask, mask, mask, num_limbs, borrow_out);
+    and_num_num(mask, m, mask, num_limbs);
+    add_num_num(c, c, mask, num_limbs, 0);
 }
 
 void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
-    #if BRANCHLESS_MODULAR_SUBTRACTION
+    limb_t mask[num_limbs];
+    clear_num(mask, num_limbs);
 
-        limb_t mask[num_limbs];
-        clear_num(mask, num_limbs);
-
-        limb_t borrow_out = sub_num_num(c, a, b, num_limbs, 0);
-        sub_num_num(mask, mask, mask, num_limbs, borrow_out);
-        and_num_num(mask, m, mask, num_limbs);
-        add_num_num(c, c, mask, num_limbs, 0);
-
-    #else
-
-        limb_t borrow_out = sub_num_num(c, a, b, num_limbs, 0);
-        if (borrow_out) {
-            add_num_num(c, c, m, num_limbs, 0);
-        }
-
-    #endif
+    limb_t borrow_out = sub_num_num(c, a, b, num_limbs, 0);
+    sub_num_num(mask, mask, mask, num_limbs, borrow_out);
+    and_num_num(mask, m, mask, num_limbs);
+    add_num_num(c, c, mask, num_limbs, 0);
 }
 
 void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m_prime, unsigned int num_limbs) {
@@ -256,20 +234,6 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
         A[num_limbs] = 0;
     }
 
-    #if BRANCHLESS_MONTGOMERY_MULTIPLICATION
-
-        sub_mod_num_num(A, A, m, m, num_limbs);
-
-    #else
-
-        /* A[num_limbs] = 0, so it is like if A and m have the same number of
-         * limbs.
-         */
-        if (cmp_num_num(A, m, num_limbs) >= 0) {
-            sub_num_num(A, A, m, num_limbs, 0);
-        }
-
-    #endif
-
+    sub_mod_num_num(A, A, m, m, num_limbs);
     copy_num(z, A, num_limbs);
 }
