@@ -14,4 +14,4 @@
     #define SIMD_PARALLEL_WALKS                  (0)
     #define AVX_ALIGNED_MEMORY                   (0)
 
-#endif /* SETTINGS_h_ */
+#endif /* SETTINGS_H_ */
