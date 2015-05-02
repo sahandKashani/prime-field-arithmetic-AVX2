@@ -294,7 +294,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
             mul_num_limb(res, op1, op2, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
-            print_num_gmp(op2_gmp, NUM_LIMBS);
+            print_num_gmp(op2_gmp, 1);
             print_num(&op2, 1);
             print_num_gmp(res_gmp, NUM_LIMBS + 1);
             print_num(res, NUM_LIMBS + 1);
