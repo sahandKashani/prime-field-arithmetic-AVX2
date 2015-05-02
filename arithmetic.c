@@ -168,7 +168,7 @@ int cmp_num_num(limb_t *a, limb_t *b, unsigned int num_limbs) {
 
 void and_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
-        c[i] = a[i] & b[i];
+        c[i] = and_limb_limb(load_limb(a, i), load_limb(b, i));
     }
 }
 
