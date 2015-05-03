@@ -231,7 +231,7 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
         convert_gmp_to_num(&op2, op2_gmp, 1);
 
         mpz_mul(res_gmp, op1_gmp, op2_gmp);
-        struct d_limb_t tmp = mul_limb_limb(op1, op2);
+        struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(op1, op2));
         res[1] = tmp.hi;
         res[0] = tmp.lo;
 

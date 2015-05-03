@@ -1,6 +1,12 @@
 #ifndef LIMB_H_
 #define LIMB_H_
 
+    /*
+     * The functions defined in this header file do perform all operations as if
+     * all limbs satisfy FULL_LIMB_PRECISION == 1. Higher-level code must
+     * extract carries and reduce results to the actual base used.
+     */
+
     #include <inttypes.h>
     #include <immintrin.h>
     #include "settings.h"
@@ -42,9 +48,10 @@
 
     #if !FULL_LIMB_PRECISION
 
-        limb_t carry(limb_t limb);
-        limb_t reduce_to_base(limb_t limb);
-        limb_t excess_base_bits(limb_t limb);
+        limb_t carry(limb_t a);
+        limb_t reduce_to_base_limb_t(limb_t a);
+        limb_t excess_base_bits(limb_t a);
+        struct d_limb_t reduce_to_base_d_limb_t(struct d_limb_t a);
 
     #endif /* !FULL_LIMB_PRECISION */
 

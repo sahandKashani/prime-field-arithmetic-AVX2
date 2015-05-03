@@ -27,7 +27,7 @@ limb_t add_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb
 
             c_tmp = add_limb_limb(add_limb_limb(load_limb(a, i), load_limb(b, i)), carry_out);
             carry_out = carry(c_tmp);
-            c_tmp = reduce_to_base(c_tmp);
+            c_tmp = reduce_to_base_limb_t(c_tmp);
 
         #endif
 
@@ -55,7 +55,7 @@ limb_t add_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs, limb
 
         c_tmp = add_limb_limb(add_limb_limb(load_limb(a, 0), b), carry_in);
         carry_out = carry(c_tmp);
-        c_tmp = reduce_to_base(c_tmp);
+        c_tmp = reduce_to_base_limb_t(c_tmp);
 
     #endif
 
@@ -71,7 +71,7 @@ limb_t add_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs, limb
         #else
 
             carry_out = carry(c_tmp);
-            c_tmp = reduce_to_base(c_tmp);
+            c_tmp = reduce_to_base_limb_t(c_tmp);
 
         #endif
 
@@ -103,7 +103,7 @@ limb_t sub_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb
 
             c_tmp = sub_limb_limb(sub_limb_limb(load_limb(a, i), load_limb(b, i)), borrow_out);
             borrow_out = carry(c_tmp);
-            c_tmp = reduce_to_base(c_tmp);
+            c_tmp = reduce_to_base_limb_t(c_tmp);
 
         #endif
 
@@ -119,7 +119,7 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
 
     limb_t carry_out = set_limb(0);
     for (unsigned int i = 0; i < num_limbs; i++) {
-        struct d_limb_t tmp = mul_limb_limb(a[i], b);
+        struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(a[i], b));
         limb_t inner_product[2] = {tmp.lo, tmp.hi};
         carry_out = add_num_num(res + i, res + i, inner_product, 2, carry_out);
     }

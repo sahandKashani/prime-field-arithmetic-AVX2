@@ -10,7 +10,7 @@
         return and_limb_limb(tmp, mask);
     }
 
-    limb_t reduce_to_base(limb_t a) {
+    limb_t reduce_to_base_limb_t(limb_t a) {
         limb_t mask = srli_limb(set_limb(ALL_ONE), NUM_EXCESS_BASE_BITS);
         return and_limb_limb(a, mask);
     }
@@ -19,6 +19,14 @@
         limb_t tmp = srli_limb(a, BASE_EXPONENT);
         limb_t mask = srli_limb(set_limb(ALL_ONE), NUM_EXCESS_BASE_BITS);
         return and_limb_limb(tmp, mask);
+    }
+
+    struct d_limb_t reduce_to_base_d_limb_t(struct d_limb_t a) {
+        struct d_limb_t res;
+        res.hi = slli_limb(a.hi, NUM_EXCESS_BASE_BITS);
+        res.hi = or_limb_limb(res.hi, excess_base_bits(a.lo));
+        res.lo = reduce_to_base_limb_t(a.lo);
+        return res;
     }
 
 #endif /* !FULL_LIMB_PRECISION */
@@ -245,14 +253,6 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
         #endif /* LIMB_SIZE_IN_BITS */
 
     #endif /* SIMD_PARALLEL_WALKS */
-
-    #if !FULL_LIMB_PRECISION
-
-        c.hi = slli_limb(c.hi, NUM_EXCESS_BASE_BITS);
-        c.hi = or_limb_limb(c.hi, excess_base_bits(c.lo));
-        c.lo = reduce_to_base(c.lo);
-
-    #endif /* !FULL_LIMB_PRECISION */
 
     return c;
 }
