@@ -207,15 +207,11 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         /* u_i = ((a_0 + (x_i * y_0)) * m') % b; */
-        limb_t A0_Xi_Y0_Mprime = (A[0] + x[i] * y[0]) * m_prime;
+         limb_t ui = (A[0] + x[i] * y[0]) * m_prime;
 
-        #if FULL_LIMB_PRECISION
+        #if !FULL_LIMB_PRECISION
 
-            limb_t ui = A0_Xi_Y0_Mprime;
-
-        #else
-
-            limb_t ui = reduce_to_base(A0_Xi_Y0_Mprime);
+            ui = reduce_to_base_limb_t(ui);
 
         #endif
 
