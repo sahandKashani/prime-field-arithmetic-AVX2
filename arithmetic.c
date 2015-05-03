@@ -119,14 +119,11 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
 
     limb_t carry_out = set_limb(0);
     for (unsigned int i = 0; i < num_limbs; i++) {
+        struct d_limb_t tmp = mul_limb_limb(a[i], b);
 
-        #if FULL_LIMB_PRECISION
+        #if !FULL_LIMB_PRECISION
 
-            struct d_limb_t tmp = mul_limb_limb(a[i], b);
-
-        #else
-
-            struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(a[i], b));
+            tmp = reduce_to_base_d_limb_t(tmp);
 
         #endif
 
