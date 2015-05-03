@@ -238,7 +238,10 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
 
         #else
 
-        struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(op1, op2));
+            struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(op1, op2));
+
+        #endif
+
         res[1] = tmp.hi;
         res[0] = tmp.lo;
 

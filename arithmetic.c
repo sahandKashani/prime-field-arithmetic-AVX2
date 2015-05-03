@@ -126,7 +126,10 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
 
         #else
 
-        struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(a[i], b));
+            struct d_limb_t tmp = reduce_to_base_d_limb_t(mul_limb_limb(a[i], b));
+
+        #endif
+
         limb_t inner_product[2] = {tmp.lo, tmp.hi};
         carry_out = add_num_num(res + i, res + i, inner_product, 2, carry_out);
     }
