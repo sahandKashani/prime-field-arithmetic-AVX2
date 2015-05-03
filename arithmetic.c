@@ -117,7 +117,7 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
     limb_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
-    limb_t carry_out = 0;
+    limb_t carry_out = set_limb(0);
     for (unsigned int i = 0; i < num_limbs; i++) {
         struct d_limb_t tmp = mul_limb_limb(a[i], b);
         limb_t inner_product[2] = {tmp.lo, tmp.hi};
@@ -134,7 +134,7 @@ void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         limb_t tmp[num_limbs + 1];
         mul_num_limb(tmp, a, b[i], num_limbs);
-        add_num_num(res + i, res + i, tmp, num_limbs + 1, 0);
+        add_num_num(res + i, res + i, tmp, num_limbs + 1, set_limb(0));
     }
 
     copy_num(c, res, 2 * num_limbs);
@@ -155,7 +155,7 @@ bool equals_zero(limb_t *num, unsigned int num_limbs) {
  */
 int cmp_num_num(limb_t *a, limb_t *b, unsigned int num_limbs) {
     limb_t tmp[num_limbs];
-    limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, 0);
+    limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, set_limb(0));
 
     if (borrow_out) {
         return -1;
@@ -176,11 +176,12 @@ void add_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int nu
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
-    add_num_num(c, a, b, num_limbs, 0);
-    limb_t borrow_out = sub_num_num(c, c, m, num_limbs, 0);
+    limb_t zero = set_limb(0);
+    add_num_num(c, a, b, num_limbs, zero);
+    limb_t borrow_out = sub_num_num(c, c, m, num_limbs, zero);
     sub_num_num(mask, mask, mask, num_limbs, borrow_out);
     and_num_num(mask, m, mask, num_limbs);
-    add_num_num(c, c, mask, num_limbs, 0);
+    add_num_num(c, c, mask, num_limbs, zero);
 }
 
 void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
