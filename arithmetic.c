@@ -205,9 +205,15 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
     limb_t A[num_limbs + 1];
     clear_num(A, num_limbs + 1);
 
+    limb_t zero = set_limb(0);
+
     for (unsigned int i = 0; i < num_limbs; i++) {
         /* u_i = ((a_0 + (x_i * y_0)) * m') % b; */
-         limb_t ui = (A[0] + x[i] * y[0]) * m_prime;
+        struct d_limb_t tmp = mul_limb_limb(load_limb(x, i), load_limb(y, 0));
+        limb_t ui = tmp.lo;
+        ui = add_limb_limb(ui, load_limb(A, 0));
+        tmp = mul_limb_limb(ui, m_prime);
+        ui = tmp.lo;
 
         #if !FULL_LIMB_PRECISION
 
@@ -216,7 +222,6 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
         #endif
 
         /* A = (A + (x_i * y) + (u_i * m)) / b; */
-
         /* x_i * y */
         limb_t xi_y[num_limbs + 1];
         mul_num_limb(xi_y, y, x[i], num_limbs);
@@ -226,16 +231,16 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
         mul_num_limb(ui_m, m, ui, num_limbs);
 
         /* A = A + (x_i * y); */
-        add_num_num(A, A, xi_y, num_limbs + 1, 0);
+        add_num_num(A, A, xi_y, num_limbs + 1, zero);
 
         /* A = A + (x_i * y) + (u_i * m); */
-        add_num_num(A, A, ui_m, num_limbs + 1, 0);
+        add_num_num(A, A, ui_m, num_limbs + 1, zero);
 
         /* A = (A + (x_i * y) + (u_i * m)) / b; */
         for (unsigned int j = 0; j < num_limbs; j++) {
             A[j] = A[j + 1];
         }
-        A[num_limbs] = 0;
+        A[num_limbs] = zero;
     }
 
     sub_mod_num_num(A, A, m, m, num_limbs);
