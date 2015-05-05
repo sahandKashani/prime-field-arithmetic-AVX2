@@ -31,7 +31,7 @@ void print_num_gmp(mpz_t num_gmp, unsigned int num_limbs) {
 
 void clear_num(limb_t *num, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
-        num[i] = set_limb(0);
+        num[i] = zero();
     }
 }
 

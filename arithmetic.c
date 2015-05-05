@@ -14,7 +14,7 @@ limb_t add_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb
         /* we need to temporarily store the output of each operation, because it
          * is possible that c is the same array as a or b.
          */
-        limb_t c_tmp = set_limb(0);
+        limb_t c_tmp = zero();
 
         #if FULL_LIMB_PRECISION
 
@@ -41,8 +41,8 @@ limb_t add_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs, limb
     /* we need to temporarily store the output of each operation, because it is
      * possible that c is the same array as a or b.
      */
-    limb_t c_tmp = set_limb(0);
-    limb_t carry_out = set_limb(0);
+    limb_t c_tmp = zero();
+    limb_t carry_out = zero();
 
     #if FULL_LIMB_PRECISION
 
@@ -88,11 +88,11 @@ limb_t sub_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb
         /* we need to temporarily store the output of each operation, because it
          * is possible that c is the same array as a or b.
          */
-        limb_t c_tmp = set_limb(0);
+        limb_t c_tmp = zero();
 
         #if FULL_LIMB_PRECISION
 
-            limb_t c_tmp_old = set_limb(0);
+            limb_t c_tmp_old = zero();
             c_tmp = sub_limb_limb(load_limb(a, i), borrow_out);
             c_tmp_old = c_tmp;
             borrow_out = cmpgt_limb_limb(c_tmp, load_limb(a, i));
@@ -117,7 +117,7 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
     limb_t res[num_limbs + 1];
     clear_num(res, num_limbs + 1);
 
-    limb_t carry_out = set_limb(0);
+    limb_t carry_out = zero();
     for (unsigned int i = 0; i < num_limbs; i++) {
         struct d_limb_t tmp = mul_limb_limb(a[i], b);
 
@@ -141,7 +141,7 @@ void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
         limb_t tmp[num_limbs + 1];
         mul_num_limb(tmp, a, b[i], num_limbs);
-        add_num_num(res + i, res + i, tmp, num_limbs + 1, set_limb(0));
+        add_num_num(res + i, res + i, tmp, num_limbs + 1, zero());
     }
 
     copy_num(c, res, 2 * num_limbs);
@@ -162,7 +162,7 @@ bool equals_zero(limb_t *num, unsigned int num_limbs) {
  */
 int cmp_num_num(limb_t *a, limb_t *b, unsigned int num_limbs) {
     limb_t tmp[num_limbs];
-    limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, set_limb(0));
+    limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, zero());
 
     if (borrow_out) {
         return -1;
@@ -183,30 +183,26 @@ void add_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int nu
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
-    limb_t zero = set_limb(0);
-    add_num_num(c, a, b, num_limbs, zero);
-    limb_t borrow_out = sub_num_num(c, c, m, num_limbs, zero);
+    add_num_num(c, a, b, num_limbs, zero());
+    limb_t borrow_out = sub_num_num(c, c, m, num_limbs, zero());
     sub_num_num(mask, mask, mask, num_limbs, borrow_out);
     and_num_num(mask, m, mask, num_limbs);
-    add_num_num(c, c, mask, num_limbs, zero);
+    add_num_num(c, c, mask, num_limbs, zero());
 }
 
 void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
-    limb_t zero = set_limb(0);
-    limb_t borrow_out = sub_num_num(c, a, b, num_limbs, zero);
+    limb_t borrow_out = sub_num_num(c, a, b, num_limbs, zero());
     sub_num_num(mask, mask, mask, num_limbs, borrow_out);
     and_num_num(mask, m, mask, num_limbs);
-    add_num_num(c, c, mask, num_limbs, zero);
+    add_num_num(c, c, mask, num_limbs, zero());
 }
 
 void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m_prime, unsigned int num_limbs) {
     limb_t A[num_limbs + 1];
     clear_num(A, num_limbs + 1);
-
-    limb_t zero = set_limb(0);
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         /* u_i = ((a_0 + (x_i * y_0)) * m') % b; */
@@ -232,16 +228,16 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
         mul_num_limb(ui_m, m, ui, num_limbs);
 
         /* A = A + (x_i * y); */
-        add_num_num(A, A, xi_y, num_limbs + 1, zero);
+        add_num_num(A, A, xi_y, num_limbs + 1, zero());
 
         /* A = A + (x_i * y) + (u_i * m); */
-        add_num_num(A, A, ui_m, num_limbs + 1, zero);
+        add_num_num(A, A, ui_m, num_limbs + 1, zero());
 
         /* A = (A + (x_i * y) + (u_i * m)) / b; */
         for (unsigned int j = 0; j < num_limbs; j++) {
             A[j] = A[j + 1];
         }
-        A[num_limbs] = zero;
+        A[num_limbs] = zero();
     }
 
     sub_mod_num_num(A, A, m, m, num_limbs);
