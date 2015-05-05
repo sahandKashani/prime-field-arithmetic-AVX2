@@ -11,17 +11,22 @@
     #include <immintrin.h>
     #include "settings.h"
 
+    #define LIMB_SIZE_IN_BYTES (LIMB_SIZE_IN_BITS / 8)
+    #define LIMB_SIZE_IN_HEX   (LIMB_SIZE_IN_BITS / 4)
+
     #if LIMB_SIZE_IN_BITS == 32
 
+        typedef uint32_t limb_building_block_t;
         #define PRI_LIMB PRIx32
-        #define ALL_ONE (0xffffffff)
+        #define ALL_ONE  (0xffffffff)
 
     #elif LIMB_SIZE_IN_BITS == 64
 
+        typedef uint64_t limb_building_block_t;
         #define PRI_LIMB PRIx64
-        #define ALL_ONE (0xffffffffffffffffULL)
+        #define ALL_ONE  (0xffffffffffffffffULL)
 
-    #endif /* LIMB_SIZE_IN_BITS */
+    #endif
 
     #if SIMD_PARALLEL_WALKS
 
@@ -29,17 +34,11 @@
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        #if LIMB_SIZE_IN_BITS == 32
-
-            typedef uint32_t limb_t;
-
-        #elif LIMB_SIZE_IN_BITS == 64
-
-            typedef uint64_t limb_t;
-
-        #endif /* LIMB_SIZE_IN_BITS */
+        typedef limb_building_block_t limb_t;
 
     #endif /* SIMD_PARALLEL_WALKS */
+
+    #define NUM_ENTRIES_IN_LIMB (sizeof(limb_t) / sizeof(limb_building_block_t))
 
     struct d_limb_t {
         limb_t lo;
@@ -69,3 +68,5 @@
     struct d_limb_t mul_limb_limb(limb_t a, limb_t b);
 
 #endif /* LIMB_H_ */
+
+
