@@ -116,6 +116,31 @@ limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
     #endif /* SIMD_PARALLEL_WALKS */
 }
 
+limb_t cmpeq_limb_limb(limb_t a, limb_t b) {
+    #if SIMD_PARALLEL_WALKS
+
+        limb_t mask = set_limb(0x1);
+        limb_t tmp;
+
+        #if LIMB_SIZE_IN_BITS == 32
+
+            tmp = _mm256_cmpeq_epi32(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 64
+
+            tmp = _mm256_cmpeq_epi64(a, b);
+
+        #endif /* LIMB_SIZE_IN_BITS */
+
+        return and_limb_limb(tmp, mask);
+
+    #else /* SIMD_PARALLEL_WALKS */
+
+        return a == b;
+
+    #endif /* SIMD_PARALLEL_WALKS */
+}
+
 limb_t or_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
 

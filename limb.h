@@ -59,6 +59,7 @@
     limb_t add_limb_limb(limb_t a, limb_t b);
     limb_t sub_limb_limb(limb_t a, limb_t b);
     limb_t cmpgt_limb_limb(limb_t a, limb_t b);
+    limb_t cmpeq_limb_limb(limb_t a, limb_t b);
     limb_t or_limb_limb(limb_t a, limb_t b);
     limb_t and_limb_limb(limb_t a, limb_t b);
     limb_t srli_limb(limb_t a, int b);
