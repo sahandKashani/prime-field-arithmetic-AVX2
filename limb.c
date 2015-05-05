@@ -264,7 +264,6 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
             limb_t c_even_hi = _mm256_srli_si256(_mm256_and_si256(c_even, mask_hi), sizeof(limb_building_block_t));
             limb_t c_odd_hi = _mm256_and_si256(c_odd, mask_hi);
 
-
             c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
             c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
 
