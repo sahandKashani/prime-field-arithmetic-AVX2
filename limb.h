@@ -54,6 +54,7 @@
 
     #endif /* !FULL_LIMB_PRECISION */
 
+    limb_t zero();
     limb_t set_limb(unsigned long long int a);
     limb_t add_limb_limb(limb_t a, limb_t b);
     limb_t sub_limb_limb(limb_t a, limb_t b);

@@ -31,6 +31,18 @@
 
 #endif /* !FULL_LIMB_PRECISION */
 
+limb_t zero() {
+    #if SIMD_PARALLEL_WALKS
+
+        return set_limb(0);
+
+    #else /* SIMD_PARALLEL_WALKS */
+
+        return 0;
+
+    #endif /* SIMD_PARALLEL_WALKS */
+}
+
 limb_t set_limb(unsigned long long int a) {
     #if SIMD_PARALLEL_WALKS
 
