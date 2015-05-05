@@ -103,7 +103,7 @@ limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
 
         #elif LIMB_SIZE_IN_BITS == 64
 
-            tmp = _mm256_sub_epi64(a, b);
+            tmp = _mm256_cmpgt_epi64(a, b);
 
         #endif /* LIMB_SIZE_IN_BITS */
 
