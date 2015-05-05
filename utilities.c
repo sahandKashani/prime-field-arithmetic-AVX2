@@ -48,12 +48,12 @@ void convert_num_to_gmp(mpz_t num_gmp, limb_t *num, unsigned int num_limbs) {
 }
 
 bool is_equal_num_num(limb_t *num1, limb_t *num2, unsigned int num_limbs) {
-    for (unsigned int i = 0; i < num_limbs; i++) {
-        if (num1[i] != num2[i]) {
-            return false;
-        }
-    }
-    return true;
+//    for (unsigned int i = 0; i < num_limbs; i++) {
+//        if (num1[i] != num2[i]) {
+//            return false;
+//        }
+//    }
+//    return true;
 }
 
 bool is_equal_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {

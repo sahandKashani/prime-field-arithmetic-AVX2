@@ -148,12 +148,12 @@ void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
 }
 
 bool equals_zero(limb_t *num, unsigned int num_limbs) {
-    for (unsigned int i = 0; i < num_limbs; i++) {
-        if (load_limb(num, i) != 0) {
-            return false;
-        }
-    }
-    return true;
+//    for (unsigned int i = 0; i < num_limbs; i++) {
+//        if (load_limb(num, i) != 0) {
+//            return false;
+//        }
+//    }
+//    return true;
 }
 
 /* returns -1 if a < b
@@ -161,16 +161,16 @@ bool equals_zero(limb_t *num, unsigned int num_limbs) {
  * returns +1 if a > b
  */
 int cmp_num_num(limb_t *a, limb_t *b, unsigned int num_limbs) {
-    limb_t tmp[num_limbs];
-    limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, zero());
-
-    if (borrow_out) {
-        return -1;
-    } else if (equals_zero(tmp, num_limbs)) {
-        return 0;
-    } else {
-        return 1;
-    }
+//    limb_t tmp[num_limbs];
+//    limb_t borrow_out = sub_num_num(tmp, a, b, num_limbs, zero());
+//
+//    if (borrow_out) {
+//        return -1;
+//    } else if (equals_zero(tmp, num_limbs)) {
+//        return 0;
+//    } else {
+//        return 1;
+//    }
 }
 
 void and_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
