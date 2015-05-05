@@ -195,10 +195,11 @@ void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int nu
     limb_t mask[num_limbs];
     clear_num(mask, num_limbs);
 
-    limb_t borrow_out = sub_num_num(c, a, b, num_limbs, 0);
+    limb_t zero = set_limb(0);
+    limb_t borrow_out = sub_num_num(c, a, b, num_limbs, zero);
     sub_num_num(mask, mask, mask, num_limbs, borrow_out);
     and_num_num(mask, m, mask, num_limbs);
-    add_num_num(c, c, mask, num_limbs, 0);
+    add_num_num(c, c, mask, num_limbs, zero);
 }
 
 void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m_prime, unsigned int num_limbs) {
