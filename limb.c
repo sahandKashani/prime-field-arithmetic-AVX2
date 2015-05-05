@@ -262,9 +262,8 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
             #else /* MULX */
 
-                /* -1 = 0xff..ff */
-                uint32_t a_32[2] = {a & ((uint32_t) -1), (uint32_t) (a >> 32)};
-                uint32_t b_32[2] = {b & ((uint32_t) -1), (uint32_t) (b >> 32)};
+                uint32_t a_32[2] = {(uint32_t) (a & ALL_ONE), (uint32_t) (a >> 32)};
+                uint32_t b_32[2] = {(uint32_t) (b & ALL_ONE), (uint32_t) (b >> 32)};
                 uint32_t c_32[4] = {0, 0, 0, 0};
 
                 uint64_t inner_product = 0;
@@ -275,7 +274,7 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
                     inner_product_hi = 0;
                     for (unsigned int j = 0; j < 2; j++) {
                         inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi;
-                        inner_product_lo = inner_product & ((uint32_t) -1);
+                        inner_product_lo = (uint32_t) (inner_product & ALL_ONE);
                         inner_product_hi = (uint32_t) (inner_product >> 32);
                         c_32[i + j] = inner_product_lo;
                     }
