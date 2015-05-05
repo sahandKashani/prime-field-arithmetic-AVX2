@@ -18,13 +18,11 @@
 
         typedef uint32_t limb_building_block_t;
         #define PRI_LIMB PRIx32
-        #define ALL_ONE  (0xffffffff)
 
     #elif LIMB_SIZE_IN_BITS == 64
 
         typedef uint64_t limb_building_block_t;
         #define PRI_LIMB PRIx64
-        #define ALL_ONE  (0xffffffffffffffffULL)
 
     #endif
 
@@ -39,6 +37,7 @@
     #endif /* SIMD_PARALLEL_WALKS */
 
     #define NUM_ENTRIES_IN_LIMB (sizeof(limb_t) / sizeof(limb_building_block_t))
+    #define ALL_ONE             ((limb_building_block_t) -1)
 
     struct d_limb_t {
         limb_t lo;
