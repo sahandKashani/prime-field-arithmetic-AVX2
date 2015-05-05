@@ -246,6 +246,34 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
     #if SIMD_PARALLEL_WALKS
 
+        #if LIMB_SIZE_IN_BITS == 32
+
+            limb_t a_even = a;
+            limb_t a_odd = _mm256_srli_si256(a, sizeof(limb_building_block_t));
+            limb_t b_even = b;
+            limb_t b_odd = _mm256_srli_si256(b, sizeof(limb_building_block_t));
+
+            limb_t c_even = _mm256_mul_epu32(a_even, b_even);
+            limb_t c_odd = _mm256_mul_epu32(a_odd, b_odd);
+
+            limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffULL);
+            limb_t c_even_lo = _mm256_and_si256(c_even, mask_lo);
+            limb_t c_odd_lo = _mm256_slli_si256(_mm256_and_si256(c_odd, mask_lo), sizeof(limb_building_block_t));
+
+            limb_t mask_hi = _mm256_set1_epi64x((long long int) 0xffffffff00000000ULL);
+            limb_t c_even_hi = _mm256_srli_si256(_mm256_and_si256(c_even, mask_hi), sizeof(limb_building_block_t));
+            limb_t c_odd_hi = _mm256_and_si256(c_odd, mask_hi);
+
+
+            c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
+            c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
+
+        #elif LIMB_SIZE_IN_BITS == 64
+
+
+
+        #endif /* LIMB_SIZE_IN_BITS */
+
     #else /* SIMD_PARALLEL_WALKS */
 
         #if LIMB_SIZE_IN_BITS == 32
