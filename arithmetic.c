@@ -119,7 +119,7 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
 
     limb_t carry_out = zero();
     for (unsigned int i = 0; i < num_limbs; i++) {
-        struct d_limb_t tmp = mul_limb_limb(a[i], b);
+        struct d_limb_t tmp = mul_limb_limb(load_limb(a, i) , b);
 
         #if !FULL_LIMB_PRECISION
 
@@ -140,7 +140,7 @@ void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         limb_t tmp[num_limbs + 1];
-        mul_num_limb(tmp, a, b[i], num_limbs);
+        mul_num_limb(tmp, a, load_limb(b, i), num_limbs);
         add_num_num(res + i, res + i, tmp, num_limbs + 1, zero());
     }
 
@@ -149,7 +149,7 @@ void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
 
 bool equals_zero(limb_t *num, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
-        if (num[i] != 0) {
+        if (load_limb(num, i) != 0) {
             return false;
         }
     }
@@ -175,7 +175,7 @@ int cmp_num_num(limb_t *a, limb_t *b, unsigned int num_limbs) {
 
 void and_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     for (unsigned int i = 0; i < num_limbs; i++) {
-        c[i] = and_limb_limb(load_limb(a, i), load_limb(b, i));
+        store_limb(c, i, and_limb_limb(load_limb(a, i), load_limb(b, i)));
     }
 }
 
@@ -221,7 +221,7 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
         /* A = (A + (x_i * y) + (u_i * m)) / b; */
         /* x_i * y */
         limb_t xi_y[num_limbs + 1];
-        mul_num_limb(xi_y, y, x[i], num_limbs);
+        mul_num_limb(xi_y, y, load_limb(x, i), num_limbs);
 
         /* u_i * m */
         limb_t ui_m[num_limbs + 1];
@@ -235,9 +235,9 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
 
         /* A = (A + (x_i * y) + (u_i * m)) / b; */
         for (unsigned int j = 0; j < num_limbs; j++) {
-            A[j] = A[j + 1];
+            store_limb(A, j, load_limb(A, j + 1));
         }
-        A[num_limbs] = zero();
+        store_limb(A, num_limbs, zero());
     }
 
     sub_mod_num_num(A, A, m, m, num_limbs);
