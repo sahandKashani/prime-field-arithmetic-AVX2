@@ -6,6 +6,11 @@
     #include "limb.h"
     #include "settings.h"
 
+    union utilities_limb_t {
+        limb_t full_limb;
+        limb_building_block_t building_blocks[NUM_ENTRIES_IN_LIMB];
+    };
+
     typedef struct {
         mpz_t big;
         mpz_t middle;
