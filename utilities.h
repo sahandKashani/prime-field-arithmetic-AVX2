@@ -6,11 +6,6 @@
     #include "limb.h"
     #include "settings.h"
 
-    union utilities_limb_t {
-        limb_t full_limb;
-        limb_building_block_t building_blocks[NUM_ENTRIES_IN_LIMB];
-    };
-
     typedef struct {
         mpz_t big;
         mpz_t middle;
@@ -24,6 +19,7 @@
 
     unsigned int max(unsigned int a, unsigned int b);
     unsigned int min(unsigned int a, unsigned int b);
+    limb_building_block_t extract_num_detail(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index);
     void print_num(limb_t *num, unsigned int num_limbs);
     void print_num_gmp(mpz_t num_gmp, unsigned int num_limbs);
     void clear_num(limb_t *num, unsigned int num_limbs);
