@@ -16,7 +16,7 @@ unsigned int min(unsigned int a, unsigned int b) {
     return (a < b) ? a : b;
 }
 
-limb_building_block_t extract_num_detail(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index) {
+limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index) {
     limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
     return *(num_internal_format + (limb_index * NUM_ENTRIES_IN_LIMB) + entry_in_limb_index);
 }
@@ -28,7 +28,7 @@ void print_num(limb_t *num, unsigned int num_limbs) {
         }
 
         for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
-            printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_num_detail(num, limb_index, entry_in_limb_index));
+            printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_limb(num, limb_index, entry_in_limb_index));
         }
         printf("| ");
     }
