@@ -1,10 +1,17 @@
 #include <gmp.h>
+#include "constants.h"
 #include "gmp_int.h"
 #include "limb.h"
 
 void gmp_int_init(gmp_int_t x) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
         mpz_init(x[i]);
+    }
+}
+
+void gmp_int_clear(gmp_int_t x) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_clear(x[i]);
     }
 }
 
@@ -69,5 +76,17 @@ void gmp_int_rrandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n) {
 void gmp_int_urandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
         mpz_urandomb(rop[i], state, n);
+    }
+}
+
+void gmp_int_import(gmp_int_t rop, size_t count, int order, size_t size, int endian, size_t nails, const void *op) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_import(rop[i], count, order, size, endian, nails, ((limb_building_block_t *) op) + (i * count));
+    }
+}
+
+void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endian, size_t nails, gmp_int_t op) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_export(((limb_building_block_t *) rop) + (i * NUM_LIMBS), countp, order, size, endian, nails, op[i]);
     }
 }
