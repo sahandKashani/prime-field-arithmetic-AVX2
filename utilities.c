@@ -8,6 +8,25 @@
 #include "limb.h"
 #include "utilities.h"
 
+void transpose_num(limb_t *num, unsigned int num_limbs, unsigned int num_entries_in_limb) {
+    limb_building_block_t tmp[num_limbs][num_entries_in_limb];
+    limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
+
+    /* copy num to tmp */
+    for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
+        for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < num_entries_in_limb; entry_in_limb_index++) {
+            tmp[limb_index][entry_in_limb_index] = extract_limb(num, limb_index, entry_in_limb_index, num_entries_in_limb);
+        }
+    }
+
+    /* transpose */
+    for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
+        for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < num_entries_in_limb; entry_in_limb_index++) {
+            *(num_internal_format + (entry_in_limb_index * num_limbs) + limb_index) = tmp[limb_index][entry_in_limb_index];
+        }
+    }
+}
+
 unsigned int max(unsigned int a, unsigned int b) {
     return (a > b) ? a : b;
 }
@@ -16,9 +35,9 @@ unsigned int min(unsigned int a, unsigned int b) {
     return (a < b) ? a : b;
 }
 
-limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index) {
+limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index, unsigned int num_entries_in_limb) {
     limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
-    return *(num_internal_format + (limb_index * NUM_ENTRIES_IN_LIMB) + entry_in_limb_index);
+    return *(num_internal_format + (limb_index * num_entries_in_limb) + entry_in_limb_index);
 }
 
 void print_num(limb_t *num, unsigned int num_limbs) {
@@ -28,7 +47,7 @@ void print_num(limb_t *num, unsigned int num_limbs) {
         }
 
         for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
-            printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_limb(num, limb_index, entry_in_limb_index));
+            printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_limb(num, limb_index, entry_in_limb_index, NUM_ENTRIES_IN_LIMB));
         }
         printf("| ");
     }
