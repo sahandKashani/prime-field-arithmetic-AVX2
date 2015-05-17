@@ -53,3 +53,21 @@ void gmp_int_mul_montgomery(gmp_int_t rop, gmp_int_t op1, gmp_int_t op2, gmp_int
         mpz_mod(rop[i], rop[i], mod[i]);
     }
 }
+
+void gmp_int_urandomm(gmp_int_t rop, gmp_randstate_t state, gmp_int_t n) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_urandomm(rop[i], state, n[i]);
+    }
+}
+
+void gmp_int_rrandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_rrandomb(rop[i], state, n);
+    }
+}
+
+void gmp_int_urandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_urandomb(rop[i], state, n);
+    }
+}
