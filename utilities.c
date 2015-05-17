@@ -8,6 +8,11 @@
 #include "limb.h"
 #include "utilities.h"
 
+limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index, unsigned int num_entries_in_limb) {
+    limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
+    return *(num_internal_format + (limb_index * num_entries_in_limb) + entry_in_limb_index);
+}
+
 void transpose_num(limb_t *num, unsigned int num_limbs, unsigned int num_entries_in_limb) {
     limb_building_block_t tmp[num_limbs][num_entries_in_limb];
     limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
@@ -33,11 +38,6 @@ unsigned int max(unsigned int a, unsigned int b) {
 
 unsigned int min(unsigned int a, unsigned int b) {
     return (a < b) ? a : b;
-}
-
-limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index, unsigned int num_entries_in_limb) {
-    limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
-    return *(num_internal_format + (limb_index * num_entries_in_limb) + entry_in_limb_index);
 }
 
 void print_num(limb_t *num, unsigned int num_limbs) {
