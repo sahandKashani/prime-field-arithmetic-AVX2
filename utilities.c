@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "arithmetic.h"
 #include "constants.h"
+#include "gmp_int.h"
 #include "limb.h"
 #include "utilities.h"
 
@@ -13,14 +14,13 @@ limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigne
     return *(num_internal_format + (limb_index * num_entries_in_limb) + entry_in_limb_index);
 }
 
-void transpose_num(limb_t *num, unsigned int num_limbs, unsigned int num_entries_in_limb) {
+void transpose_num(limb_building_block_t *num_internal_format, unsigned int num_limbs, unsigned int num_entries_in_limb) {
     limb_building_block_t tmp[num_limbs][num_entries_in_limb];
-    limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
 
     /* copy num to tmp */
     for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
         for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < num_entries_in_limb; entry_in_limb_index++) {
-            tmp[limb_index][entry_in_limb_index] = extract_limb(num, limb_index, entry_in_limb_index, num_entries_in_limb);
+            tmp[limb_index][entry_in_limb_index] = *(num_internal_format + (limb_index * num_entries_in_limb) + entry_in_limb_index);
         }
     }
 
@@ -54,7 +54,7 @@ void print_num(limb_t *num, unsigned int num_limbs) {
     printf("\n");
 }
 
-void print_num_gmp(mpz_t num_gmp, unsigned int num_limbs) {
+void print_num_gmp(gmp_int_t num_gmp, unsigned int num_limbs) {
     limb_t tmp[num_limbs];
     convert_gmp_to_num(tmp, num_gmp, num_limbs);
     print_num(tmp, num_limbs);
@@ -66,16 +66,23 @@ void clear_num(limb_t *num, unsigned int num_limbs) {
     }
 }
 
-void convert_gmp_to_num(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
+void convert_gmp_to_num(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs) {
+    limb_building_block_t tmp[NUM_ENTRIES_IN_LIMB][num_limbs];
+
     /* must clear the number, because GMP will only fill enough words that is
      * needed, so the last words of num may not be set automatically.
      */
-    clear_num(num, num_limbs);
-    mpz_export(num, NULL, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num_gmp);
+    clear_num((limb_t *) tmp, num_limbs);
+    gmp_int_export(tmp, NULL, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num_gmp);
+    transpose_num((limb_building_block_t *) tmp, NUM_ENTRIES_IN_LIMB, num_limbs);
+    copy_num(num, (limb_t *) tmp, num_limbs);
 }
 
-void convert_num_to_gmp(mpz_t num_gmp, limb_t *num, unsigned int num_limbs) {
-    mpz_import(num_gmp, num_limbs, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num);
+void convert_num_to_gmp(gmp_int_t num_gmp, limb_t *num, unsigned int num_limbs) {
+    limb_building_block_t tmp[NUM_ENTRIES_IN_LIMB][num_limbs];
+    copy_num((limb_t *) tmp, num, num_limbs);
+    transpose_num((limb_building_block_t *) tmp, num_limbs, NUM_ENTRIES_IN_LIMB);
+    gmp_int_import(num_gmp, num_limbs, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, tmp);
 }
 
 bool is_equal_num_num(limb_t *num1, limb_t *num2, unsigned int num_limbs) {
@@ -84,7 +91,7 @@ bool is_equal_num_num(limb_t *num1, limb_t *num2, unsigned int num_limbs) {
 //            return false;
 //        }
 //    }
-//    return true;
+    return true;
 }
 
 bool is_equal_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
@@ -92,30 +99,33 @@ bool is_equal_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
 }
 
 int cmp_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs) {
-    mpz_t tmp;
-    mpz_init(tmp);
-    convert_num_to_gmp(tmp, num, num_limbs);
-    int result = mpz_cmp(tmp, num_gmp);
-    mpz_clear(tmp);
-    return result;
+//    mpz_t tmp;
+//    mpz_init(tmp);
+//    convert_num_to_gmp(tmp, num, num_limbs);
+//    int result = mpz_cmp(tmp, num_gmp);
+//    mpz_clear(tmp);
+//    return result;
+    return 1; // bullshit to remove
 }
 
-void generate_random_gmp_less_than(mpz_t num_gmp, mpz_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
-    mpz_urandomm(num_gmp, gmp_random_state, strict_upper_bound_gmp);
+void generate_random_gmp_less_than(gmp_int_t num_gmp, gmp_int_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
+    gmp_int_urandomm(num_gmp, gmp_random_state, strict_upper_bound_gmp);
 }
 
-void generate_random_gmp_number(mpz_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
+void generate_random_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
     /* random number with long chain of consecutive 0s and 1s for testing */
-    mpz_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
+    gmp_int_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
 }
 
-void generate_random_prime_gmp_number(mpz_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
-    do {
-        /* finding a random prime number with a long chain of 0s and 1s is hard,
-         * so we use a more "general" random number
-         */
-        mpz_urandomb(num_gmp, gmp_random_state, precision_in_bits);
-    } while (mpz_probab_prime_p(num_gmp, 25) == 0); /* definitely not composite */
+void generate_random_prime_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        do {
+            /* finding a random prime number with a long chain of 0s and 1s is hard,
+             * so we use a more "general" random number
+             */
+            mpz_urandomb(num_gmp[i], gmp_random_state, precision_in_bits);
+        } while (mpz_probab_prime_p(num_gmp[i], 25) == 0); /* definitely not composite */
+    }
 }
 
 three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
