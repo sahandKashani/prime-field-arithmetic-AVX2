@@ -4,6 +4,7 @@
     #include <stdbool.h>
     #include "limb.h"
 
+    void zero_num(limb_t *num, unsigned int num_limbs);
     limb_t add_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb_t carry_in);
     limb_t add_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs, limb_t carry_in);
     limb_t sub_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb_t borrow_in);

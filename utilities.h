@@ -8,9 +8,9 @@
     #include "settings.h"
 
     typedef struct {
-        mpz_t big;
-        mpz_t middle;
-        mpz_t small;
+        gmp_int_t big;
+        gmp_int_t middle;
+        gmp_int_t small;
     } three_sorted_gmp;
 
     typedef struct {
@@ -22,12 +22,11 @@
     unsigned int min(unsigned int a, unsigned int b);
     void print_num(limb_t *num, unsigned int num_limbs);
     void print_num_gmp(gmp_int_t num_gmp, unsigned int num_limbs);
-    void clear_num(limb_t *num, unsigned int num_limbs);
     void convert_gmp_to_num(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs);
     void convert_num_to_gmp(gmp_int_t num_gmp, limb_t *num, unsigned int num_limbs);
     bool is_equal_num_num(limb_t *num1, limb_t *num2, unsigned int num_limbs);
-    bool is_equal_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs);
-    int cmp_num_gmp(limb_t *num, mpz_t num_gmp, unsigned int num_limbs);
+    bool is_equal_num_gmp(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs);
+    int cmp_num_gmp(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs);
     void generate_random_gmp_less_than(gmp_int_t num_gmp, gmp_int_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state);
     void generate_random_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);
     void generate_random_prime_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);

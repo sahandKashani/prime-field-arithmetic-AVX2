@@ -7,6 +7,12 @@
 #include "utilities.h"
 #include "settings.h"
 
+void zero_num(limb_t *num, unsigned int num_limbs) {
+    for (unsigned int i = 0; i < num_limbs; i++) {
+        store_limb(num, i, zero());
+    }
+}
+
 limb_t add_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb_t carry_in) {
     limb_t carry_out = carry_in;
 
@@ -115,7 +121,7 @@ limb_t sub_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs, limb
 
 void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
     limb_t res[num_limbs + 1];
-    clear_num(res, num_limbs + 1);
+    zero_num(res, num_limbs + 1);
 
     limb_t carry_out = zero();
     for (unsigned int i = 0; i < num_limbs; i++) {
@@ -136,7 +142,7 @@ void mul_num_limb(limb_t *c, limb_t *a, limb_t b, unsigned int num_limbs) {
 
 void mul_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
     limb_t res[2 * num_limbs];
-    clear_num(res, 2 * num_limbs);
+    zero_num(res, 2 * num_limbs);
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         limb_t tmp[num_limbs + 1];
@@ -181,7 +187,7 @@ void and_num_num(limb_t *c, limb_t *a, limb_t *b, unsigned int num_limbs) {
 
 void add_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
     limb_t mask[num_limbs];
-    clear_num(mask, num_limbs);
+    zero_num(mask, num_limbs);
 
     add_num_num(c, a, b, num_limbs, zero());
     limb_t borrow_out = sub_num_num(c, c, m, num_limbs, zero());
@@ -192,7 +198,7 @@ void add_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int nu
 
 void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
     limb_t mask[num_limbs];
-    clear_num(mask, num_limbs);
+    zero_num(mask, num_limbs);
 
     limb_t borrow_out = sub_num_num(c, a, b, num_limbs, zero());
     sub_num_num(mask, mask, mask, num_limbs, borrow_out);
@@ -202,7 +208,7 @@ void sub_mod_num_num(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int nu
 
 void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m_prime, unsigned int num_limbs) {
     limb_t A[num_limbs + 1];
-    clear_num(A, num_limbs + 1);
+    zero_num(A, num_limbs + 1);
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         /* u_i = ((a_0 + (x_i * y_0)) * m') % b; */
