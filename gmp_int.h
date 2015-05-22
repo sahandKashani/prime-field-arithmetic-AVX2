@@ -9,6 +9,7 @@
     void gmp_int_init(gmp_int_t x);
     void gmp_int_clear(gmp_int_t x);
     void gmp_int_set(gmp_int_t rop, gmp_int_t op);
+    void gmp_int_cmp(int *rop, gmp_int_t op1, gmp_int_t op2);
     void gmp_int_add(gmp_int_t rop, gmp_int_t op1, gmp_int_t op2);
     void gmp_int_sub(gmp_int_t rop, gmp_int_t op1, gmp_int_t op2);
     void gmp_int_mul(gmp_int_t rop, gmp_int_t op1, gmp_int_t op2);

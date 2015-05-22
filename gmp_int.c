@@ -21,6 +21,12 @@ void gmp_int_set(gmp_int_t rop, gmp_int_t op) {
     }
 }
 
+void gmp_int_cmp(int *rop, gmp_int_t op1, gmp_int_t op2) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        rop[i] = mpz_cmp(op1[i], op2[i]);
+    }
+}
+
 void gmp_int_add(gmp_int_t rop, gmp_int_t op1, gmp_int_t op2) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
         mpz_add(rop[i], op1[i], op2[i]);
