@@ -105,17 +105,26 @@ bool is_equal_num_num(limb_t *num1, limb_t *num2, unsigned int num_limbs) {
 }
 
 bool is_equal_num_gmp(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs) {
-    return cmp_num_gmp(num, num_gmp, num_limbs) == 0;
+    int res[NUM_ENTRIES_IN_LIMB];
+    cmp_num_gmp(res, num, num_gmp, num_limbs);
+
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        if (res[i] != 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-int cmp_num_gmp(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs) {
-//    mpz_t tmp;
-//    mpz_init(tmp);
-//    convert_num_to_gmp(tmp, num, num_limbs);
-//    int result = mpz_cmp(tmp, num_gmp);
-//    mpz_clear(tmp);
-//    return result;
-    return 1; // bullshit to remove
+void cmp_num_gmp(int *res, limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs) {
+    gmp_int_t tmp;
+    gmp_int_init(tmp);
+
+    convert_num_to_gmp(tmp, num, num_limbs);
+    gmp_int_cmp(res, num_gmp, tmp);
+
+    gmp_int_clear(tmp);
 }
 
 void generate_random_gmp_less_than(gmp_int_t num_gmp, gmp_int_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
