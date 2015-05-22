@@ -800,6 +800,7 @@ int main(void) {
         convert_gmp_to_num(a_num, a_gmp, NUM_LIMBS);
         print_num(a_num, NUM_LIMBS);
 
+        gmp_int_clear(a_gmp);
         gmp_randclear(gmp_random_state);
 
     #endif

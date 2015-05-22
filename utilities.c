@@ -47,7 +47,7 @@ void print_num(limb_t *num, unsigned int num_limbs) {
         }
 
         for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
-            printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_limb(num, limb_index, entry_in_limb_index, NUM_ENTRIES_IN_LIMB));
+            printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_limb(num, num_limbs - limb_index - 1, entry_in_limb_index, NUM_ENTRIES_IN_LIMB));
         }
         printf("| ");
     }
@@ -77,8 +77,8 @@ void convert_gmp_to_num(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs) 
 
     for (unsigned int i = 0; i < num_limbs; i++) {
         for (unsigned int j = 0; j < NUM_ENTRIES_IN_LIMB; j++) {
-            limb_building_block_t *src = ((limb_building_block_t *) num) + (i * NUM_ENTRIES_IN_LIMB) + j;
-            limb_building_block_t *dst = ((limb_building_block_t *) tmp) + (i * NUM_ENTRIES_IN_LIMB) + j;
+            limb_building_block_t *src = ((limb_building_block_t *) tmp) + (i * NUM_ENTRIES_IN_LIMB) + j;
+            limb_building_block_t *dst = ((limb_building_block_t *) num) + (i * NUM_ENTRIES_IN_LIMB) + j;
             *dst = *src;
         }
     }
