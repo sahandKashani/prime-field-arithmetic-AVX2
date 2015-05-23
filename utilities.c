@@ -40,6 +40,14 @@ unsigned int min(unsigned int a, unsigned int b) {
     return (a < b) ? a : b;
 }
 
+void print_limb(limb_t limb) {
+    printf("| ");
+    for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < NUM_ENTRIES_IN_LIMB; entry_in_limb_index++) {
+        printf("%0*" PRI_LIMB " | ", LIMB_SIZE_IN_HEX, extract_limb(&limb, 0, entry_in_limb_index, NUM_ENTRIES_IN_LIMB));
+    }
+    printf("\n");
+}
+
 void print_num(limb_t *num, unsigned int num_limbs) {
     for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < NUM_ENTRIES_IN_LIMB; entry_in_limb_index++) {
         if (entry_in_limb_index == 0) {

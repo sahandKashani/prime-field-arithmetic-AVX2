@@ -20,6 +20,7 @@
 
     unsigned int max(unsigned int a, unsigned int b);
     unsigned int min(unsigned int a, unsigned int b);
+    void print_limb(limb_t limb);
     void print_num(limb_t *num, unsigned int num_limbs);
     void print_num_gmp(gmp_int_t num_gmp, unsigned int num_limbs);
     void convert_gmp_to_num(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs);
