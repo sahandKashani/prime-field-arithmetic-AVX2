@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "constants.h"
 
-#define NUM_ITERATIONS (1 << 17)
+#define NUM_ITERATIONS (1 << 20)
 #define SEED (12345)
 
 bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
@@ -56,7 +56,6 @@ bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
         add_num_num(res, op1, op2, NUM_LIMBS, carry_in);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            add_num_num(res, op1, op2, NUM_LIMBS, carry_in);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -64,6 +63,8 @@ bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
+
+            add_num_num(res, op1, op2, NUM_LIMBS, carry_in);
         }
 
         clear_three_sorted_gmp(operands);
@@ -118,7 +119,6 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
         add_num_limb(res, op1, op2, NUM_LIMBS, carry_in);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            add_num_limb(res, op1, op2, NUM_LIMBS, carry_in);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, 1);
@@ -126,6 +126,8 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
+
+            add_num_limb(res, op1, op2, NUM_LIMBS, carry_in);
         }
 
         clear_three_sorted_gmp(operands);
@@ -180,7 +182,6 @@ bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
         sub_num_num(res, op1, op2, NUM_LIMBS, borrow_in);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            sub_num_num(res, op1, op2, NUM_LIMBS, borrow_in);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -188,6 +189,8 @@ bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
+
+            sub_num_num(res, op1, op2, NUM_LIMBS, borrow_in);
         }
 
         clear_three_sorted_gmp(operands);
@@ -244,7 +247,6 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
         res[0] = tmp.lo;
 
         if (!is_equal_num_gmp(res, res_gmp, 2)) {
-            mul_limb_limb(op1, op2);
             print_num_gmp(op1_gmp, 1);
             print_num(&op1, 1);
             print_num_gmp(op2_gmp, 1);
@@ -252,6 +254,8 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, 2);
             print_num(res, 2);
             success = false;
+
+            mul_limb_limb(op1, op2);
         }
     }
 
@@ -301,7 +305,6 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
         mul_num_limb(res, op1, op2, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS + 1)) {
-            mul_num_limb(res, op1, op2, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, 1);
@@ -309,6 +312,8 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, NUM_LIMBS + 1);
             print_num(res, NUM_LIMBS + 1);
             success = false;
+
+            mul_num_limb(res, op1, op2, NUM_LIMBS);
         }
 
         clear_three_sorted_gmp(operands);
@@ -360,7 +365,6 @@ bool test_mul_num_num(unsigned int number_of_tests, unsigned int seed) {
         mul_num_num(res, op1, op2, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, 2 * NUM_LIMBS)) {
-            mul_num_num(res, op1, op2, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -368,6 +372,8 @@ bool test_mul_num_num(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, 2 * NUM_LIMBS);
             print_num(res, 2 * NUM_LIMBS);
             success = false;
+
+            mul_num_num(res, op1, op2, NUM_LIMBS);
         }
 
         clear_three_sorted_gmp(operands);
@@ -422,7 +428,6 @@ bool test_add_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
         add_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            add_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -432,6 +437,8 @@ bool test_add_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
+
+            add_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
         }
 
         clear_three_sorted_gmp(operands);
@@ -486,7 +493,6 @@ bool test_sub_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
         sub_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            sub_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -496,6 +502,8 @@ bool test_sub_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
+
+            sub_mod_num_num(res, op1, op2, mod, NUM_LIMBS);
         }
 
         clear_three_sorted_gmp(operands);
@@ -592,7 +600,6 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
         mul_montgomery_num_num(res, op1, op2, mod, mod_prime, NUM_LIMBS);
 
         if (!is_equal_num_gmp(res, res_gmp, NUM_LIMBS)) {
-            mul_montgomery_num_num(res, op1, op2, mod, mod_prime, NUM_LIMBS);
             print_num_gmp(op1_gmp, NUM_LIMBS);
             print_num(op1, NUM_LIMBS);
             print_num_gmp(op2_gmp, NUM_LIMBS);
@@ -602,6 +609,8 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
             print_num_gmp(res_gmp, NUM_LIMBS);
             print_num(res, NUM_LIMBS);
             success = false;
+
+            mul_montgomery_num_num(res, op1, op2, mod, mod_prime, NUM_LIMBS);
         }
 
         clear_three_sorted_gmp(operands);
@@ -712,13 +721,13 @@ void check_mul_montgomery_num_num() {
 
 int main(void) {
     check_add_num_num();
-    check_add_num_limb();
-    check_sub_num_num();
-    check_mul_limb_limb();
-    check_mul_num_limb();
-    check_mul_num_num();
-    check_add_mod_num_num();
-    check_sub_mod_num_num();
+//    check_add_num_limb();
+//    check_sub_num_num();
+//    check_mul_limb_limb();
+//    check_mul_num_limb();
+//    check_mul_num_num();
+//    check_add_mod_num_num();
+//    check_sub_mod_num_num();
 //    check_mul_montgomery_num_num();
 
     return EXIT_SUCCESS;
