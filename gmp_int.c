@@ -96,3 +96,30 @@ void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endia
         mpz_export(((limb_building_block_t *) rop) + (i * num_limbs), countp, order, size, endian, nails, op[i]);
     }
 }
+
+void gmp_int_ui_pow_ui(gmp_int_t rop, unsigned long int base, unsigned long int exp) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_ui_pow_ui(rop[i], base, exp);
+    }
+}
+
+void gmp_int_neg(gmp_int_t rop, gmp_int_t op) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_neg(rop[i], op[i]);
+    }
+}
+
+void gmp_int_mod(gmp_int_t r, gmp_int_t n, gmp_int_t d) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        mpz_mod(r[i], n[i], d[i]);
+    }
+}
+
+void gmp_int_invert(int *inverse_exists, gmp_int_t rop, gmp_int_t op1, gmp_int_t op2) {
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        int inv_exists = mpz_invert(rop[i], op1[i], op2[i]);
+        if (inverse_exists != NULL) {
+            inverse_exists[i] = inv_exists;
+        }
+    }
+}

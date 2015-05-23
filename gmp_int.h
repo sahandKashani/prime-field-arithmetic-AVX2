@@ -21,5 +21,9 @@
     void gmp_int_urandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n);
     void gmp_int_import(gmp_int_t rop, size_t count, int order, size_t size, int endian, size_t nails, const void *op);
     void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endian, size_t nails, gmp_int_t op, unsigned int num_limbs);
+    void gmp_int_ui_pow_ui (gmp_int_t rop, unsigned long int base, unsigned long int exp);
+    void gmp_int_neg (gmp_int_t rop, gmp_int_t op);
+    void gmp_int_mod (gmp_int_t r, gmp_int_t n, gmp_int_t d);
+    void gmp_int_invert(int *inverse_exists, gmp_int_t rop, gmp_int_t op1, gmp_int_t op2);
 
 #endif /* GMP_INT_H_ */
