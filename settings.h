@@ -2,7 +2,7 @@
 #define SETTINGS_H_
 
     #define PRIME_FIELD_BINARY_BIT_LENGTH        (131)
-    #define LIMB_SIZE_IN_BITS                    (64)
+    #define LIMB_SIZE_IN_BITS                    (32)
     #define FULL_LIMB_PRECISION                  (0)
 
     #define MULX                                 (0)
