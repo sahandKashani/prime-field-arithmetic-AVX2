@@ -105,9 +105,15 @@ limb_t sub_limb_limb(limb_t a, limb_t b) {
 
 limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
+        /* The cmpgt instructions available in AVX2 only support SIGNED
+         * comparisons, so we need to code UNsigned cmpgt ourselves. The code
+         * below computes an a > b for unsigned values of a and b. */
 
         limb_t mask = set_limb(0x1);
-        limb_t tmp;
+        limb_t tmp = slli_limb(mask, LIMB_SIZE_IN_BITS - 1);
+
+        a = add_limb_limb(a, tmp);
+        b = add_limb_limb(b, tmp);
 
         #if LIMB_SIZE_IN_BITS == 32
 
