@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "constants.h"
 
-#define NUM_ITERATIONS (100000L)
+#define NUM_ITERATIONS (1 << 17)
 #define SEED (12345)
 
 bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
@@ -38,7 +38,7 @@ bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         gmp_int_set(op1_gmp, operands.small);
         gmp_int_set(op2_gmp, operands.middle);
@@ -99,7 +99,7 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         gmp_int_set(op1_gmp, operands.middle);
         gmp_int_set(mod_gmp, operands.big);
@@ -161,7 +161,7 @@ bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         /* op2 has to be smaller than op1 since this is normal subtraction (not modular) */
         gmp_int_set(op1_gmp, operands.middle);
@@ -220,7 +220,7 @@ bool test_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         generate_random_gmp_number(op1_gmp, BASE_EXPONENT, gmp_random_state);
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
 
@@ -283,7 +283,7 @@ bool test_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         gmp_int_set(op1_gmp, operands.middle);
         gmp_int_set(mod_gmp, operands.big);
@@ -343,7 +343,7 @@ bool test_mul_num_num(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         gmp_int_set(op1_gmp, operands.small);
         gmp_int_set(op2_gmp, operands.middle);
@@ -403,7 +403,7 @@ bool test_add_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         gmp_int_set(op1_gmp, operands.small);
         gmp_int_set(op2_gmp, operands.middle);
@@ -467,7 +467,7 @@ bool test_sub_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
         gmp_int_set(op1_gmp, operands.small);
         gmp_int_set(op2_gmp, operands.middle);
@@ -543,7 +543,7 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
 
     bool success = true;
 
-    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
         three_sorted_gmp operands;
 
         bool operands_ok;
@@ -719,7 +719,7 @@ int main(void) {
     check_mul_num_num();
     check_add_mod_num_num();
     check_sub_mod_num_num();
-    check_mul_montgomery_num_num();
+//    check_mul_montgomery_num_num();
 
     return EXIT_SUCCESS;
 }
