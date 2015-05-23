@@ -382,58 +382,6 @@ bool test_mul_num_num(unsigned int number_of_tests, unsigned int seed) {
     return success;
 }
 
-//bool test_cmp_num_num(unsigned int number_of_tests, unsigned int seed) {
-//    gmp_randstate_t gmp_random_state;
-//    gmp_randinit_default(gmp_random_state);
-//    gmp_randseed_ui(gmp_random_state, seed);
-//
-//    mpz_t op1_gmp;
-//    mpz_t op2_gmp;
-//    mpz_t mod_gmp;
-//    mpz_init(op1_gmp);
-//    mpz_init(op2_gmp);
-//    mpz_init(mod_gmp);
-//
-//    limb_t op1[NUM_LIMBS];
-//    limb_t op2[NUM_LIMBS];
-//
-//    bool success = true;
-//
-//    for (unsigned int i = 0; (i < number_of_tests) && success; i++) {
-//        generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-//        generate_random_gmp_less_than(op1_gmp, mod_gmp, gmp_random_state);
-//        generate_random_gmp_less_than(op2_gmp, mod_gmp, gmp_random_state);
-//
-//        clear_num(op1, NUM_LIMBS);
-//        clear_num(op2, NUM_LIMBS);
-//
-//        convert_gmp_to_num(op1, op1_gmp, NUM_LIMBS);
-//        convert_gmp_to_num(op2, op2_gmp, NUM_LIMBS);
-//
-//        int res_gmp = mpz_cmp(op1_gmp, op2_gmp);
-//        int res = cmp_num_num(op1, op2, NUM_LIMBS);
-//
-//        if (res_gmp != res) {
-//            cmp_num_num(op1, op2, NUM_LIMBS);
-//            print_num_gmp(op1_gmp, NUM_LIMBS);
-//            print_num(op1, NUM_LIMBS);
-//            print_num_gmp(op2_gmp, NUM_LIMBS);
-//            print_num(op2, NUM_LIMBS);
-//            printf("%d\n", res_gmp);
-//            printf("%d\n", res);
-//
-//            success = false;
-//        }
-//    }
-//
-//    mpz_clear(op1_gmp);
-//    mpz_clear(op2_gmp);
-//    mpz_clear(mod_gmp);
-//    gmp_randclear(gmp_random_state);
-//
-//    return success;
-//}
-
 bool test_add_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
     gmp_randstate_t gmp_random_state;
     gmp_randinit_default(gmp_random_state);
@@ -732,16 +680,6 @@ void check_mul_num_num() {
     printf("\n");
 }
 
-//void check_cmp_num_num() {
-//    printf("cmp:\n");
-//    if (test_cmp_num_num(NUM_ITERATIONS, SEED)) {
-//        printf("Success\n");
-//    } else {
-//        printf("Failed\n");
-//    }
-//    printf("\n");
-//}
-
 void check_add_mod_num_num() {
     printf("Add Mod:\n");
     if (test_add_mod_num_num(NUM_ITERATIONS, SEED)) {
@@ -782,9 +720,6 @@ int main(void) {
     check_add_mod_num_num();
     check_sub_mod_num_num();
     check_mul_montgomery_num_num();
-
-//    check_cmp_num_num();
-
 
     return EXIT_SUCCESS;
 }
