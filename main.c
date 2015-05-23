@@ -721,13 +721,13 @@ void check_mul_montgomery_num_num() {
 
 int main(void) {
     check_add_num_num();
-//    check_add_num_limb();
-//    check_sub_num_num();
-//    check_mul_limb_limb();
-//    check_mul_num_limb();
-//    check_mul_num_num();
-//    check_add_mod_num_num();
-//    check_sub_mod_num_num();
+    check_add_num_limb();
+    check_sub_num_num();
+    check_mul_limb_limb();
+    check_mul_num_limb();
+    check_mul_num_num();
+    check_add_mod_num_num();
+    check_sub_mod_num_num();
 //    check_mul_montgomery_num_num();
 
     return EXIT_SUCCESS;
