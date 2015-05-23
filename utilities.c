@@ -169,7 +169,9 @@ three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randst
         generate_random_gmp_number(output.small, precision_in_bits, gmp_random_state);
 
         for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
-            equalities_found |= ((output.big[i] == output.middle[i]) || (output.big[i] == output.small[i]) || (output.middle[i] == output.small[i]));
+            equalities_found |= ((mpz_cmp(output.big[i], output.middle[i]) == 0) ||
+                                 (mpz_cmp(output.big[i], output.small[i]) == 0)  ||
+                                 (mpz_cmp(output.middle[i], output.small[i]) == 0));
         }
     } while (equalities_found);
 
