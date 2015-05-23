@@ -20,6 +20,6 @@
     void gmp_int_rrandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n);
     void gmp_int_urandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n);
     void gmp_int_import(gmp_int_t rop, size_t count, int order, size_t size, int endian, size_t nails, const void *op);
-    void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endian, size_t nails, gmp_int_t op);
+    void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endian, size_t nails, gmp_int_t op, unsigned int num_limbs);
 
 #endif /* GMP_INT_H_ */

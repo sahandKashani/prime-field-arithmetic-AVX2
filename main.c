@@ -105,8 +105,6 @@ bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
         gmp_int_set(mod_gmp, operands.big);
 
         generate_random_gmp_number(op2_gmp, BASE_EXPONENT, gmp_random_state);
-        gmp_printf("%0*Zx\n", 1 * LIMB_SIZE_IN_HEX, op2_gmp);
-        print_num_gmp(op2_gmp, 1);
 
         zero_num(op1, NUM_LIMBS);
         zero_num(&op2, 1);
@@ -787,7 +785,7 @@ int main(void) {
 
     #elif SIMD_PARALLEL_WALKS
 
-//        check_add_num_num();
+        check_add_num_num();
         check_add_num_limb();
 
 //        gmp_randstate_t gmp_random_state;

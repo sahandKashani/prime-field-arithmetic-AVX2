@@ -72,7 +72,7 @@ void convert_gmp_to_num(limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs) 
         }
     }
 
-    gmp_int_export(tmp, NULL, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num_gmp);
+    gmp_int_export(tmp, NULL, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, num_gmp, num_limbs);
     transpose_num(tmp, NUM_ENTRIES_IN_LIMB, num_limbs);
 
     for (unsigned int i = 0; i < num_limbs; i++) {

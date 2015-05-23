@@ -91,8 +91,8 @@ void gmp_int_import(gmp_int_t rop, size_t count, int order, size_t size, int end
     }
 }
 
-void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endian, size_t nails, gmp_int_t op) {
+void gmp_int_export(void *rop, size_t *countp, int order, size_t size, int endian, size_t nails, gmp_int_t op, unsigned int num_limbs) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
-        mpz_export(((limb_building_block_t *) rop) + (i * NUM_LIMBS), countp, order, size, endian, nails, op[i]);
+        mpz_export(((limb_building_block_t *) rop) + (i * num_limbs), countp, order, size, endian, nails, op[i]);
     }
 }
