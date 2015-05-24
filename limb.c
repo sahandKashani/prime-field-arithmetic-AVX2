@@ -284,7 +284,7 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
         #if LIMB_SIZE_IN_BITS == 32
 
             uint64_t res = (uint64_t) a * b;
-            c.lo = res & ALL_ONE;
+            c.lo = res & 0xffffffff;
             c.hi = (uint32_t) (res >> 32);
 
         #elif LIMB_SIZE_IN_BITS == 64
@@ -295,8 +295,8 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
             #else /* MULX */
 
-                uint32_t a_32[2] = {(uint32_t) (a & ALL_ONE), (uint32_t) (a >> 32)};
-                uint32_t b_32[2] = {(uint32_t) (b & ALL_ONE), (uint32_t) (b >> 32)};
+                uint32_t a_32[2] = {(uint32_t) (a & 0xffffffff), (uint32_t) (a >> 32)};
+                uint32_t b_32[2] = {(uint32_t) (b & 0xffffffff), (uint32_t) (b >> 32)};
                 uint32_t c_32[4] = {0, 0, 0, 0};
 
                 uint64_t inner_product = 0;
@@ -307,7 +307,7 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
                     inner_product_hi = 0;
                     for (unsigned int j = 0; j < 2; j++) {
                         inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi;
-                        inner_product_lo = (uint32_t) (inner_product & ALL_ONE);
+                        inner_product_lo = (uint32_t) (inner_product & 0xffffffff);
                         inner_product_hi = (uint32_t) (inner_product >> 32);
                         c_32[i + j] = inner_product_lo;
                     }
