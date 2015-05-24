@@ -259,15 +259,15 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
             limb_t a_even = and_limb_limb(a, mask_lo);
             limb_t b_even = and_limb_limb(b, mask_lo);
-            limb_t a_odd = _mm256_srli_epi64(and_limb_limb(a, mask_hi), 8 * sizeof(limb_building_block_t));
-            limb_t b_odd = _mm256_srli_epi64(and_limb_limb(b, mask_hi), 8 * sizeof(limb_building_block_t));
+            limb_t a_odd = _mm256_srli_epi64(and_limb_limb(a, mask_hi), 32);
+            limb_t b_odd = _mm256_srli_epi64(and_limb_limb(b, mask_hi), 32);
 
             limb_t c_even = _mm256_mul_epu32(a_even, b_even);
             limb_t c_even_lo = and_limb_limb(c_even, mask_lo);
-            limb_t c_even_hi = _mm256_srli_epi64(and_limb_limb(c_even, mask_hi), 8 * sizeof(limb_building_block_t));
+            limb_t c_even_hi = _mm256_srli_epi64(and_limb_limb(c_even, mask_hi), 32);
 
             limb_t c_odd = _mm256_mul_epu32(a_odd, b_odd);
-            limb_t c_odd_lo = _mm256_slli_epi64(and_limb_limb(c_odd, mask_lo), 8 * sizeof(limb_building_block_t));
+            limb_t c_odd_lo = _mm256_slli_epi64(and_limb_limb(c_odd, mask_lo), 32);
             limb_t c_odd_hi = and_limb_limb(c_odd, mask_hi);
 
             c.lo = or_limb_limb(c_even_lo, c_odd_lo);
