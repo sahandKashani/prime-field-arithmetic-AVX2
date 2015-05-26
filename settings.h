@@ -8,6 +8,5 @@
     #define MULX                                 (0)
 
     #define SIMD_PARALLEL_WALKS                  (1)
-    #define AVX_ALIGNED_MEMORY                   (0)
 
 #endif /* SETTINGS_H_ */
