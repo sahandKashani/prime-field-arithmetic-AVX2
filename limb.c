@@ -252,10 +252,10 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
     #if SIMD_PARALLEL_WALKS
 
-        limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffULL);
-        limb_t mask_hi = _mm256_set1_epi64x((long long int) 0xffffffff00000000ULL);
-
         #if LIMB_SIZE_IN_BITS == 32
+
+            limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffull);
+            limb_t mask_hi = _mm256_set1_epi64x((long long int) 0xffffffff00000000ull);
 
             limb_t a_even = and_limb_limb(a, mask_lo);
             limb_t b_even = and_limb_limb(b, mask_lo);
