@@ -221,3 +221,26 @@ aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes
 void free_aligned_memory(aligned_memory mem) {
     free(mem.orig);
 }
+
+bool equals_num_limb(limb_building_block_t *num, limb_building_block_t value, unsigned int num_limbs) {
+    for (unsigned int i = 1; i < num_limbs; i++) {
+        if (num[i] != 0) {
+            return false;
+        }
+    }
+
+    return num[0] == value;
+}
+
+void set_num_limb(limb_building_block_t *num, limb_building_block_t value, unsigned int num_limbs) {
+    for (unsigned int i = 1; i < num_limbs; i++) {
+        num[i] = 0;
+    }
+    num[0] = value;
+}
+
+bool is_even(limb_building_block_t *num) {
+    return (num[0] & 1) == 0;
+}
+
+
