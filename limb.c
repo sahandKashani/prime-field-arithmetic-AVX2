@@ -31,9 +31,10 @@
 
 #endif /* !FULL_LIMB_PRECISION */
 
-#if SIMD_PARALLEL_WALKS
-    struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
-        struct d_limb_t c;
+struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
+    struct d_limb_t c;
+
+    #if SIMD_PARALLEL_WALKS
 
         limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffull);
 
@@ -53,9 +54,16 @@
         c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
         c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
 
-        return c;
-    }
-#endif
+    #else /* SIMD_PARALLEL_WALKS */
+
+        uint64_t res = (uint64_t) a * b;
+        c.lo = res & 0xffffffff;
+        c.hi = (uint32_t) (res >> 32);
+
+    #endif /* SIMD_PARALLEL_WALKS */
+
+    return c;
+}
 
 limb_t zero() {
     #if SIMD_PARALLEL_WALKS
@@ -322,9 +330,7 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
         #if LIMB_SIZE_IN_BITS == 32
 
-            uint64_t res = (uint64_t) a * b;
-            c.lo = res & 0xffffffff;
-            c.hi = (uint32_t) (res >> 32);
+            c = _mul_limb_32_limb_32(a, b);
 
         #elif LIMB_SIZE_IN_BITS == 64
 
