@@ -224,7 +224,7 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
     copy_num(z, A, num_limbs);
 }
 
-void invert(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs) {
+void invert_num(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs) {
     gmp_int_t a_gmp;
     gmp_int_t m_gmp;
 
