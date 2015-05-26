@@ -58,7 +58,7 @@ struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
 limb_t zero() {
     #if SIMD_PARALLEL_WALKS
 
-        return set_limb(0);
+        return _mm256_setzero_si256();
 
     #else /* SIMD_PARALLEL_WALKS */
 
@@ -133,23 +133,25 @@ limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
          * comparisons, so we need to code UNsigned cmpgt ourselves. The code
          * below computes an a > b for unsigned values of a and b. */
 
-        limb_t mask = set_limb(0x1);
-        limb_t tmp = slli_limb(mask, LIMB_SIZE_IN_BITS - 1);
-
-        a = add_limb_limb(a, tmp);
-        b = add_limb_limb(b, tmp);
-
         #if LIMB_SIZE_IN_BITS == 32
 
+            limb_t mask = _mm256_set1_epi32(0x1);
+            limb_t tmp = _mm256_slli_epi32(mask, LIMB_SIZE_IN_BITS - 1);
+            a = _mm256_add_epi32(a, tmp);
+            b = _mm256_add_epi32(b, tmp);
             tmp = _mm256_cmpgt_epi32(a, b);
 
         #elif LIMB_SIZE_IN_BITS == 64
 
+            limb_t mask = _mm256_set1_epi64x(0x1);
+            limb_t tmp = _mm256_slli_epi64(mask, LIMB_SIZE_IN_BITS - 1);
+            a = _mm256_add_epi64(a, tmp);
+            b = _mm256_add_epi64(b, tmp);
             tmp = _mm256_cmpgt_epi64(a, b);
 
         #endif /* LIMB_SIZE_IN_BITS */
 
-        return and_limb_limb(tmp, mask);
+        return _mm256_and_si256(tmp, mask);
 
     #else /* SIMD_PARALLEL_WALKS */
 
@@ -162,19 +164,18 @@ limb_t cmpeq_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
 
         limb_t mask = set_limb(0x1);
-        limb_t tmp;
 
         #if LIMB_SIZE_IN_BITS == 32
 
-            tmp = _mm256_cmpeq_epi32(a, b);
+            limb_t tmp = _mm256_cmpeq_epi32(a, b);
 
         #elif LIMB_SIZE_IN_BITS == 64
 
-            tmp = _mm256_cmpeq_epi64(a, b);
+            limb_t tmp = _mm256_cmpeq_epi64(a, b);
 
         #endif /* LIMB_SIZE_IN_BITS */
 
-        return and_limb_limb(tmp, mask);
+        return _mm256_and_si256(tmp, mask);
 
     #else /* SIMD_PARALLEL_WALKS */
 
