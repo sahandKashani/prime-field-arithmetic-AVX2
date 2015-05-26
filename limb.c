@@ -283,40 +283,36 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
         #elif LIMB_SIZE_IN_BITS == 64
 
-            limb_t a_lo = and_limb_limb(a, mask_lo);
-            limb_t a_hi = _mm256_srli_epi64(and_limb_limb(a, mask_hi), 32);
-            limb_t b_lo = and_limb_limb(b, mask_lo);
-            limb_t b_hi = _mm256_srli_epi64(and_limb_limb(b, mask_hi), 32);
+            limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffull);
 
-            limb_t a_32[2] = {a_lo, a_hi};
-            limb_t b_32[2] = {b_lo, b_hi};
-            limb_t c_32[4] = {zero(), zero(), zero(), zero()};
+            limb_t a_32[2] = {_mm256_and_si256(a, mask_lo), _mm256_srli_epi64(a, 32)};
+            limb_t b_32[2] = {_mm256_and_si256(b, mask_lo), _mm256_srli_epi64(b, 32)};
+            limb_t c_32[4] = {_mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256(), _mm256_setzero_si256()};
 
-            limb_t inner_product = zero();
-            limb_t inner_product_lo = zero();
-            limb_t inner_product_hi = zero();
-
-//            for (unsigned int i = 0; i < 2; i++) {
-//                inner_product_hi = 0;
-//                for (unsigned int j = 0; j < 2; j++) {
-//                    inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi;
-//                    inner_product_lo = (uint32_t) (inner_product & 0xffffffff);
-//                    inner_product_hi = (uint32_t) (inner_product >> 32);
-//                    c_32[i + j] = inner_product_lo;
-//                }
-//                c_32[i + 2] = inner_product_hi;
-//            }
-//
-//            c.lo = (((uint64_t) c_32[1]) << 32) + c_32[0];
-//            c.hi = (((uint64_t) c_32[3]) << 32) + c_32[2];
+            limb_t inner_product = _mm256_setzero_si256();
+            limb_t inner_product_lo = _mm256_setzero_si256();
+            limb_t inner_product_hi = _mm256_setzero_si256();
 
             for (unsigned int i = 0; i < 2; i++) {
-                inner_product_hi = zero();
+                inner_product_hi = _mm256_setzero_si256();
                 for (unsigned int j = 0; j < 2; j++) {
-                    inner_product = _mm256_add_epi64(_mm256_add_epi64(c_32[i + j], _mm256_mul_epu32(a_32[i], b_32[j])), inner_product_hi);
-                    inner_product_lo =
+                    /* inner_product = c_32[i + j] + (((uint64_t) a_32[i]) * b_32[j]) + inner_product_hi; */
+                    struct d_limb_t tmp = _mul_limb_32_limb_32(a_32[i], b_32[j]);
+                    inner_product = _mm256_slli_epi64(tmp.hi, 32);
+                    inner_product = _mm256_or_si256(inner_product, tmp.lo);
+                    inner_product = _mm256_add_epi64(inner_product, c_32[i + j]);
+                    inner_product = _mm256_add_epi64(inner_product, inner_product_hi);
+
+                    inner_product_lo = _mm256_and_si256(inner_product, mask_lo);
+                    inner_product_hi = _mm256_srli_epi64(inner_product, 32);
+
+                    c_32[i + j] = inner_product_lo;
                 }
+                c_32[i + 2] = inner_product_hi;
             }
+
+            c.lo = _mm256_add_epi64(_mm256_slli_epi64(c_32[1], 32), c_32[0]);
+            c.hi = _mm256_add_epi64(_mm256_slli_epi64(c_32[3], 32), c_32[2]);
 
         #endif /* LIMB_SIZE_IN_BITS */
 
