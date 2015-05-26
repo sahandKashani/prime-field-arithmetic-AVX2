@@ -31,29 +31,31 @@
 
 #endif /* !FULL_LIMB_PRECISION */
 
-struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
-    struct d_limb_t c;
+#if SIMD_PARALLEL_WALKS
+    struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
+        struct d_limb_t c;
 
-    limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffull);
+        limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffull);
 
-    limb_t a_even = _mm256_and_si256(a, mask_lo);
-    limb_t b_even = _mm256_and_si256(b, mask_lo);
-    limb_t a_odd = _mm256_srli_epi64(a, 32);
-    limb_t b_odd = _mm256_srli_epi64(b, 32);
+        limb_t a_even = _mm256_and_si256(a, mask_lo);
+        limb_t b_even = _mm256_and_si256(b, mask_lo);
+        limb_t a_odd = _mm256_srli_epi64(a, 32);
+        limb_t b_odd = _mm256_srli_epi64(b, 32);
 
-    limb_t c_even = _mm256_mul_epu32(a_even, b_even);
-    limb_t c_even_lo = _mm256_and_si256(c_even, mask_lo);
-    limb_t c_even_hi = _mm256_srli_epi64(c_even, 32);
+        limb_t c_even = _mm256_mul_epu32(a_even, b_even);
+        limb_t c_even_lo = _mm256_and_si256(c_even, mask_lo);
+        limb_t c_even_hi = _mm256_srli_epi64(c_even, 32);
 
-    limb_t c_odd = _mm256_mul_epu32(a_odd, b_odd);
-    limb_t c_odd_lo = _mm256_slli_epi64(c_odd, 32);
-    limb_t c_odd_hi = _mm256_andnot_si256(mask_lo, c_odd);
+        limb_t c_odd = _mm256_mul_epu32(a_odd, b_odd);
+        limb_t c_odd_lo = _mm256_slli_epi64(c_odd, 32);
+        limb_t c_odd_hi = _mm256_andnot_si256(mask_lo, c_odd);
 
-    c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
-    c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
+        c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
+        c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
 
-    return c;
-}
+        return c;
+    }
+#endif
 
 limb_t zero() {
     #if SIMD_PARALLEL_WALKS

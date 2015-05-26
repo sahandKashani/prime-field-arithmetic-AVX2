@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "constants.h"
 
-#define NUM_ITERATIONS (1 << 20)
+#define NUM_ITERATIONS (1 << 10)
 #define SEED (12345)
 
 bool test_add_num_num(unsigned int number_of_tests, unsigned int seed) {
@@ -728,7 +728,7 @@ int main(void) {
     check_mul_num_num();
     check_add_mod_num_num();
     check_sub_mod_num_num();
-//    check_mul_montgomery_num_num();
+    check_mul_montgomery_num_num();
 
     return EXIT_SUCCESS;
 }
