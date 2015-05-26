@@ -13,6 +13,7 @@
 #include "limb.h"
 #include "utilities.h"
 #include "constants.h"
+#include "elliptic_curve.h"
 
 #define NUM_ITERATIONS (1 << 10)
 #define SEED (12345)
@@ -720,15 +721,34 @@ void check_mul_montgomery_num_num() {
 }
 
 int main(void) {
-    check_add_num_num();
-    check_add_num_limb();
-    check_sub_num_num();
-    check_mul_limb_limb();
-    check_mul_num_limb();
-    check_mul_num_num();
-    check_add_mod_num_num();
-    check_sub_mod_num_num();
-    check_mul_montgomery_num_num();
+//    check_add_num_num();
+//    check_add_num_limb();
+//    check_sub_num_num();
+//    check_mul_limb_limb();
+//    check_mul_num_limb();
+//    check_mul_num_num();
+//    check_add_mod_num_num();
+//    check_sub_mod_num_num();
+//    check_mul_montgomery_num_num();
+
+    #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
+
+        limb_building_block_t m[NUM_LIMBS] = {0x6B3ABC0B, 0x194C4318, 0x93469E33, 0x8E1D43F2, 0x04};
+        limb_building_block_t p_x[NUM_LIMBS] = {0xE197198A, 0x4FA91A32, 0x5688EF57, 0xDF84A96B, 0x03};
+        limb_building_block_t p_y[NUM_LIMBS] = {0xF0942E71, 0xB4626F36, 0x17A44FB7, 0x47211619, 0x01};
+        limb_building_block_t q_x[NUM_LIMBS] = {0xC3FFB568, 0xED0BFB62, 0xC62E2DA1, 0xAA6F004F, 0x03};
+        limb_building_block_t q_y[NUM_LIMBS] = {0x5E3A67ED, 0xB2701BF5, 0xBA8A445B, 0x9C21C284, 0x00};
+
+        struct curve_point a;
+        struct curve_point b;
+        copy_num(a.x, p_x, NUM_LIMBS);
+        copy_num(a.y, p_y, NUM_LIMBS);
+        copy_num(b.x, q_x, NUM_LIMBS);
+        copy_num(b.y, q_y, NUM_LIMBS);
+
+        struct curve_point res = add_point_point(a, b, m, );
+
+    #endif
 
     return EXIT_SUCCESS;
 }
