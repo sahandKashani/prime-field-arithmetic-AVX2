@@ -37,8 +37,5 @@
     bool is_power_of_2(unsigned int x);
     aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes);
     void free_aligned_memory(aligned_memory mem);
-    bool equals_num_limb(limb_building_block_t *num, limb_building_block_t value, unsigned int num_limbs);
-    void set_num_limb(limb_building_block_t *num, limb_building_block_t value, unsigned int num_limbs);
-    bool is_even(limb_building_block_t *num);
 
 #endif /* UTILITIES_H_ */

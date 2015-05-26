@@ -223,33 +223,3 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
     sub_mod_num_num(A, A, m, m, num_limbs);
     copy_num(z, A, num_limbs);
 }
-
-void binary_inversion(limb_building_block_t *b, limb_building_block_t *a, limb_building_block_t *m, unsigned int num_limbs) {
-    limb_building_block_t u[num_limbs];
-    limb_building_block_t v[num_limbs];
-    limb_building_block_t x1[num_limbs];
-    limb_building_block_t x2[num_limbs];
-
-    for (unsigned int i = 0; i < num_limbs; i++) {
-        u[i] = a[i];
-        v[i] = m[i];
-        x1[i] = 0;
-        x2[i] = 0;
-    }
-
-    set_num_limb(x1, 1, num_limbs);
-
-    while (!equals_num_limb(u, 1, num_limbs) && !equals_num_limb(v, 1, num_limbs)) {
-        while (is_even(u)) {
-
-        }
-
-        while (is_even(v)) {
-
-        }
-    }
-}
-
-void simultaneous_inversion(limb_t *c, limb_t *a, limb_t *b, limb_t *m, unsigned int num_limbs) {
-
-}
