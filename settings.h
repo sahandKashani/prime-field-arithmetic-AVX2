@@ -7,6 +7,8 @@
 
     #define MULX                                 (0)
 
-    #define SIMD_PARALLEL_WALKS                  (1)
+    #define SIMD_PARALLEL_WALKS                  (0)
+
+    #define TEST                                 (1)
 
 #endif /* SETTINGS_H_ */
