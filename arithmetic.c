@@ -237,9 +237,6 @@ void invert_num(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs) {
     gmp_int_invert(NULL, a_gmp, a_gmp, m_gmp);
     convert_gmp_to_num(b, a_gmp, num_limbs);
 
-    print_num_gmp(a_gmp, num_limbs);
-    print_num(b, num_limbs);
-
     gmp_int_clear(a_gmp);
     gmp_int_clear(m_gmp);
 }
