@@ -9,6 +9,6 @@
 
     #define SIMD_PARALLEL_WALKS                  (0)
 
-    #define TEST                                 (1)
+    #define TEST                                 (0)
 
 #endif /* SETTINGS_H_ */

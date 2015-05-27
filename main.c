@@ -741,20 +741,81 @@ int main(void) {
 
             #else /* SIMD_PARALLEL_WALKS */
 
-                /* from certicom document */
-                limb_t m[NUM_LIMBS]   = {0x6B3ABC0B, 0x194C4318, 0x93469E33, 0x8E1D43F2, 0x00000004};
+                #if LIMB_SIZE_IN_BITS == 32
 
-                struct curve_point p1 = {
+                    /* from certicom document */
+                    limb_t m[NUM_LIMBS] = {0x6b3abc0b, 0x194c4318, 0x93469e33, 0x8e1d43f2, 0x00000004};
+                    limb_t m_prime;
+
+                    gmp_int_t m_gmp;
+                    gmp_int_t m_prime_gmp;
+                    gmp_int_t base_gmp;
+
+                    gmp_int_init(m_gmp);
+                    gmp_int_init(m_prime_gmp);
+                    gmp_int_init(base_gmp);
+
+                    convert_num_to_gmp(m_gmp, m, NUM_LIMBS);
+
+                    gmp_int_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
+                    int inverse_exists;
+                    gmp_int_invert(&inverse_exists, m_prime_gmp, m_gmp, base_gmp);
+                    assert(inverse_exists);
+                    gmp_int_neg(m_prime_gmp, m_prime_gmp);
+                    gmp_int_mod(m_prime_gmp, m_prime_gmp, base_gmp);
+
+                    convert_gmp_to_num(&m_prime, m_prime_gmp, 1);
+
+                    struct curve_point p1 = {
                         .x = {0xee8140ee, 0xe0296c61, 0x2b9a812f, 0x9f6d21d3, 0x00000001},
                         .y = {0x96515a03, 0xf776b144, 0x32833a4e, 0xbe0e4b9e, 0x00000001}
-                };
+                    };
 
-                struct curve_point p2 = {
+                    struct curve_point p2 = {
                         .x = {0xf4b4bff2, 0x7e0b46a5, 0xb394666d, 0x96c93d34, 0x00000000},
                         .y = {0xa06b2e3b, 0x8bce38bf, 0x1653efa8, 0x93a86761, 0x00000000}
-                };
+                    };
 
-                add_point_point(p1, p2, m, );
+                    printf("original\n");
+                    printf("p1.x = ");
+                    print_num(p1.x, NUM_LIMBS);
+                    printf("p1.y = ");
+                    print_num(p1.y, NUM_LIMBS);
+                    printf("p2.x = ");
+                    print_num(p2.x, NUM_LIMBS);
+                    printf("p2.y = ");
+                    print_num(p2.y, NUM_LIMBS);
+
+                    /* convert to montgomery representation */
+                    limb_t one[NUM_LIMBS];
+                    set_num(one, 1, NUM_LIMBS);
+                    mul_montgomery_num_num(p1.x, p1.x, one, m, m_prime, NUM_LIMBS);
+                    mul_montgomery_num_num(p1.y, p1.y, one, m, m_prime, NUM_LIMBS);
+                    mul_montgomery_num_num(p2.x, p2.x, one, m, m_prime, NUM_LIMBS);
+                    mul_montgomery_num_num(p2.y, p2.y, one, m, m_prime, NUM_LIMBS);
+
+                    printf("\n");
+
+                    printf("montgomery representation\n");
+                    printf("p1.x = ");
+                    print_num(p1.x, NUM_LIMBS);
+                    printf("p1.y = ");
+                    print_num(p1.y, NUM_LIMBS);
+                    printf("p2.x = ");
+                    print_num(p2.x, NUM_LIMBS);
+                    printf("p2.y = ");
+                    print_num(p2.y, NUM_LIMBS);
+
+                    printf("\n");
+
+                    struct curve_point p3 = add_point_point(p1, p2, m, m_prime);
+
+                    print_num(p3.x, NUM_LIMBS);
+                    print_num(p3.y, NUM_LIMBS);
+
+                #elif LIMB_SIZE_IN_BITS == 64
+
+                #endif /* LIMB_SIZE_IN_BITS */
 
             #endif /* SIMD_PARALLEL_WALKS */
 

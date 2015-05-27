@@ -37,5 +37,6 @@
     bool is_power_of_2(unsigned int x);
     aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes);
     void free_aligned_memory(aligned_memory mem);
+    void set_num(limb_t *num, limb_building_block_t value, unsigned int num_limbs);
 
 #endif /* UTILITIES_H_ */

@@ -221,3 +221,10 @@ aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes
 void free_aligned_memory(aligned_memory mem) {
     free(mem.orig);
 }
+
+void set_num(limb_t *num, limb_building_block_t value, unsigned int num_limbs) {
+    for (unsigned int i = 1; i < num_limbs; i++) {
+        num[i] = zero();
+    }
+    store_limb(num, 0, value);
+}

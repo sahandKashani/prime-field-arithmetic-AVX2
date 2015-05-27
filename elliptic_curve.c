@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include "arithmetic.h"
 #include "elliptic_curve.h"
+#include "utilities.h"
 
 /**
  * Supposes data is in Montgomery form prior to being called
@@ -13,9 +15,16 @@ struct curve_point add_point_point(struct curve_point a, struct curve_point b, l
 
     /* lambda = (y2 - y1) / (x2 - x1) */
     sub_mod_num_num(numer, b.y, a.y, m, NUM_LIMBS);
+    print_num(numer, NUM_LIMBS);
+
     sub_mod_num_num(denom, b.x, a.x, m, NUM_LIMBS);
+    print_num(denom, NUM_LIMBS);
+
     invert_num(denom, denom, m, NUM_LIMBS);
+    print_num(denom, NUM_LIMBS);
+
     mul_montgomery_num_num(lambda, numer, denom, m, m_prime, NUM_LIMBS);
+    print_num(lambda, NUM_LIMBS);
 
     /* x */
     mul_montgomery_num_num(c.x, lambda, lambda, m, m_prime, NUM_LIMBS);
