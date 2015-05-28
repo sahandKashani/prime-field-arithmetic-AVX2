@@ -42,24 +42,31 @@ unsigned int min(unsigned int a, unsigned int b) {
 
 void print_limb(limb_t limb) {
     printf("| ");
+    fflush(stdout);
     for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < NUM_ENTRIES_IN_LIMB; entry_in_limb_index++) {
         printf("%0*" PRI_LIMB " | ", LIMB_SIZE_IN_HEX, extract_limb(&limb, 0, entry_in_limb_index, NUM_ENTRIES_IN_LIMB));
+        fflush(stdout);
     }
     printf("\n");
+    fflush(stdout);
 }
 
 void print_num(limb_t *num, unsigned int num_limbs) {
     for (unsigned int entry_in_limb_index = 0; entry_in_limb_index < NUM_ENTRIES_IN_LIMB; entry_in_limb_index++) {
         if (entry_in_limb_index == 0) {
             printf("| ");
+            fflush(stdout);
         }
 
         for (unsigned int limb_index = 0; limb_index < num_limbs; limb_index++) {
             printf("%0*" PRI_LIMB " ", LIMB_SIZE_IN_HEX, extract_limb(num, num_limbs - limb_index - 1, entry_in_limb_index, NUM_ENTRIES_IN_LIMB));
+            fflush(stdout);
         }
         printf("| ");
+        fflush(stdout);
     }
     printf("\n");
+    fflush(stdout);
 }
 
 void print_num_gmp(gmp_int_t num_gmp, unsigned int num_limbs) {
