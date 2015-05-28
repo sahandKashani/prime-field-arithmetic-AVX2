@@ -9,6 +9,7 @@
 #include <time.h>
 #include <gmp.h>
 #include "arithmetic.h"
+#include "compile_time_checks.h"
 #include "gmp_int.h"
 #include "limb.h"
 #include "utilities.h"
