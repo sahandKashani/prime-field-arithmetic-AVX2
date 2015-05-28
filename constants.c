@@ -42,12 +42,12 @@
 
                 #elif LIMB_SIZE_IN_BITS == 64
 
-                    limb_building_block_t m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS]         = {0x194c43186b3abc0b, 0x194c43186b3abc0b, 0x194c43186b3abc0b,
-                                                                                        0x8e1d43f293469e33, 0x8e1d43f293469e33, 0x8e1d43f293469e33,
-                                                                                        0x0000000000000004, 0x0000000000000004, 0x0000000000000004};
-                    limb_building_block_t R_2_mod_m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS] = {0x7f8aade1eeebae5c, 0x7f8aade1eeebae5c, 0x7f8aade1eeebae5c,
-                                                                                        0x5fc60ba5261f2555, 0x5fc60ba5261f2555, 0x5fc60ba5261f2555,
-                                                                                        0x0000000000000001, 0x0000000000000001, 0x0000000000000001};
+                    limb_building_block_t m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS]         = {0x194c43186b3abc0b, 0x194c43186b3abc0b, 0x194c43186b3abc0b, 0x194c43186b3abc0b,
+                                                                                        0x8e1d43f293469e33, 0x8e1d43f293469e33, 0x8e1d43f293469e33, 0x8e1d43f293469e33,
+                                                                                        0x0000000000000004, 0x0000000000000004, 0x0000000000000004, 0x0000000000000004};
+                    limb_building_block_t R_2_mod_m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS] = {0x7f8aade1eeebae5c, 0x7f8aade1eeebae5c, 0x7f8aade1eeebae5c, 0x7f8aade1eeebae5c,
+                                                                                        0x5fc60ba5261f2555, 0x5fc60ba5261f2555, 0x5fc60ba5261f2555, 0x5fc60ba5261f2555,
+                                                                                        0x0000000000000001, 0x0000000000000001, 0x0000000000000001, 0x0000000000000001};
 
                 #endif /* LIMB_SIZE_IN_BITS */
 
@@ -89,12 +89,12 @@
 
                 #elif LIMB_SIZE_IN_BITS == 64
 
-                    limb_building_block_t m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS]         = {0x194c43186b3abc0b, 0x194c43186b3abc0b, 0x194c43186b3abc0b,
-                                                                                        0x1c3a87e5268d3c66, 0x1c3a87e5268d3c66, 0x1c3a87e5268d3c66,
-                                                                                        0x0000000000000012, 0x0000000000000012, 0x0000000000000012};
-                    limb_building_block_t R_2_mod_m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS] = {0x776298d851741001, 0x776298d851741001, 0x776298d851741001,
-                                                                                        0x4e666dcab3b212b0, 0x4e666dcab3b212b0, 0x4e666dcab3b212b0,
-                                                                                        0x000000000000000c, 0x000000000000000c, 0x000000000000000c};
+                    limb_building_block_t m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS]         = {0x194c43186b3abc0b, 0x194c43186b3abc0b, 0x194c43186b3abc0b, 0x194c43186b3abc0b,
+                                                                                        0x1c3a87e5268d3c66, 0x1c3a87e5268d3c66, 0x1c3a87e5268d3c66, 0x1c3a87e5268d3c66,
+                                                                                        0x0000000000000012, 0x0000000000000012, 0x0000000000000012, 0x0000000000000012};
+                    limb_building_block_t R_2_mod_m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS] = {0x776298d851741001, 0x776298d851741001, 0x776298d851741001, 0x776298d851741001,
+                                                                                        0x4e666dcab3b212b0, 0x4e666dcab3b212b0, 0x4e666dcab3b212b0, 0x4e666dcab3b212b0,
+                                                                                        0x000000000000000c, 0x000000000000000c, 0x000000000000000c, 0x000000000000000c};
 
                 #endif /* LIMB_SIZE_IN_BITS */
 
