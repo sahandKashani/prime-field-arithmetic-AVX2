@@ -25,5 +25,6 @@
     void gmp_int_neg (gmp_int_t rop, gmp_int_t op);
     void gmp_int_mod (gmp_int_t r, gmp_int_t n, gmp_int_t d);
     void gmp_int_invert(int *inverse_exists, gmp_int_t rop, gmp_int_t op1, gmp_int_t op2);
+    int gmp_int_set_str(gmp_int_t rop, const char *str, int base);
 
 #endif /* GMP_INT_H_ */

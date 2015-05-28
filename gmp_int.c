@@ -123,3 +123,11 @@ void gmp_int_invert(int *inverse_exists, gmp_int_t rop, gmp_int_t op1, gmp_int_t
         }
     }
 }
+
+int gmp_int_set_str(gmp_int_t rop, const char *str, int base) {
+    int ret = 0;
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        ret = mpz_set_str(rop[i], str, base);
+    }
+    return ret;
+}
