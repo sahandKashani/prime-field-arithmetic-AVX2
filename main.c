@@ -824,5 +824,46 @@ int main(void) {
 
     #endif /* TEST */
 
+    #if NUMBER_GENERATION
+        mpz_t m_gmp;
+        mpz_init(m_gmp);
+        mpz_set_str(m_gmp, "048e1d43f293469e33194c43186b3abc0b", 16);
+
+        gmp_printf("m_gmp = %Zx\n", m_gmp);
+
+        mpz_t R_gmp;
+        mpz_init(R_gmp);
+        mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
+
+        gmp_printf("R_gmp = %Zx\n", R_gmp);
+
+        mpz_t R_2_m_gmp;
+        mpz_init(R_2_m_gmp);
+        mpz_mul(R_2_m_gmp, R_gmp, R_gmp);
+        mpz_mod(R_2_m_gmp, R_2_m_gmp, m_gmp);
+
+        gmp_printf("R_2_m_gmp = %Zx\n", R_2_m_gmp);
+
+        size_t num_words = 0;
+
+        void *m = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, m_gmp);
+        printf("%zd\n", num_words);
+        for (unsigned int i = 0; i < num_words; i++) {
+            limb_building_block_t limb = *(((limb_building_block_t *) m) + i);
+            printf("0x%0*" PRI_LIMB ", ", LIMB_SIZE_IN_HEX, limb);
+        }
+        printf("\n");
+
+        void *R_2_mod_m = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, R_2_m_gmp);
+        printf("%zd\n", num_words);
+        for (unsigned int i = 0; i < num_words; i++) {
+            limb_building_block_t limb = *(((limb_building_block_t *) R_2_mod_m) + i);
+            printf("0x%0*" PRI_LIMB ", ", LIMB_SIZE_IN_HEX, limb);
+        }
+        printf("\n");
+
+    #endif /* NUMBER_GENERATION */
+
+
     return EXIT_SUCCESS;
 }
