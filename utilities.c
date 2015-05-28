@@ -222,7 +222,7 @@ void free_aligned_memory(aligned_memory mem) {
     free(mem.orig);
 }
 
-void set_num(limb_t *num, limb_building_block_t value, unsigned int num_limbs) {
+void set_num(limb_t *num, limb_t value, unsigned int num_limbs) {
     for (unsigned int i = 1; i < num_limbs; i++) {
         num[i] = zero();
     }

@@ -14,7 +14,12 @@
     #define LIMB_SIZE_IN_BYTES (LIMB_SIZE_IN_BITS / 8)
     #define LIMB_SIZE_IN_HEX   (LIMB_SIZE_IN_BITS / 4)
 
-    #if LIMB_SIZE_IN_BITS == 32
+    #if LIMB_SIZE_IN_BITS == 16
+
+        typedef uint16_t limb_building_block_t;
+        #define PRI_LIMB PRIx16
+
+    #elif LIMB_SIZE_IN_BITS == 32
 
         typedef uint32_t limb_building_block_t;
         #define PRI_LIMB PRIx32

@@ -31,10 +31,10 @@
 
 #endif /* !FULL_LIMB_PRECISION */
 
-struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
-    struct d_limb_t c;
+#if SIMD_PARALLEL_WALKS
 
-    #if SIMD_PARALLEL_WALKS
+    struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
+        struct d_limb_t c;
 
         limb_t mask_lo = _mm256_set1_epi64x((long long int) 0x00000000ffffffffull);
 
@@ -54,16 +54,10 @@ struct d_limb_t _mul_limb_32_limb_32(limb_t a, limb_t b) {
         c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
         c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
 
-    #else /* SIMD_PARALLEL_WALKS */
+        return c;
+    }
 
-        uint64_t res = (uint64_t) a * b;
-        c.lo = res & 0xffffffff;
-        c.hi = (uint32_t) (res >> 32);
-
-    #endif /* SIMD_PARALLEL_WALKS */
-
-    return c;
-}
+#endif /* SIMD_PARALLEL_WALKS */
 
 limb_t zero() {
     #if SIMD_PARALLEL_WALKS
@@ -80,7 +74,11 @@ limb_t zero() {
 limb_t set_limb(unsigned long long int a) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            return _mm256_set1_epi16((short int) a);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             return _mm256_set1_epi32((int) a);
 
@@ -100,7 +98,11 @@ limb_t set_limb(unsigned long long int a) {
 limb_t add_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            return _mm256_add_epi16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             return _mm256_add_epi32(a, b);
 
@@ -112,7 +114,7 @@ limb_t add_limb_limb(limb_t a, limb_t b) {
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        return a + b;
+        return (limb_t) (a + b);
 
     #endif /* SIMD_PARALLEL_WALKS */
 }
@@ -120,7 +122,11 @@ limb_t add_limb_limb(limb_t a, limb_t b) {
 limb_t sub_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            return _mm256_sub_epi16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             return _mm256_sub_epi32(a, b);
 
@@ -132,7 +138,7 @@ limb_t sub_limb_limb(limb_t a, limb_t b) {
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        return a - b;
+        return (limb_t) (a - b);
 
     #endif /* SIMD_PARALLEL_WALKS */
 }
@@ -143,7 +149,15 @@ limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
          * comparisons, so we need to code UNsigned cmpgt ourselves. The code
          * below computes an a > b for unsigned values of a and b. */
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            limb_t mask = _mm256_set1_epi16(0x1);
+            limb_t tmp = _mm256_slli_epi16(mask, LIMB_SIZE_IN_BITS - 1);
+            a = _mm256_add_epi16(a, tmp);
+            b = _mm256_add_epi16(b, tmp);
+            tmp = _mm256_cmpgt_epi16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             limb_t mask = _mm256_set1_epi32(0x1);
             limb_t tmp = _mm256_slli_epi32(mask, LIMB_SIZE_IN_BITS - 1);
@@ -175,7 +189,11 @@ limb_t cmpeq_limb_limb(limb_t a, limb_t b) {
 
         limb_t mask = set_limb(0x1);
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            limb_t tmp = _mm256_cmpeq_epi16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             limb_t tmp = _mm256_cmpeq_epi32(a, b);
 
@@ -221,7 +239,11 @@ limb_t and_limb_limb(limb_t a, limb_t b) {
 limb_t srli_limb(limb_t a, int b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            return _mm256_srli_epi16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             return _mm256_srli_epi32(a, b);
 
@@ -233,7 +255,7 @@ limb_t srli_limb(limb_t a, int b) {
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        return a >> b;
+        return (limb_t) (a >> b);
 
     #endif /* SIMD_PARALLEL_WALKS */
 }
@@ -241,7 +263,11 @@ limb_t srli_limb(limb_t a, int b) {
 limb_t slli_limb(limb_t a, int b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            return _mm256_slli_epi16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             return _mm256_slli_epi32(a, b);
 
@@ -253,7 +279,7 @@ limb_t slli_limb(limb_t a, int b) {
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        return a << b;
+        return (limb_t) (a << b);
 
     #endif /* SIMD_PARALLEL_WALKS */
 }
@@ -287,7 +313,12 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
+
+            c.lo = _mm256_mullo_epi16(a, b);
+            c.hi = _mm256_mulhi_epu16(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 32
 
             c = _mul_limb_32_limb_32(a, b);
 
@@ -328,9 +359,17 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        #if LIMB_SIZE_IN_BITS == 32
+        #if LIMB_SIZE_IN_BITS == 16
 
-            c = _mul_limb_32_limb_32(a, b);
+            uint32_t res = (uint32_t) a * b;
+            c.lo = res & 0xffff;
+            c.hi = (uint16_t) (res >> 16);
+
+        #elif LIMB_SIZE_IN_BITS == 32
+
+            uint64_t res = (uint64_t) a * b;
+            c.lo = res & 0xffffffff;
+            c.hi = (uint32_t) (res >> 32);
 
         #elif LIMB_SIZE_IN_BITS == 64
 
