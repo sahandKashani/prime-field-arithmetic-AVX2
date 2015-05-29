@@ -235,3 +235,8 @@ void set_num(limb_t *num, limb_t value, unsigned int num_limbs) {
     }
     store_limb(num, 0, value);
 }
+
+void to_montgomery_representation(limb_t *num, unsigned int num_limbs) {
+    limb_t tmp[num_limbs];
+//    mul_montgomery_num_num(tmp, num, R_2_mod_m, m, );
+}

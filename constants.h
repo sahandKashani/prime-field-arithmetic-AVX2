@@ -11,5 +11,6 @@
 
     extern limb_building_block_t m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS];
     extern limb_building_block_t R_2_mod_m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS];
+    extern limb_building_block_t m_prime[NUM_ENTRIES_IN_LIMB];
 
 #endif /* CONSTANTS_H_ */

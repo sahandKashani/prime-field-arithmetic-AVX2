@@ -734,115 +734,33 @@ int main(void) {
         check_sub_mod_num_num();
         check_mul_montgomery_num_num();
 
-    #else /* TEST */
+    #elif NUMBER_GENERATION
 
-        #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
-
-            #if SIMD_PARALLEL_WALKS
-
-            #else /* SIMD_PARALLEL_WALKS */
-
-                #if LIMB_SIZE_IN_BITS == 32
-
-                    /* from certicom document */
-                    limb_t m[NUM_LIMBS] = {0x6b3abc0b, 0x194c4318, 0x93469e33, 0x8e1d43f2, 0x00000004};
-                    limb_t m_prime;
-
-                    gmp_int_t m_gmp;
-                    gmp_int_t m_prime_gmp;
-                    gmp_int_t base_gmp;
-
-                    gmp_int_init(m_gmp);
-                    gmp_int_init(m_prime_gmp);
-                    gmp_int_init(base_gmp);
-
-                    convert_num_to_gmp(m_gmp, m, NUM_LIMBS);
-
-                    gmp_int_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
-                    int inverse_exists;
-                    gmp_int_invert(&inverse_exists, m_prime_gmp, m_gmp, base_gmp);
-                    assert(inverse_exists);
-                    gmp_int_neg(m_prime_gmp, m_prime_gmp);
-                    gmp_int_mod(m_prime_gmp, m_prime_gmp, base_gmp);
-
-                    convert_gmp_to_num(&m_prime, m_prime_gmp, 1);
-
-                    struct curve_point p1 = {
-                        .x = {0xee8140ee, 0xe0296c61, 0x2b9a812f, 0x9f6d21d3, 0x00000001},
-                        .y = {0x96515a03, 0xf776b144, 0x32833a4e, 0xbe0e4b9e, 0x00000001}
-                    };
-
-                    struct curve_point p2 = {
-                        .x = {0xf4b4bff2, 0x7e0b46a5, 0xb394666d, 0x96c93d34, 0x00000000},
-                        .y = {0xa06b2e3b, 0x8bce38bf, 0x1653efa8, 0x93a86761, 0x00000000}
-                    };
-
-                    printf("original\n");
-                    printf("p1.x = ");
-                    print_num(p1.x, NUM_LIMBS);
-                    printf("p1.y = ");
-                    print_num(p1.y, NUM_LIMBS);
-                    printf("p2.x = ");
-                    print_num(p2.x, NUM_LIMBS);
-                    printf("p2.y = ");
-                    print_num(p2.y, NUM_LIMBS);
-
-                    /* convert to montgomery representation */
-                    limb_t one[NUM_LIMBS];
-                    set_num(one, 1, NUM_LIMBS);
-                    mul_montgomery_num_num(p1.x, p1.x, one, m, m_prime, NUM_LIMBS);
-                    mul_montgomery_num_num(p1.y, p1.y, one, m, m_prime, NUM_LIMBS);
-                    mul_montgomery_num_num(p2.x, p2.x, one, m, m_prime, NUM_LIMBS);
-                    mul_montgomery_num_num(p2.y, p2.y, one, m, m_prime, NUM_LIMBS);
-
-                    printf("\n");
-
-                    printf("montgomery representation\n");
-                    printf("p1.x = ");
-                    print_num(p1.x, NUM_LIMBS);
-                    printf("p1.y = ");
-                    print_num(p1.y, NUM_LIMBS);
-                    printf("p2.x = ");
-                    print_num(p2.x, NUM_LIMBS);
-                    printf("p2.y = ");
-                    print_num(p2.y, NUM_LIMBS);
-
-                    printf("\n");
-
-                    struct curve_point p3 = add_point_point(p1, p2, m, m_prime);
-
-                    print_num(p3.x, NUM_LIMBS);
-                    print_num(p3.y, NUM_LIMBS);
-
-                #elif LIMB_SIZE_IN_BITS == 64
-
-                #endif /* LIMB_SIZE_IN_BITS */
-
-            #endif /* SIMD_PARALLEL_WALKS */
-
-        #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
-
-    #endif /* TEST */
-
-    #if NUMBER_GENERATION
+        mpz_t base_gmp;
         mpz_t m_gmp;
-        mpz_init(m_gmp);
-        mpz_set_str(m_gmp, "048e1d43f293469e33194c43186b3abc0b", 16);
-
-        gmp_printf("m_gmp = %Zx\n", m_gmp);
-
         mpz_t R_gmp;
-        mpz_init(R_gmp);
-        mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
-
-        gmp_printf("R_gmp = %Zx\n", R_gmp);
-
         mpz_t R_2_m_gmp;
+
+        mpz_init(base_gmp);
+        mpz_init(m_gmp);
+        mpz_init(R_gmp);
         mpz_init(R_2_m_gmp);
+
+        mpz_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
+        mpz_set_str(m_gmp, "048e1d43f293469e33194c43186b3abc0b", 16);
+        mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
         mpz_mul(R_2_m_gmp, R_gmp, R_gmp);
         mpz_mod(R_2_m_gmp, R_2_m_gmp, m_gmp);
 
+        gmp_printf("m_gmp = %Zx\n", m_gmp);
+        gmp_printf("R_gmp = %Zx\n", R_gmp);
         gmp_printf("R_2_m_gmp = %Zx\n", R_2_m_gmp);
+
+        mpz_t m_prime_gmp;
+        mpz_init(m_prime_gmp);
+
+        int inverse_exists = mpz_invert(m_prime_gmp, m_gmp, base_gmp);
+        assert(inverse_exists);
 
         size_t num_words = 0;
 
@@ -862,8 +780,19 @@ int main(void) {
         }
         printf("\n");
 
-    #endif /* NUMBER_GENERATION */
+    #else
 
+        #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
+
+            gmp_int_t m_gmp;
+            gmp_int_init(m_gmp);
+            print_num((limb_t *) m, NUM_LIMBS);
+            convert_num_to_gmp(m_gmp, (limb_t *) m, NUM_LIMBS);
+            print_num_gmp(m_gmp, NUM_LIMBS);
+
+        #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
+
+    #endif
 
     return EXIT_SUCCESS;
 }
