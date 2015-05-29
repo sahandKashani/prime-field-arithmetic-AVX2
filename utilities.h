@@ -38,5 +38,7 @@
     aligned_memory alloc_aligned_memory(size_t size, unsigned int alignment_in_bytes);
     void free_aligned_memory(aligned_memory mem);
     void set_num(limb_t *num, limb_t value, unsigned int num_limbs);
+    void standard_to_montgomery_representation(limb_t *num, unsigned int num_limbs);
+    void montgomery_to_standard_representation(limb_t *num, unsigned int num_limbs);
 
 #endif /* UTILITIES_H_ */
