@@ -2,6 +2,27 @@
 
     #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
 
+        char *m_hex = "048e1d43f293469e33194c43186b3abc0b";
+        char *a_hex = "041cb121ce2b31f608a76fc8f23d73cb66";
+        char *b_hex = "02f74f717e8dec90991e5ea9b2ff03da58";
+
+        char *points_hex[16][2] = {{"3bab0d982fb9d0de59bc0bec8e1050b13", "10253d893b53debdd5e52f87e25b8c0a3"},
+                                   {"094a8389f671759ec2e55dde5dfd41750", "0b54ec3ee9f25281fcaa52add0be7fb54"},
+                                   {"3c694fcbf0ed043b27968368f04766015", "16b9cdc810185e25bef1853878be33741"},
+                                   {"1959ca8a3cee525c0c55e8c3d91bbc64b", "159b9e06091f30a9b5edff216229e74f2"},
+                                   {"299378a49a7c3db974f5c2086ab3c3c82", "13405dea071e5d30b6b2349a43df2979f"},
+                                   {"21933fcb129bb1f296ae89f9b15cf04f7", "1613c19bf63e239cb1cc39302e58e3f9a"},
+                                   {"22a3847ba75fe435da1f23447259e6b6f", "007da71edd0263aec91f07ce5894e6d78"},
+                                   {"37130ab3a5b64a8d41f693e0400b71bd8", "123f9387b35bfd5ff7059a708f44f46a0"},
+                                   {"145a6dc76e79167352ea6baa362d2a86a", "0edd5f8d6ed91dbecf3144ac25d8da71a"},
+                                   {"2615b64b1e182498b4b6ea0f960593786", "0032bbca6e787324bb53823c758aa395d"},
+                                   {"27ea2cc6cb9050863a6f0305c121b7c7f", "18e712d0c16172feedfffc8477f9fe3b0"},
+                                   {"0437c37d4a7654760a7592d2749fb4b8f", "20876e276102572a9189b0360457a6cda"},
+                                   {"3528698d1205a8c601f2fd6f71af0112a", "1e89bddb0170ae6714d293c7d34cda0d2"},
+                                   {"31c925d10fec9345d2376ba9ea2b902cb", "13b0467c49c5d93b6e3bf06d9f8e916a4"},
+                                   {"327c0386de2461f1dc019cf764f60f707", "124089494da50266755286d7c725599dc"},
+                                   {"02e42584142c19a5c6a314ded03da6d50", "22f7b32ca54fc4fe902fcb38b1a21ea77"}};
+
         #if SIMD_PARALLEL_WALKS
 
             #if FULL_LIMB_PRECISION

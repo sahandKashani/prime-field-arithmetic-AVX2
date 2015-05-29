@@ -9,6 +9,11 @@
     #define NUM_LIMBS                   ((PRIME_FIELD_BINARY_BIT_LENGTH + BASE_EXPONENT - 1) / BASE_EXPONENT) /* equivalent to ((unsigned int) ceil((PRIME_FIELD_BINARY_BIT_LENGTH)/ ((double) BASE_EXPONENT))) */
     #define PRIME_FIELD_FULL_HEX_LENGTH (NUM_LIMBS * LIMB_SIZE_IN_HEX)
 
+    extern char *m_hex;
+    extern char *a_hex;
+    extern char *b_hex;
+    extern char *points_hex[16][2]; // [2] is {x, y}
+
     extern limb_building_block_t m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS];
     extern limb_building_block_t R_2_mod_m[NUM_ENTRIES_IN_LIMB * NUM_LIMBS];
     extern limb_building_block_t m_prime[NUM_ENTRIES_IN_LIMB];
