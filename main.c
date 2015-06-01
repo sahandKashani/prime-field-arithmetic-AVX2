@@ -765,6 +765,7 @@ int main(void) {
 
         size_t num_words = 0;
 
+        printf("\nm:\n==\n");
         void *m = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, m_gmp);
         printf("%zd\n", num_words);
         for (unsigned int i = 0; i < num_words; i++) {
@@ -773,6 +774,7 @@ int main(void) {
         }
         printf("\n");
 
+        printf("\nR_2_mod_m:\n==========\n");
         void *R_2_mod_m = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, R_2_m_gmp);
         printf("%zd\n", num_words);
         for (unsigned int i = 0; i < num_words; i++) {
@@ -781,6 +783,7 @@ int main(void) {
         }
         printf("\n");
 
+        printf("\nm_prime:\n=======\n");
         void *m_prime = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, m_prime_gmp);
         printf("%zd\n", num_words);
         for (unsigned int i = 0; i < num_words; i++) {
@@ -795,8 +798,17 @@ int main(void) {
             gmp_int_t m_gmp;
             gmp_int_init(m_gmp);
             print_num((limb_t *) m, NUM_LIMBS);
-            convert_num_to_gmp(m_gmp, (limb_t *) m, NUM_LIMBS);
-            print_num_gmp(m_gmp, NUM_LIMBS);
+
+            mpz_t point1x_gmp;
+            mpz_t point1y_gmp;
+            mpz_init(point1x_gmp);
+            mpz_init(point1y_gmp);
+            mpz_set_str(point1x_gmp, points_hex[0][0], 16);
+            mpz_set_str(point1y_gmp, points_hex[0][1], 16);
+            gmp_printf("point1x_gmp = %Zx\n", point1x_gmp);
+            gmp_printf("point1y_gmp = %Zx\n", point1y_gmp);
+
+            printf("on_curve = %d\n", is_on_curve_gmp(point1x_gmp, point1y_gmp));
 
         #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 

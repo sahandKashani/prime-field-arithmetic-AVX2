@@ -3,7 +3,7 @@
 
     #define PRIME_FIELD_BINARY_BIT_LENGTH        (131)
     #define LIMB_SIZE_IN_BITS                    (32)
-    #define FULL_LIMB_PRECISION                  (0)
+    #define FULL_LIMB_PRECISION                  (1)
 
     #define MULX                                 (0)
 
@@ -11,6 +11,6 @@
 
     #define TEST                                 (0)
 
-    #define NUMBER_GENERATION                    (1)
+    #define NUMBER_GENERATION                    (0)
 
 #endif /* SETTINGS_H_ */

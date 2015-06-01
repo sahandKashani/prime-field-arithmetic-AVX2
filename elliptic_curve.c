@@ -39,7 +39,7 @@ struct curve_point add_point_point(struct curve_point a, struct curve_point b, l
     return c;
 }
 
-bool is_on_curve(mpz_t x_gmp, mpz_t y_gmp) {
+bool is_on_curve_gmp(mpz_t x_gmp, mpz_t y_gmp) {
     mpz_t a_gmp;
     mpz_t b_gmp;
     mpz_t m_gmp;
