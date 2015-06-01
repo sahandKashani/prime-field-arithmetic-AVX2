@@ -749,7 +749,7 @@ int main(void) {
         mpz_init(m_prime_gmp);
 
         mpz_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
-        mpz_set_str(m_gmp, "048e1d43f293469e33194c43186b3abc0b", 16);
+        mpz_set_str(m_gmp, m_hex, 16);
         mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
         mpz_mul(R_2_m_gmp, R_gmp, R_gmp);
         mpz_mod(R_2_m_gmp, R_2_m_gmp, m_gmp);
