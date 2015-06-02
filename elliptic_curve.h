@@ -17,7 +17,7 @@
 
     struct curve_point add_point_point(struct curve_point p1, struct curve_point p2);
     struct curve_point_gmp add_point_point_gmp(struct curve_point_gmp p1, struct curve_point_gmp p2);
-    bool is_on_curve_num(limb_t *x_num, limb_t *y_num);
+    bool is_on_curve(limb_t *x_num, limb_t *y_num);
     bool is_on_curve_point(struct curve_point p);
     bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp);
 

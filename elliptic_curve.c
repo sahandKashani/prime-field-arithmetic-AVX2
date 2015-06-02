@@ -68,7 +68,7 @@ struct curve_point_gmp add_point_point_gmp(struct curve_point_gmp p1, struct cur
 }
 
 /* assumes input is in standard representation */
-bool is_on_curve_num(limb_t *x_num, limb_t *y_num) {
+bool is_on_curve(limb_t *x_num, limb_t *y_num) {
     gmp_int_t x_gmp;
     gmp_int_t y_gmp;
     gmp_int_init(x_gmp);
@@ -87,7 +87,7 @@ bool is_on_curve_num(limb_t *x_num, limb_t *y_num) {
 
 /* assumes input is in standard representation */
 bool is_on_curve_point(struct curve_point p) {
-    return is_on_curve_num(p.x, p.y);
+    return is_on_curve(p.x, p.y);
 }
 
 /* assumes input is in standard representation */
