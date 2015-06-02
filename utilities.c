@@ -8,6 +8,7 @@
 #include "gmp_int.h"
 #include "limb.h"
 #include "utilities.h"
+#include "elliptic_curve.h"
 
 limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index, unsigned int num_entries_in_limb) {
     limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
@@ -255,4 +256,24 @@ void montgomery_to_standard_representation_gmp(gmp_int_t num) {
     gmp_int_init(one_gmp);
     gmp_int_set_str(one_gmp, "1", 10);
     gmp_int_mul_montgomery(num, num, one_gmp, inv_R_glo_gmp, m_glo_gmp);
+}
+
+void standard_to_montgomery_representation_point(struct curve_point *p) {
+    standard_to_montgomery_representation(p->x, NUM_LIMBS);
+    standard_to_montgomery_representation(p->y, NUM_LIMBS);
+}
+
+void montgomery_to_standard_representation_point(struct curve_point *p) {
+    montgomery_to_standard_representation(p->x, NUM_LIMBS);
+    montgomery_to_standard_representation(p->y, NUM_LIMBS);
+}
+
+void standard_to_montgomery_representation_point_gmp(struct curve_point_gmp *p) {
+    standard_to_montgomery_representation_gmp(p->x);
+    standard_to_montgomery_representation_gmp(p->y);
+}
+
+void montgomery_to_standard_representation_point_gmp(struct curve_point_gmp *p) {
+    montgomery_to_standard_representation_gmp(p->x);
+    montgomery_to_standard_representation_gmp(p->y);
 }

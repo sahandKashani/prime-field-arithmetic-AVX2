@@ -6,6 +6,7 @@
     #include "gmp_int.h"
     #include "limb.h"
     #include "settings.h"
+    #include "elliptic_curve.h"
 
     typedef struct {
         gmp_int_t big;
@@ -42,5 +43,9 @@
     void montgomery_to_standard_representation(limb_t *num, unsigned int num_limbs);
     void standard_to_montgomery_representation_gmp(gmp_int_t num);
     void montgomery_to_standard_representation_gmp(gmp_int_t num);
+    void standard_to_montgomery_representation_point(struct curve_point *p);
+    void montgomery_to_standard_representation_point(struct curve_point *p);
+    void standard_to_montgomery_representation_point_gmp(struct curve_point_gmp *p);
+    void montgomery_to_standard_representation_point_gmp(struct curve_point_gmp *p);
 
 #endif /* UTILITIES_H_ */
