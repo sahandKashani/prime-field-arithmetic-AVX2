@@ -25,6 +25,7 @@
     extern limb_t points_y_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
     extern limb_t R_2_mod_m_glo[NUM_LIMBS];
     extern limb_t m_prime_glo;
+    extern limb_t inv_R_glo[NUM_LIMBS];
 
     extern gmp_int_t m_glo_gmp;
     extern gmp_int_t a_glo_gmp;
@@ -33,6 +34,7 @@
     extern gmp_int_t points_y_glo_gmp[NUM_POINTS / NUM_ENTRIES_IN_LIMB];
     extern gmp_int_t R_2_mod_m_glo_gmp;
     extern gmp_int_t m_prime_glo_gmp;
+    extern gmp_int_t inv_R_glo_gmp;
 
     void initialize_constants();
     void free_constants();

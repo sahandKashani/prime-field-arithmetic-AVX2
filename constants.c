@@ -20,6 +20,7 @@ limb_t points_x_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
 limb_t points_y_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
 limb_t R_2_mod_m_glo[NUM_LIMBS];
 limb_t m_prime_glo;
+limb_t inv_R_glo[NUM_LIMBS];
 
 gmp_int_t m_glo_gmp;
 gmp_int_t a_glo_gmp;
@@ -28,6 +29,7 @@ gmp_int_t points_x_glo_gmp[NUM_POINTS / NUM_ENTRIES_IN_LIMB];
 gmp_int_t points_y_glo_gmp[NUM_POINTS / NUM_ENTRIES_IN_LIMB];
 gmp_int_t R_2_mod_m_glo_gmp;
 gmp_int_t m_prime_glo_gmp;
+gmp_int_t inv_R_glo_gmp;
 
 void initialize_constants() {
     /* initializing global gmp */
@@ -36,6 +38,7 @@ void initialize_constants() {
     gmp_int_init(b_glo_gmp);
     gmp_int_init(R_2_mod_m_glo_gmp);
     gmp_int_init(m_prime_glo_gmp);
+    gmp_int_init(inv_R_glo_gmp);
     for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
         gmp_int_init(points_x_glo_gmp[i]);
         gmp_int_init(points_y_glo_gmp[i]);
@@ -66,6 +69,10 @@ void initialize_constants() {
         gmp_int_set_strings(points_x_glo_gmp[i], points_x_glo_hex + (i * NUM_ENTRIES_IN_LIMB), 16);
         gmp_int_set_strings(points_y_glo_gmp[i], points_y_glo_hex + (i * NUM_ENTRIES_IN_LIMB), 16);
     }
+    gmp_int_invert(inverse_exists, inv_R_glo_gmp, R_gmp, m_glo_gmp);
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        assert(inverse_exists[i] != 0);
+    }
 
     /* assign values to limb_t representatives */
     convert_gmp_to_num(m_glo, m_glo_gmp, NUM_LIMBS);
@@ -73,6 +80,7 @@ void initialize_constants() {
     convert_gmp_to_num(&m_prime_glo, m_prime_glo_gmp, 1);
     convert_gmp_to_num(a_glo, a_glo_gmp, NUM_LIMBS);
     convert_gmp_to_num(b_glo, b_glo_gmp, NUM_LIMBS);
+    convert_gmp_to_num(inv_R_glo, inv_R_glo_gmp, NUM_LIMBS);
     for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
         convert_gmp_to_num(points_x_glo[i], points_x_glo_gmp[i], NUM_LIMBS);
         convert_gmp_to_num(points_y_glo[i], points_y_glo_gmp[i], NUM_LIMBS);
@@ -89,6 +97,7 @@ void free_constants() {
     gmp_int_clear(b_glo_gmp);
     gmp_int_clear(R_2_mod_m_glo_gmp);
     gmp_int_clear(m_prime_glo_gmp);
+    gmp_int_clear(inv_R_glo_gmp);
     for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
         gmp_int_clear(points_x_glo_gmp[i]);
         gmp_int_clear(points_y_glo_gmp[i]);
