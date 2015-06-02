@@ -634,7 +634,7 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
 bool test_point_addition() {
     bool success = true;
 
-    for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i += 2) {
+    for (unsigned int i = 0; (i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB)) && success; i += 2) {
         struct curve_point p1;
         struct curve_point_gmp p1_gmp;
         curve_point_init_gmp(&p1_gmp);
