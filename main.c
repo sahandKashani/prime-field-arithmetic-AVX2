@@ -631,6 +631,77 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
     return success;
 }
 
+bool test_point_addition() {
+    bool success = true;
+
+    for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i += 2) {
+        struct curve_point p1;
+        struct curve_point_gmp p1_gmp;
+        curve_point_init_gmp(&p1_gmp);
+
+        struct curve_point p2;
+        struct curve_point_gmp p2_gmp;
+        curve_point_init_gmp(&p2_gmp);
+
+        struct curve_point p3;
+        struct curve_point_gmp p3_gmp;
+        curve_point_init_gmp(&p3_gmp);
+
+        /* set p1 */
+        gmp_int_set(p1_gmp.x, points_x_glo_gmp[i]);
+        gmp_int_set(p1_gmp.y, points_y_glo_gmp[i]);
+        copy_num(p1.x, points_x_glo[0], NUM_LIMBS);
+        copy_num(p1.y, points_y_glo[0], NUM_LIMBS);
+
+        /* set p2 */
+        gmp_int_set(p2_gmp.x, points_x_glo_gmp[i+1]);
+        gmp_int_set(p2_gmp.y, points_y_glo_gmp[i+1]);
+        copy_num(p2.x, points_x_glo[1], NUM_LIMBS);
+        copy_num(p2.y, points_y_glo[1], NUM_LIMBS);
+
+        /* to montgomery representation */
+        standard_to_montgomery_representation_point_gmp(&p1_gmp);
+        standard_to_montgomery_representation_point_gmp(&p2_gmp);
+        standard_to_montgomery_representation_point(&p1);
+        standard_to_montgomery_representation_point(&p2);
+
+        /* point addition */
+        add_point_point_gmp(&p3_gmp, &p1_gmp, &p2_gmp);
+        add_point_point(&p3, &p1, &p2, NUM_LIMBS);
+
+        montgomery_to_standard_representation_point(&p1);
+        montgomery_to_standard_representation_point_gmp(&p1_gmp);
+        montgomery_to_standard_representation_point(&p2);
+        montgomery_to_standard_representation_point_gmp(&p2_gmp);
+        montgomery_to_standard_representation_point(&p3);
+        montgomery_to_standard_representation_point_gmp(&p3_gmp);
+
+        bool on_curve = is_on_curve_point(p3, NUM_LIMBS);
+        bool on_curve_gmp = is_on_curve_point_gmp(p3_gmp);
+        if (!(on_curve && on_curve_gmp)) {
+            print_num(p1.x, NUM_LIMBS);
+            print_num(p1.y, NUM_LIMBS);
+            print_num(p2.x, NUM_LIMBS);
+            print_num(p2.y, NUM_LIMBS);
+            print_num(p3.x, NUM_LIMBS);
+            print_num(p3.y, NUM_LIMBS);
+            print_num_gmp(p1_gmp.x, NUM_LIMBS);
+            print_num_gmp(p1_gmp.y, NUM_LIMBS);
+            print_num_gmp(p2_gmp.x, NUM_LIMBS);
+            print_num_gmp(p2_gmp.y, NUM_LIMBS);
+            print_num_gmp(p3_gmp.x, NUM_LIMBS);
+            print_num_gmp(p3_gmp.y, NUM_LIMBS);
+            success = false;
+        }
+
+        curve_point_clear_gmp(&p1_gmp);
+        curve_point_clear_gmp(&p2_gmp);
+        curve_point_clear_gmp(&p3_gmp);
+    }
+
+    return success;
+}
+
 void check_add_num_num() {
     printf("Add:\n");
     if (test_add_num_num(NUM_ITERATIONS, SEED)) {
@@ -721,6 +792,16 @@ void check_mul_montgomery_num_num() {
     printf("\n");
 }
 
+void check_point_addition() {
+    printf("Point addition:\n");
+    if (test_point_addition()) {
+        printf("Success\n");
+    } else {
+        printf("Failed\n");
+    }
+    printf("\n");
+}
+
 int main(void) {
     initialize_constants();
 
@@ -735,60 +816,19 @@ int main(void) {
         check_add_mod_num_num();
         check_sub_mod_num_num();
         check_mul_montgomery_num_num();
+        check_point_addition();
 
     #else /* TEST */
 
         #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
 
-            struct curve_point p1;
-            struct curve_point_gmp p1_gmp;
-            curve_point_init_gmp(&p1_gmp);
 
-            struct curve_point p2;
-            struct curve_point_gmp p2_gmp;
-            curve_point_init_gmp(&p2_gmp);
-
-            struct curve_point p3;
-            struct curve_point_gmp p3_gmp;
-            curve_point_init_gmp(&p3_gmp);
-
-            /* set p1 */
-            gmp_int_set(p1_gmp.x, points_x_glo_gmp[0]);
-            gmp_int_set(p1_gmp.y, points_y_glo_gmp[0]);
-            copy_num(p1.x, points_x_glo[0], NUM_LIMBS);
-            copy_num(p1.y, points_y_glo[0], NUM_LIMBS);
-
-            /* set p2 */
-            gmp_int_set(p2_gmp.x, points_x_glo_gmp[1]);
-            gmp_int_set(p2_gmp.y, points_y_glo_gmp[1]);
-            copy_num(p2.x, points_x_glo[1], NUM_LIMBS);
-            copy_num(p2.y, points_y_glo[1], NUM_LIMBS);
-
-            /* to montgomery representation */
-            standard_to_montgomery_representation_point_gmp(&p1_gmp);
-            standard_to_montgomery_representation_point_gmp(&p2_gmp);
-            standard_to_montgomery_representation_point(&p1);
-            standard_to_montgomery_representation_point(&p2);
-
-            /* point addition */
-            add_point_point_gmp(&p3_gmp, &p1_gmp, &p2_gmp);
-            add_point_point(&p3, &p1, &p2, NUM_LIMBS);
-
-            montgomery_to_standard_representation_point(&p3);
-            montgomery_to_standard_representation_point_gmp(&p3_gmp);
-
-            printf("%d\n", is_on_curve_point(p3, NUM_LIMBS));
-            printf("%d\n", is_on_curve_point_gmp(p3_gmp));
-
-            curve_point_clear_gmp(&p1_gmp);
-            curve_point_clear_gmp(&p2_gmp);
-            curve_point_clear_gmp(&p3_gmp);
-
-            printf("end\n");
 
         #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 
     #endif /* TEST */
+
+    printf("end\n");
 
     free_constants();
     return EXIT_SUCCESS;
