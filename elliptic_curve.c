@@ -65,6 +65,10 @@ void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1,
     gmp_int_sub_mod(p3->y, p1->x, p3->x, m_glo_gmp);
     gmp_int_mul_montgomery(p3->y, lambda_gmp, p3->y, inv_R_glo_gmp, m_glo_gmp);
     gmp_int_sub_mod(p3->y, p3->y, p1->y, m_glo_gmp);
+
+    gmp_int_clear(numer_gmp);
+    gmp_int_clear(denom_gmp);
+    gmp_int_clear(lambda_gmp);
 }
 
 /* assumes input is in standard representation */
