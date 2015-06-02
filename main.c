@@ -739,20 +739,20 @@ int main(void) {
         mpz_t base_gmp;
         mpz_t m_gmp;
         mpz_t R_gmp;
-        mpz_t R_2_m_gmp;
+        mpz_t R_2_mod_m_gmp;
         mpz_t m_prime_gmp;
 
         mpz_init(base_gmp);
         mpz_init(m_gmp);
         mpz_init(R_gmp);
-        mpz_init(R_2_m_gmp);
+        mpz_init(R_2_mod_m_gmp);
         mpz_init(m_prime_gmp);
 
         mpz_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
         mpz_set_str(m_gmp, m_hex, 16);
         mpz_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
-        mpz_mul(R_2_m_gmp, R_gmp, R_gmp);
-        mpz_mod(R_2_m_gmp, R_2_m_gmp, m_gmp);
+        mpz_mul(R_2_mod_m_gmp, R_gmp, R_gmp);
+        mpz_mod(R_2_mod_m_gmp, R_2_mod_m_gmp, m_gmp);
         int inverse_exists = mpz_invert(m_prime_gmp, m_gmp, base_gmp);
         assert(inverse_exists);
         mpz_neg(m_prime_gmp, m_prime_gmp);
@@ -760,7 +760,7 @@ int main(void) {
 
         gmp_printf("m_gmp = %Zx\n", m_gmp);
         gmp_printf("R_gmp = %Zx\n", R_gmp);
-        gmp_printf("R_2_m_gmp = %Zx\n", R_2_m_gmp);
+        gmp_printf("R_2_m_gmp = %Zx\n", R_2_mod_m_gmp);
         gmp_printf("m_prime_gmp = %Zx\n", m_prime_gmp);
 
         size_t num_words = 0;
@@ -775,7 +775,7 @@ int main(void) {
         printf("\n");
 
         printf("\nR_2_mod_m:\n==========\n");
-        void *R_2_mod_m = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, R_2_m_gmp);
+        void *R_2_mod_m = mpz_export(NULL, &num_words, -1, LIMB_SIZE_IN_BYTES, 0, NUM_EXCESS_BASE_BITS, R_2_mod_m_gmp);
         printf("%zd\n", num_words);
         for (unsigned int i = 0; i < num_words; i++) {
             limb_building_block_t limb = *(((limb_building_block_t *) R_2_mod_m) + i);
@@ -795,40 +795,64 @@ int main(void) {
 
         #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
 
-            gmp_int_t m_gmp;
-            gmp_int_init(m_gmp);
-            print_num((limb_t *) m, NUM_LIMBS);
+        gmp_int_t base_gmp;
+        gmp_int_t m_gmp;
+        gmp_int_t R_gmp;
+        gmp_int_t R_2_mod_m_gmp;
+        gmp_int_t m_prime_gmp;
+        gmp_int_t a_gmp;
+        gmp_int_t b_gmp;
+        gmp_int_t points_x_gmp[NUM_POINTS];
+        gmp_int_t points_y_gmp[NUM_POINTS];
 
-            printf("\n");
+        gmp_int_init(base_gmp);
+        gmp_int_init(m_gmp);
+        gmp_int_init(R_gmp);
+        gmp_int_init(R_2_mod_m_gmp);
+        gmp_int_init(m_prime_gmp);
+        gmp_int_init(a_gmp);
+        gmp_int_init(b_gmp);
+        for (unsigned int i = 0; i < NUM_POINTS; i++) {
+            gmp_int_init(points_x_gmp[i]);
+            gmp_int_init(points_y_gmp[i]);
+        }
 
-            gmp_int_t x_gmp;
-            gmp_int_t y_gmp;
-            gmp_int_init(x_gmp);
-            gmp_int_init(y_gmp);
+        /* assign values to gmp representatives */
+        gmp_int_ui_pow_ui(base_gmp, 2, BASE_EXPONENT);
+        gmp_int_set_str(m_gmp, m_hex_glo, 16);
+        gmp_int_ui_pow_ui(R_gmp, 2, BASE_EXPONENT * NUM_LIMBS);
+        gmp_int_mul(R_2_mod_m_gmp, R_gmp, R_gmp);
+        gmp_int_mod(R_2_mod_m_gmp, R_2_mod_m_gmp, m_gmp);
+        int inverse_exists[NUM_ENTRIES_IN_LIMB];
+        gmp_int_invert(inverse_exists, m_prime_gmp, m_gmp, base_gmp);
+        for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+            assert(inverse_exists[i] != 0);
+        }
+        gmp_int_neg(m_prime_gmp, m_prime_gmp);
+        gmp_int_mod(m_prime_gmp, m_prime_gmp, base_gmp);
+        gmp_int_set_str(a_gmp, a_hex_glo, 16);
+        gmp_int_set_str(b_gmp, b_hex_glo, 16);
+        for (unsigned int i = 0; i < NUM_POINTS; i++) {
+            gmp_int_set_str(points_x_gmp[i], points_x_hex_glo[i], 16);
+            gmp_int_set_str(points_y_gmp[i], points_y_hex_glo[i], 16);
+        }
 
-            char *points_x_hex[NUM_ENTRIES_IN_LIMB];
-            char *points_y_hex[NUM_ENTRIES_IN_LIMB];
+        /* assign values to limb_t representatives */
+        convert_gmp_to_num(m_glo, m_gmp, NUM_LIMBS);
+        convert_gmp_to_num(R_2_mod_m_glo, R_2_mod_m_gmp, NUM_LIMBS);
+        convert_gmp_to_num(&m_prime_glo, m_prime_gmp, 1);
 
-            for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
-                points_x_hex[i] = points_hex[i][0];
-                points_y_hex[i] = points_hex[i][1];
-            }
-            gmp_int_set_strings(x_gmp, points_x_hex, 16);
-            gmp_int_set_strings(y_gmp, points_y_hex, 16);
-
-            print_num_gmp(x_gmp, NUM_LIMBS);
-            print_num_gmp(y_gmp, NUM_LIMBS);
-
-            limb_t x_num[NUM_LIMBS];
-            limb_t y_num[NUM_LIMBS];
-            convert_gmp_to_num(x_num, x_gmp, NUM_LIMBS);
-            convert_gmp_to_num(y_num, y_gmp, NUM_LIMBS);
-
-            print_num(x_num, NUM_LIMBS);
-            print_num(y_num, NUM_LIMBS);
-
-            printf("on_curve = %d\n", is_on_curve_gmp(x_gmp, y_gmp));
-            printf("on_curve = %d\n", is_on_curve_num(x_num, y_num));
+        gmp_int_clear(base_gmp);
+        gmp_int_clear(m_gmp);
+        gmp_int_clear(R_gmp);
+        gmp_int_clear(R_2_mod_m_gmp);
+        gmp_int_clear(m_prime_gmp);
+        gmp_int_clear(a_gmp);
+        gmp_int_clear(b_gmp);
+        for (unsigned int i = 0; i < NUM_POINTS; i++) {
+            gmp_int_clear(points_x_gmp[i]);
+            gmp_int_clear(points_y_gmp[i]);
+        }
 
         #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 

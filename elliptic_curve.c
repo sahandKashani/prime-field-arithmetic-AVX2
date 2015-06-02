@@ -6,7 +6,7 @@
 /**
  * Supposes data is in Montgomery form prior to being called
  */
-struct curve_point add_point_point(struct curve_point a, struct curve_point b, limb_t *m, limb_t m_prime) {
+struct curve_point add_point_point(struct curve_point p1, struct curve_point p2, limb_t *m, limb_t m_prime) {
     struct curve_point c;
 
     limb_t numer[NUM_LIMBS];
@@ -14,10 +14,10 @@ struct curve_point add_point_point(struct curve_point a, struct curve_point b, l
     limb_t lambda[NUM_LIMBS];
 
     /* lambda = (y2 - y1) / (x2 - x1) */
-    sub_mod_num_num(numer, b.y, a.y, m, NUM_LIMBS);
+    sub_mod_num_num(numer, p2.y, p1.y, m, NUM_LIMBS);
     print_num(numer, NUM_LIMBS);
 
-    sub_mod_num_num(denom, b.x, a.x, m, NUM_LIMBS);
+    sub_mod_num_num(denom, p2.x, p1.x, m, NUM_LIMBS);
     print_num(denom, NUM_LIMBS);
 
     invert_num(denom, denom, m, NUM_LIMBS);
@@ -28,13 +28,13 @@ struct curve_point add_point_point(struct curve_point a, struct curve_point b, l
 
     /* x */
     mul_montgomery_num_num(c.x, lambda, lambda, m, m_prime, NUM_LIMBS);
-    sub_mod_num_num(c.x, c.x, a.x, m, NUM_LIMBS);
-    sub_mod_num_num(c.x, c.x, b.x, m, NUM_LIMBS);
+    sub_mod_num_num(c.x, c.x, p1.x, m, NUM_LIMBS);
+    sub_mod_num_num(c.x, c.x, p2.x, m, NUM_LIMBS);
 
     /* y */
-    sub_mod_num_num(c.y, a.x, c.x, m, NUM_LIMBS);
+    sub_mod_num_num(c.y, p1.x, c.x, m, NUM_LIMBS);
     mul_montgomery_num_num(c.y, lambda, c.y, m, m_prime, NUM_LIMBS);
-    sub_mod_num_num(c.y, c.y, a.y, m, NUM_LIMBS);
+    sub_mod_num_num(c.y, c.y, p1.y, m, NUM_LIMBS);
 
     return c;
 }
@@ -75,9 +75,9 @@ bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     gmp_int_init(rhs_gmp);
     gmp_int_init(ax_plus_b_gmp);
 
-    gmp_int_set_str(a_gmp, a_hex, 16);
-    gmp_int_set_str(b_gmp, b_hex, 16);
-    gmp_int_set_str(m_gmp, m_hex, 16);
+    gmp_int_set_str(a_gmp, a_hex_glo, 16);
+    gmp_int_set_str(b_gmp, b_hex_glo, 16);
+    gmp_int_set_str(m_gmp, m_hex_glo, 16);
 
     /* lhs */
     gmp_int_mul(lhs_gmp, y_gmp, y_gmp);
