@@ -27,4 +27,6 @@
     extern limb_t R_2_mod_m_glo[NUM_LIMBS];
     extern limb_t m_prime_glo;
 
+    void initialize_constants();
+
 #endif /* CONSTANTS_H_ */
