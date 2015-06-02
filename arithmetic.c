@@ -224,7 +224,7 @@ void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m
     copy_num(z, A, num_limbs);
 }
 
-void invert_num(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs) {
+void montgomery_inverse_num(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs) {
     gmp_int_t a_gmp;
     gmp_int_t m_gmp;
 
@@ -234,7 +234,8 @@ void invert_num(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs) {
     convert_num_to_gmp(a_gmp, a, num_limbs);
     convert_num_to_gmp(m_gmp, m, num_limbs);
 
-    gmp_int_invert(NULL, a_gmp, a_gmp, m_gmp);
+    gmp_int_montgomery_inverse(a_gmp, a_gmp, m_gmp);
+
     convert_gmp_to_num(b, a_gmp, num_limbs);
 
     gmp_int_clear(a_gmp);

@@ -17,7 +17,7 @@ struct curve_point add_point_point(struct curve_point p1, struct curve_point p2)
     /* lambda = (y2 - y1) / (x2 - x1) */
     sub_mod_num_num(numer, p2.y, p1.y, m_glo, NUM_LIMBS);
     sub_mod_num_num(denom, p2.x, p1.x, m_glo, NUM_LIMBS);
-    invert_num(denom, denom, m_glo, NUM_LIMBS);
+    montgomery_inverse_num(denom, denom, m_glo, NUM_LIMBS);
     mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, NUM_LIMBS);
 
     /* x */
