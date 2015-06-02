@@ -722,6 +722,8 @@ void check_mul_montgomery_num_num() {
 }
 
 int main(void) {
+    initialize_constants();
+
     #if TEST
 
         check_add_num_num();
