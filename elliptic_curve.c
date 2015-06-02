@@ -4,6 +4,16 @@
 #include "elliptic_curve.h"
 #include "utilities.h"
 
+void curve_point_init_gmp(struct curve_point_gmp *p) {
+    gmp_int_init(p->x);
+    gmp_int_init(p->y);
+}
+
+void curve_point_clear_gmp(struct curve_point_gmp *p) {
+    gmp_int_clear(p->x);
+    gmp_int_clear(p->y);
+}
+
 /**
  * Supposes data is in Montgomery form prior to being called
  */
@@ -80,10 +90,6 @@ bool is_on_curve_point(struct curve_point p, unsigned int num_limbs) {
     return is_on_curve(p.x, p.y, num_limbs);
 }
 
-bool is_on_curve_point_gmp(struct curve_point_gmp p) {
-    return is_on_curve_gmp(p.x, p.y);
-}
-
 /* assumes input is in standard representation */
 bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     /* (y^2) mod m == (x^3 + a*x + b) mod m */
@@ -122,4 +128,8 @@ bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     }
 
     return on_curve_final;
+}
+
+bool is_on_curve_point_gmp(struct curve_point_gmp p) {
+    return is_on_curve_gmp(p.x, p.y);
 }

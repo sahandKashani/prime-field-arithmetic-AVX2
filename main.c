@@ -742,18 +742,15 @@ int main(void) {
 
             struct curve_point p1;
             struct curve_point_gmp p1_gmp;
-            gmp_int_init(p1_gmp.x);
-            gmp_int_init(p1_gmp.y);
+            curve_point_init_gmp(&p1_gmp);
 
             struct curve_point p2;
             struct curve_point_gmp p2_gmp;
-            gmp_int_init(p2_gmp.x);
-            gmp_int_init(p2_gmp.y);
+            curve_point_init_gmp(&p2_gmp);
 
             struct curve_point p3;
             struct curve_point_gmp p3_gmp;
-            gmp_int_init(p3_gmp.x);
-            gmp_int_init(p3_gmp.y);
+            curve_point_init_gmp(&p3_gmp);
 
             /* set p1 */
             gmp_int_set(p1_gmp.x, points_x_glo_gmp[0]);
@@ -782,6 +779,10 @@ int main(void) {
 
             printf("%d\n", is_on_curve_point(p3, NUM_LIMBS));
             printf("%d\n", is_on_curve_point_gmp(p3_gmp));
+
+            curve_point_clear_gmp(&p1_gmp);
+            curve_point_clear_gmp(&p2_gmp);
+            curve_point_clear_gmp(&p3_gmp);
 
             printf("end\n");
 
