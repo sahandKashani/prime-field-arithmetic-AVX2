@@ -19,6 +19,8 @@
     void curve_point_clear_gmp(struct curve_point_gmp *p);
     void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2, unsigned int num_limbs);
     void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1, struct curve_point_gmp *p2);
+    void double_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs);
+    void double_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1);
     bool is_on_curve(limb_t *x_num, limb_t *y_num, unsigned int num_limbs);
     bool is_on_curve_point(struct curve_point p, unsigned int num_limbs);
     bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp);
