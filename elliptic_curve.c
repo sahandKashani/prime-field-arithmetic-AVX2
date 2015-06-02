@@ -76,42 +76,30 @@ bool is_on_curve_point(struct curve_point p) {
 }
 
 bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
-    gmp_int_t a_gmp;
-    gmp_int_t b_gmp;
-    gmp_int_t m_gmp;
+    /* (y^2) mod m == (x^3 + a*x + b) mod m */
     gmp_int_t lhs_gmp; /* (y^2) mod m */
     gmp_int_t rhs_gmp; /* (x^3 + a*x + b) mod m */
     gmp_int_t ax_plus_b_gmp;
 
-    gmp_int_init(a_gmp);
-    gmp_int_init(b_gmp);
-    gmp_int_init(m_gmp);
     gmp_int_init(lhs_gmp);
     gmp_int_init(rhs_gmp);
     gmp_int_init(ax_plus_b_gmp);
 
-    gmp_int_set_str(a_gmp, a_glo_hex, 16);
-    gmp_int_set_str(b_gmp, b_glo_hex, 16);
-    gmp_int_set_str(m_gmp, m_glo_hex, 16);
-
     /* lhs */
     gmp_int_mul(lhs_gmp, y_gmp, y_gmp);
-    gmp_int_mod(lhs_gmp, lhs_gmp, m_gmp);
+    gmp_int_mod(lhs_gmp, lhs_gmp, m_glo_gmp);
 
     /* rhs */
-    gmp_int_mul(ax_plus_b_gmp, a_gmp, x_gmp);
-    gmp_int_add(ax_plus_b_gmp, ax_plus_b_gmp, b_gmp);
+    gmp_int_mul(ax_plus_b_gmp, a_glo_gmp, x_gmp);
+    gmp_int_add(ax_plus_b_gmp, ax_plus_b_gmp, b_glo_gmp);
     gmp_int_mul(rhs_gmp, x_gmp, x_gmp);
     gmp_int_mul(rhs_gmp, rhs_gmp, x_gmp);
     gmp_int_add(rhs_gmp, rhs_gmp, ax_plus_b_gmp);
-    gmp_int_mod(rhs_gmp, rhs_gmp, m_gmp);
+    gmp_int_mod(rhs_gmp, rhs_gmp, m_glo_gmp);
 
     int on_curve[NUM_ENTRIES_IN_LIMB];
     gmp_int_cmp(on_curve, lhs_gmp, rhs_gmp);
 
-    gmp_int_clear(a_gmp);
-    gmp_int_clear(b_gmp);
-    gmp_int_clear(m_gmp);
     gmp_int_clear(lhs_gmp);
     gmp_int_clear(rhs_gmp);
     gmp_int_clear(ax_plus_b_gmp);
