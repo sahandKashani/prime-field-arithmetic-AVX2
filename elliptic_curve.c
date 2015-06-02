@@ -6,37 +6,52 @@
 /**
  * Supposes data is in Montgomery form prior to being called
  */
-struct curve_point add_point_point(struct curve_point p1, struct curve_point p2, limb_t *m, limb_t m_prime) {
-    struct curve_point c;
+struct curve_point add_point_point(struct curve_point p1, struct curve_point p2) {
+    struct curve_point p3;
 
     limb_t numer[NUM_LIMBS];
     limb_t denom[NUM_LIMBS];
     limb_t lambda[NUM_LIMBS];
 
     /* lambda = (y2 - y1) / (x2 - x1) */
-    sub_mod_num_num(numer, p2.y, p1.y, m, NUM_LIMBS);
+    sub_mod_num_num(numer, p2.y, p1.y, m_glo, NUM_LIMBS);
     print_num(numer, NUM_LIMBS);
 
-    sub_mod_num_num(denom, p2.x, p1.x, m, NUM_LIMBS);
+    sub_mod_num_num(denom, p2.x, p1.x, m_glo, NUM_LIMBS);
     print_num(denom, NUM_LIMBS);
 
-    invert_num(denom, denom, m, NUM_LIMBS);
+    invert_num(denom, denom, m_glo, NUM_LIMBS);
     print_num(denom, NUM_LIMBS);
 
-    mul_montgomery_num_num(lambda, numer, denom, m, m_prime, NUM_LIMBS);
+    mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, NUM_LIMBS);
     print_num(lambda, NUM_LIMBS);
 
     /* x */
-    mul_montgomery_num_num(c.x, lambda, lambda, m, m_prime, NUM_LIMBS);
-    sub_mod_num_num(c.x, c.x, p1.x, m, NUM_LIMBS);
-    sub_mod_num_num(c.x, c.x, p2.x, m, NUM_LIMBS);
+    mul_montgomery_num_num(p3.x, lambda, lambda, m_glo, m_prime_glo, NUM_LIMBS);
+    sub_mod_num_num(p3.x, p3.x, p1.x, m_glo, NUM_LIMBS);
+    sub_mod_num_num(p3.x, p3.x, p2.x, m_glo, NUM_LIMBS);
 
     /* y */
-    sub_mod_num_num(c.y, p1.x, c.x, m, NUM_LIMBS);
-    mul_montgomery_num_num(c.y, lambda, c.y, m, m_prime, NUM_LIMBS);
-    sub_mod_num_num(c.y, c.y, p1.y, m, NUM_LIMBS);
+    sub_mod_num_num(p3.y, p1.x, p3.x, m_glo, NUM_LIMBS);
+    mul_montgomery_num_num(p3.y, lambda, p3.y, m_glo, m_prime_glo, NUM_LIMBS);
+    sub_mod_num_num(p3.y, p3.y, p1.y, m_glo, NUM_LIMBS);
 
-    return c;
+    return p3;
+}
+
+/**
+ * Supposes data is in Montgomery form prior to being called
+ */
+struct curve_point_gmp add_point_point_gmp(struct curve_point_gmp p1, struct curve_point_gmp p2) {
+    struct curve_point_gmp p3;
+
+    gmp_int_t lambda;
+    gmp_int_init(lambda);
+
+    /* lambda = (y2 - y1) / (x2 - x1) */
+    gmp_int_sub_mod(lambda, p2.y, p1.y, m_glo_gmp);
+
+    return p3;
 }
 
 bool is_on_curve_num(limb_t *x_num, limb_t *y_num) {
@@ -75,9 +90,9 @@ bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     gmp_int_init(rhs_gmp);
     gmp_int_init(ax_plus_b_gmp);
 
-    gmp_int_set_str(a_gmp, a_hex_glo, 16);
-    gmp_int_set_str(b_gmp, b_hex_glo, 16);
-    gmp_int_set_str(m_gmp, m_hex_glo, 16);
+    gmp_int_set_str(a_gmp, a_glo_hex, 16);
+    gmp_int_set_str(b_gmp, b_glo_hex, 16);
+    gmp_int_set_str(m_gmp, m_glo_hex, 16);
 
     /* lhs */
     gmp_int_mul(lhs_gmp, y_gmp, y_gmp);

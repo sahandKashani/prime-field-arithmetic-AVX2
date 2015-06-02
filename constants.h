@@ -12,11 +12,11 @@
 
     #define NUM_POINTS (128)
 
-    extern char *m_hex_glo;
-    extern char *a_hex_glo;
-    extern char *b_hex_glo;
-    extern char *points_x_hex_glo[NUM_POINTS];
-    extern char *points_y_hex_glo[NUM_POINTS];
+    extern char *m_glo_hex;
+    extern char *a_glo_hex;
+    extern char *b_glo_hex;
+    extern char *points_x_glo_hex[NUM_POINTS];
+    extern char *points_y_glo_hex[NUM_POINTS];
 
     extern limb_t m_glo[NUM_LIMBS];
     extern limb_t a_glo[NUM_LIMBS];
