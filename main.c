@@ -740,11 +740,10 @@ int main(void) {
 
         #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
 
-
-
         #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 
     #endif /* TEST */
 
+    free_constants();
     return EXIT_SUCCESS;
 }
