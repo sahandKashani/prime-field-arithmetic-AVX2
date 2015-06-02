@@ -819,7 +819,16 @@ int main(void) {
             print_num_gmp(x_gmp, NUM_LIMBS);
             print_num_gmp(y_gmp, NUM_LIMBS);
 
+            limb_t x_num[NUM_LIMBS];
+            limb_t y_num[NUM_LIMBS];
+            convert_gmp_to_num(x_num, x_gmp, NUM_LIMBS);
+            convert_gmp_to_num(y_num, y_gmp, NUM_LIMBS);
+
+            print_num(x_num, NUM_LIMBS);
+            print_num(y_num, NUM_LIMBS);
+
             printf("on_curve = %d\n", is_on_curve_gmp(x_gmp, y_gmp));
+            printf("on_curve = %d\n", is_on_curve_num(x_num, y_num));
 
         #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 

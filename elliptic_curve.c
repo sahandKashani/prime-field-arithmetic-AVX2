@@ -39,6 +39,27 @@ struct curve_point add_point_point(struct curve_point a, struct curve_point b, l
     return c;
 }
 
+bool is_on_curve_num(limb_t *x_num, limb_t *y_num) {
+    gmp_int_t x_gmp;
+    gmp_int_t y_gmp;
+    gmp_int_init(x_gmp);
+    gmp_int_init(y_gmp);
+
+    convert_num_to_gmp(x_gmp, x_num, NUM_LIMBS);
+    convert_num_to_gmp(y_gmp, y_num, NUM_LIMBS);
+
+    bool is_on_curve = is_on_curve_gmp(x_gmp, y_gmp);
+
+    gmp_int_clear(x_gmp);
+    gmp_int_clear(y_gmp);
+
+    return is_on_curve;
+}
+
+bool is_on_curve_point(struct curve_point p) {
+    return is_on_curve_num(p.x, p.y);
+}
+
 bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     gmp_int_t a_gmp;
     gmp_int_t b_gmp;
