@@ -1,5 +1,5 @@
-#ifndef ARITHMETIC_H_
-#define ARITHMETIC_H_
+#ifndef PRIME_FIELD_H_
+#define PRIME_FIELD_H_
 
     #include <stdbool.h>
     #include "limb.h"
@@ -16,4 +16,4 @@
     void mul_montgomery_num_num(limb_t *z, limb_t *x, limb_t *y, limb_t *m, limb_t m_prime, unsigned int num_limbs);
     void montgomery_inverse_num(limb_t *b, limb_t *a, limb_t *m, unsigned int num_limbs);
 
-#endif /* ARITHMETIC_H_ */
+#endif /* PRIME_FIELD_H_ */

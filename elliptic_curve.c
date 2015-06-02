@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
-#include "arithmetic.h"
+#include "prime_field.h"
 #include "elliptic_curve.h"
 #include "utilities.h"
 

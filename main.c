@@ -8,13 +8,13 @@
 #include <stdbool.h>
 #include <time.h>
 #include <gmp.h>
-#include "arithmetic.h"
 #include "compile_time_checks.h"
 #include "gmp_int.h"
 #include "limb.h"
 #include "utilities.h"
 #include "constants.h"
 #include "elliptic_curve.h"
+#include "prime_field.h"
 
 #define NUM_ITERATIONS (1 << 10)
 #define SEED (12345)

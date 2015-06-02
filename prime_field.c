@@ -1,9 +1,9 @@
 #include <immintrin.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "arithmetic.h"
 #include "constants.h"
 #include "limb.h"
+#include "prime_field.h"
 #include "utilities.h"
 #include "settings.h"
 

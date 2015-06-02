@@ -3,12 +3,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "arithmetic.h"
 #include "constants.h"
 #include "gmp_int.h"
 #include "limb.h"
 #include "utilities.h"
 #include "elliptic_curve.h"
+#include "prime_field.h"
 
 limb_building_block_t extract_limb(limb_t *num, unsigned int limb_index, unsigned int entry_in_limb_index, unsigned int num_entries_in_limb) {
     limb_building_block_t *num_internal_format = (limb_building_block_t *) num;
