@@ -717,8 +717,8 @@ bool test_point_double() {
         /* set p1 */
         gmp_int_set(p1_gmp.x, points_x_glo_gmp[i]);
         gmp_int_set(p1_gmp.y, points_y_glo_gmp[i]);
-        copy_num(p1.x, points_x_glo[0], NUM_LIMBS);
-        copy_num(p1.y, points_y_glo[0], NUM_LIMBS);
+        copy_num(p1.x, points_x_glo[i], NUM_LIMBS);
+        copy_num(p1.y, points_y_glo[i], NUM_LIMBS);
 
         /* to montgomery representation */
         standard_to_montgomery_representation_point_gmp(&p1_gmp);
