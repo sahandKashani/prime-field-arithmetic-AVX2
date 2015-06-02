@@ -740,23 +740,30 @@ int main(void) {
 
         #if PRIME_FIELD_BINARY_BIT_LENGTH == 131
 
+            struct curve_point p1;
             struct curve_point_gmp p1_gmp;
             gmp_int_init(p1_gmp.x);
             gmp_int_init(p1_gmp.y);
-            gmp_int_set(p1_gmp.x, points_x_glo_gmp[0]);
-            gmp_int_set(p1_gmp.y, points_y_glo_gmp[0]);
 
-            struct curve_point p1;
-            copy_num(p1.x, points_x_glo[0], NUM_LIMBS);
-            copy_num(p1.y, points_y_glo[0], NUM_LIMBS);
-
+            struct curve_point p2;
             struct curve_point_gmp p2_gmp;
             gmp_int_init(p2_gmp.x);
             gmp_int_init(p2_gmp.y);
+
+            struct curve_point p3;
+            struct curve_point_gmp p3_gmp;
+            gmp_int_init(p3_gmp.x);
+            gmp_int_init(p3_gmp.y);
+
+            /* set p1 */
+            gmp_int_set(p1_gmp.x, points_x_glo_gmp[0]);
+            gmp_int_set(p1_gmp.y, points_y_glo_gmp[0]);
+            copy_num(p1.x, points_x_glo[0], NUM_LIMBS);
+            copy_num(p1.y, points_y_glo[0], NUM_LIMBS);
+
+            /* set p2 */
             gmp_int_set(p2_gmp.x, points_x_glo_gmp[1]);
             gmp_int_set(p2_gmp.y, points_y_glo_gmp[1]);
-
-            struct curve_point p2;
             copy_num(p2.x, points_x_glo[1], NUM_LIMBS);
             copy_num(p2.y, points_y_glo[1], NUM_LIMBS);
 
@@ -770,9 +777,8 @@ int main(void) {
             standard_to_montgomery_representation(p2.x, NUM_LIMBS);
             standard_to_montgomery_representation(p2.y, NUM_LIMBS);
 
-            struct curve_point_gmp p3_gmp = add_point_point_gmp(p1_gmp, p2_gmp);
-
-            struct curve_point p3 = add_point_point(p1, p2);
+            add_point_point_gmp(&p3_gmp, &p1_gmp, &p2_gmp);
+            add_point_point(&p3, &p1, &p2);
 
             print_num(p3.x, NUM_LIMBS);
             print_num(p3.y, NUM_LIMBS);
@@ -786,6 +792,11 @@ int main(void) {
             montgomery_to_standard_representation(p3.y, NUM_LIMBS);
             montgomery_to_standard_representation_gmp(p3_gmp.x);
             montgomery_to_standard_representation_gmp(p3_gmp.x);
+
+            print_num(p3.x, NUM_LIMBS);
+            print_num(p3.y, NUM_LIMBS);
+            print_num_gmp(p3_gmp.x, NUM_LIMBS);
+            print_num_gmp(p3_gmp.y, NUM_LIMBS);
 
             printf("%d\n", is_on_curve(p3.x, p3.y));
             printf("%d\n", is_on_curve_gmp(p3_gmp.x, p3_gmp.y));
