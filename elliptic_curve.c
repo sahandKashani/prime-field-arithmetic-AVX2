@@ -51,7 +51,7 @@ struct curve_point_gmp add_point_point_gmp(struct curve_point_gmp p1, struct cur
     /* lambda = (y2 - y1) / (x2 - x1) */
     gmp_int_sub_mod(numer_gmp, p2.y, p1.y, m_glo_gmp);
     gmp_int_sub_mod(denom_gmp, p2.x, p1.x, m_glo_gmp);
-    gmp_int_invert(NULL, denom_gmp, denom_gmp, m_glo_gmp);
+    gmp_int_montgomery_inverse(denom_gmp, denom_gmp, m_glo_gmp);
     gmp_int_mul_montgomery(lambda_gmp, numer_gmp, denom_gmp, inv_R_glo_gmp, m_glo_gmp);
 
     /* x */
