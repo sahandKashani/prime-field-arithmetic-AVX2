@@ -245,3 +245,14 @@ void montgomery_to_standard_representation(limb_t *num, unsigned int num_limbs) 
     set_num(one_num, set_limb(1), num_limbs);
     mul_montgomery_num_num(num, num, one_num, m_glo, m_prime_glo, num_limbs);
 }
+
+void standard_to_montgomery_representation_gmp(gmp_int_t num) {
+    gmp_int_mul_montgomery(num, num, R_2_mod_m_glo_gmp, inv_R_glo_gmp, m_glo_gmp);
+}
+
+void montgomery_to_standard_representation_gmp(gmp_int_t num) {
+    gmp_int_t one_gmp;
+    gmp_int_init(one_gmp);
+    gmp_int_set_str(one_gmp, "1", 10);
+    gmp_int_mul_montgomery(num, num, one_gmp, inv_R_glo_gmp, m_glo_gmp);
+}
