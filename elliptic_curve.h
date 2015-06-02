@@ -17,6 +17,8 @@
 
     void curve_point_init_gmp(struct curve_point_gmp *p);
     void curve_point_clear_gmp(struct curve_point_gmp *p);
+    void neg_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs);
+    void neg_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1);
     void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2, unsigned int num_limbs);
     void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1, struct curve_point_gmp *p2);
     void double_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs);

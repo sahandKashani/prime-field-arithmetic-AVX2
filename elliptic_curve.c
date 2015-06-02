@@ -17,6 +17,27 @@ void curve_point_clear_gmp(struct curve_point_gmp *p) {
 /**
  * Supposes data is in Montgomery form prior to being called
  */
+void neg_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs) {
+    limb_t zero[NUM_LIMBS];
+    zero_num(zero, num_limbs);
+    copy_num(p2->x, p1->x, num_limbs);
+    sub_mod_num_num(p2->y, zero, p1->y, m_glo, num_limbs);
+}
+
+/**
+ * Supposes data is in Montgomery form prior to being called
+ */
+void neg_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1) {
+    gmp_int_t zero_gmp;
+    gmp_int_init(zero_gmp);
+    gmp_int_set_str(zero_gmp, "0", 10);
+    gmp_int_set(p2->x, p1->x);
+    gmp_int_sub_mod(p2->y, zero_gmp, p1->y, m_glo_gmp);
+}
+
+/**
+ * Supposes data is in Montgomery form prior to being called
+ */
 void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2, unsigned int num_limbs) {
     limb_t numer[num_limbs];
     limb_t denom[num_limbs];
