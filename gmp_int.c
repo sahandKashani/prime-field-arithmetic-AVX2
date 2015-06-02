@@ -2,6 +2,7 @@
 #include "constants.h"
 #include "gmp_int.h"
 #include "limb.h"
+#include "utilities.h"
 
 void gmp_int_init(gmp_int_t x) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
@@ -122,6 +123,19 @@ void gmp_int_invert(int *inverse_exists, gmp_int_t rop, gmp_int_t op1, gmp_int_t
             inverse_exists[i] = inv_exists;
         }
     }
+}
+
+void gmp_int_montgomery_inverse(gmp_int_t res, gmp_int_t op, gmp_int_t mod) {
+    gmp_int_t tmp;
+    gmp_int_init(tmp);
+    gmp_int_set(tmp, op);
+
+    montgomery_to_standard_representation_gmp(tmp);
+    gmp_int_invert(NULL, tmp, tmp, mod);
+    standard_to_montgomery_representation_gmp(tmp);
+    gmp_int_set(res, tmp);
+
+    gmp_int_clear(tmp);
 }
 
 int gmp_int_set_str(gmp_int_t rop, const char *str, int base) {
