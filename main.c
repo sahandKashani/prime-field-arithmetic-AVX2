@@ -650,14 +650,14 @@ bool test_point_addition() {
         /* set p1 */
         gmp_int_set(p1_gmp.x, points_x_glo_gmp[i]);
         gmp_int_set(p1_gmp.y, points_y_glo_gmp[i]);
-        copy_num(p1.x, points_x_glo[0], NUM_LIMBS);
-        copy_num(p1.y, points_y_glo[0], NUM_LIMBS);
+        copy_num(p1.x, points_x_glo[i], NUM_LIMBS);
+        copy_num(p1.y, points_y_glo[i], NUM_LIMBS);
 
         /* set p2 */
         gmp_int_set(p2_gmp.x, points_x_glo_gmp[i+1]);
         gmp_int_set(p2_gmp.y, points_y_glo_gmp[i+1]);
-        copy_num(p2.x, points_x_glo[1], NUM_LIMBS);
-        copy_num(p2.y, points_y_glo[1], NUM_LIMBS);
+        copy_num(p2.x, points_x_glo[i+1], NUM_LIMBS);
+        copy_num(p2.y, points_y_glo[i+1], NUM_LIMBS);
 
         /* to montgomery representation */
         standard_to_montgomery_representation_point_gmp(&p1_gmp);
