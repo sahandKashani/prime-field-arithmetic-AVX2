@@ -11,6 +11,4 @@
 
     #define TEST                                 (0)
 
-    #define NUMBER_GENERATION                    (0)
-
 #endif /* SETTINGS_H_ */

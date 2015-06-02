@@ -18,6 +18,12 @@
     extern char *points_y_hex_glo[NUM_POINTS];
 
     extern limb_t m_glo[NUM_LIMBS];
+    extern limb_t a_glo[NUM_LIMBS];
+    extern limb_t b_glo[NUM_LIMBS];
+
+    extern limb_t points_x_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
+    extern limb_t points_y_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
+
     extern limb_t R_2_mod_m_glo[NUM_LIMBS];
     extern limb_t m_prime_glo;
 
