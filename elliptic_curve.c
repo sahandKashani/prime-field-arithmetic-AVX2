@@ -16,16 +16,9 @@ struct curve_point add_point_point(struct curve_point p1, struct curve_point p2)
 
     /* lambda = (y2 - y1) / (x2 - x1) */
     sub_mod_num_num(numer, p2.y, p1.y, m_glo, NUM_LIMBS);
-    print_num(numer, NUM_LIMBS);
-
     sub_mod_num_num(denom, p2.x, p1.x, m_glo, NUM_LIMBS);
-    print_num(denom, NUM_LIMBS);
-
     invert_num(denom, denom, m_glo, NUM_LIMBS);
-    print_num(denom, NUM_LIMBS);
-
     mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, NUM_LIMBS);
-    print_num(lambda, NUM_LIMBS);
 
     /* x */
     mul_montgomery_num_num(p3.x, lambda, lambda, m_glo, m_prime_glo, NUM_LIMBS);
@@ -58,13 +51,7 @@ struct curve_point_gmp add_point_point_gmp(struct curve_point_gmp p1, struct cur
     /* lambda = (y2 - y1) / (x2 - x1) */
     gmp_int_sub_mod(numer_gmp, p2.y, p1.y, m_glo_gmp);
     gmp_int_sub_mod(denom_gmp, p2.x, p1.x, m_glo_gmp);
-
-    int inverse_exists[NUM_ENTRIES_IN_LIMB];
-    gmp_int_invert(inverse_exists, denom_gmp, denom_gmp, m_glo_gmp);
-    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
-        assert(inverse_exists[i] != 0);
-    }
-
+    gmp_int_invert(NULL, denom_gmp, denom_gmp, m_glo_gmp);
     gmp_int_mul_montgomery(lambda_gmp, numer_gmp, denom_gmp, inv_R_glo_gmp, m_glo_gmp);
 
     /* x */
@@ -80,6 +67,7 @@ struct curve_point_gmp add_point_point_gmp(struct curve_point_gmp p1, struct cur
     return p3;
 }
 
+/* assumes input is in standard representation */
 bool is_on_curve_num(limb_t *x_num, limb_t *y_num) {
     gmp_int_t x_gmp;
     gmp_int_t y_gmp;
@@ -97,10 +85,12 @@ bool is_on_curve_num(limb_t *x_num, limb_t *y_num) {
     return is_on_curve;
 }
 
+/* assumes input is in standard representation */
 bool is_on_curve_point(struct curve_point p) {
     return is_on_curve_num(p.x, p.y);
 }
 
+/* assumes input is in standard representation */
 bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     /* (y^2) mod m == (x^3 + a*x + b) mod m */
     gmp_int_t lhs_gmp; /* (y^2) mod m */
