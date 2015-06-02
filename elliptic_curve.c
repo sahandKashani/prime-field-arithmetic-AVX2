@@ -80,10 +80,12 @@ bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp) {
     gmp_int_clear(rhs_gmp);
     gmp_int_clear(ax_plus_b_gmp);
 
-    bool on_curve_
+    bool on_curve_final = true;
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
-
+        if (on_curve[i] != 0) {
+            on_curve_final = false;
+        }
     }
 
-    return on_curve;
+    return on_curve_final;
 }

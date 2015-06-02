@@ -131,3 +131,11 @@ int gmp_int_set_str(gmp_int_t rop, const char *str, int base) {
     }
     return ret;
 }
+
+int gmp_int_set_strings(gmp_int_t rop, char **str, int base) {
+    int ret = 0;
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        ret = mpz_set_str(rop[i], str[i], base);
+    }
+    return ret;
+}

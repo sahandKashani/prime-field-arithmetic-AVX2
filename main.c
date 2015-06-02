@@ -799,16 +799,27 @@ int main(void) {
             gmp_int_init(m_gmp);
             print_num((limb_t *) m, NUM_LIMBS);
 
-            mpz_t point1x_gmp;
-            mpz_t point1y_gmp;
-            mpz_init(point1x_gmp);
-            mpz_init(point1y_gmp);
-            mpz_set_str(point1x_gmp, points_hex[0][0], 16);
-            mpz_set_str(point1y_gmp, points_hex[0][1], 16);
-            gmp_printf("point1x_gmp = %Zx\n", point1x_gmp);
-            gmp_printf("point1y_gmp = %Zx\n", point1y_gmp);
+            printf("\n");
 
-            printf("on_curve = %d\n", is_on_curve_gmp(point1x_gmp, point1y_gmp));
+            gmp_int_t x_gmp;
+            gmp_int_t y_gmp;
+            gmp_int_init(x_gmp);
+            gmp_int_init(y_gmp);
+
+            char *points_x_hex[NUM_ENTRIES_IN_LIMB];
+            char *points_y_hex[NUM_ENTRIES_IN_LIMB];
+
+            for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+                points_x_hex[i] = points_hex[i][0];
+                points_y_hex[i] = points_hex[i][1];
+            }
+            gmp_int_set_strings(x_gmp, points_x_hex, 16);
+            gmp_int_set_strings(y_gmp, points_y_hex, 16);
+
+            print_num_gmp(x_gmp, NUM_LIMBS);
+            print_num_gmp(y_gmp, NUM_LIMBS);
+
+            printf("on_curve = %d\n", is_on_curve_gmp(x_gmp, y_gmp));
 
         #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 
