@@ -767,33 +767,21 @@ int main(void) {
             copy_num(p2.x, points_x_glo[1], NUM_LIMBS);
             copy_num(p2.y, points_y_glo[1], NUM_LIMBS);
 
+            /* to montgomery representation */
             standard_to_montgomery_representation_point_gmp(&p1_gmp);
             standard_to_montgomery_representation_point_gmp(&p2_gmp);
-
             standard_to_montgomery_representation_point(&p1);
             standard_to_montgomery_representation_point(&p2);
 
+            /* point addition */
             add_point_point_gmp(&p3_gmp, &p1_gmp, &p2_gmp);
-            add_point_point(&p3, &p1, &p2);
-
-            print_num(p3.x, NUM_LIMBS);
-            print_num(p3.y, NUM_LIMBS);
-            print_num_gmp(p3_gmp.x, NUM_LIMBS);
-            print_num_gmp(p3_gmp.y, NUM_LIMBS);
-
-//            printf("%d\n", is_on_curve(p3.x, p3.y));
-//            printf("%d\n", is_on_curve_gmp(p3_gmp.x, p3_gmp.y));
+            add_point_point(&p3, &p1, &p2, NUM_LIMBS);
 
             montgomery_to_standard_representation_point(&p3);
             montgomery_to_standard_representation_point_gmp(&p3_gmp);
 
-            print_num(p3.x, NUM_LIMBS);
-            print_num(p3.y, NUM_LIMBS);
-            print_num_gmp(p3_gmp.x, NUM_LIMBS);
-            print_num_gmp(p3_gmp.y, NUM_LIMBS);
-
-            printf("%d\n", is_on_curve(p3.x, p3.y));
-            printf("%d\n", is_on_curve_gmp(p3_gmp.x, p3_gmp.y));
+            printf("%d\n", is_on_curve_point(p3, NUM_LIMBS));
+            printf("%d\n", is_on_curve_point_gmp(p3_gmp));
 
             printf("end\n");
 

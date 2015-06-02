@@ -7,26 +7,26 @@
 /**
  * Supposes data is in Montgomery form prior to being called
  */
-void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2) {
-    limb_t numer[NUM_LIMBS];
-    limb_t denom[NUM_LIMBS];
-    limb_t lambda[NUM_LIMBS];
+void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2, unsigned int num_limbs) {
+    limb_t numer[num_limbs];
+    limb_t denom[num_limbs];
+    limb_t lambda[num_limbs];
 
     /* lambda = (y2 - y1) / (x2 - x1) */
-    sub_mod_num_num(numer, p2->y, p1->y, m_glo, NUM_LIMBS);
-    sub_mod_num_num(denom, p2->x, p1->x, m_glo, NUM_LIMBS);
-    montgomery_inverse_num(denom, denom, m_glo, NUM_LIMBS);
-    mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, NUM_LIMBS);
+    sub_mod_num_num(numer, p2->y, p1->y, m_glo, num_limbs);
+    sub_mod_num_num(denom, p2->x, p1->x, m_glo, num_limbs);
+    montgomery_inverse_num(denom, denom, m_glo, num_limbs);
+    mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, num_limbs);
 
     /* x */
-    mul_montgomery_num_num(p3->x, lambda, lambda, m_glo, m_prime_glo, NUM_LIMBS);
-    sub_mod_num_num(p3->x, p3->x, p1->x, m_glo, NUM_LIMBS);
-    sub_mod_num_num(p3->x, p3->x, p2->x, m_glo, NUM_LIMBS);
+    mul_montgomery_num_num(p3->x, lambda, lambda, m_glo, m_prime_glo, num_limbs);
+    sub_mod_num_num(p3->x, p3->x, p1->x, m_glo, num_limbs);
+    sub_mod_num_num(p3->x, p3->x, p2->x, m_glo, num_limbs);
 
     /* y */
-    sub_mod_num_num(p3->y, p1->x, p3->x, m_glo, NUM_LIMBS);
-    mul_montgomery_num_num(p3->y, lambda, p3->y, m_glo, m_prime_glo, NUM_LIMBS);
-    sub_mod_num_num(p3->y, p3->y, p1->y, m_glo, NUM_LIMBS);
+    sub_mod_num_num(p3->y, p1->x, p3->x, m_glo, num_limbs);
+    mul_montgomery_num_num(p3->y, lambda, p3->y, m_glo, m_prime_glo, num_limbs);
+    sub_mod_num_num(p3->y, p3->y, p1->y, m_glo, num_limbs);
 }
 
 /**
@@ -58,14 +58,14 @@ void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1,
 }
 
 /* assumes input is in standard representation */
-bool is_on_curve(limb_t *x_num, limb_t *y_num) {
+bool is_on_curve(limb_t *x_num, limb_t *y_num, unsigned int num_limbs) {
     gmp_int_t x_gmp;
     gmp_int_t y_gmp;
     gmp_int_init(x_gmp);
     gmp_int_init(y_gmp);
 
-    convert_num_to_gmp(x_gmp, x_num, NUM_LIMBS);
-    convert_num_to_gmp(y_gmp, y_num, NUM_LIMBS);
+    convert_num_to_gmp(x_gmp, x_num, num_limbs);
+    convert_num_to_gmp(y_gmp, y_num, num_limbs);
 
     bool is_on_curve = is_on_curve_gmp(x_gmp, y_gmp);
 
@@ -76,8 +76,12 @@ bool is_on_curve(limb_t *x_num, limb_t *y_num) {
 }
 
 /* assumes input is in standard representation */
-bool is_on_curve_point(struct curve_point p) {
-    return is_on_curve(p.x, p.y);
+bool is_on_curve_point(struct curve_point p, unsigned int num_limbs) {
+    return is_on_curve(p.x, p.y, num_limbs);
+}
+
+bool is_on_curve_point_gmp(struct curve_point_gmp p) {
+    return is_on_curve_gmp(p.x, p.y);
 }
 
 /* assumes input is in standard representation */

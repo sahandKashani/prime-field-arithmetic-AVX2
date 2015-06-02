@@ -15,10 +15,11 @@
         gmp_int_t y;
     };
 
-    void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2);
+    void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2, unsigned int num_limbs);
     void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1, struct curve_point_gmp *p2);
-    bool is_on_curve(limb_t *x_num, limb_t *y_num);
-    bool is_on_curve_point(struct curve_point p);
+    bool is_on_curve(limb_t *x_num, limb_t *y_num, unsigned int num_limbs);
+    bool is_on_curve_point(struct curve_point p, unsigned int num_limbs);
+    bool is_on_curve_point_gmp(struct curve_point_gmp p);
     bool is_on_curve_gmp(gmp_int_t x_gmp, gmp_int_t y_gmp);
 
 #endif /* ELLIPTIC_CURVE_H_ */
