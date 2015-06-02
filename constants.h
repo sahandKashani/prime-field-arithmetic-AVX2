@@ -10,7 +10,7 @@
     #define NUM_LIMBS                   ((PRIME_FIELD_BINARY_BIT_LENGTH + BASE_EXPONENT - 1) / BASE_EXPONENT) /* equivalent to ((unsigned int) ceil((PRIME_FIELD_BINARY_BIT_LENGTH)/ ((double) BASE_EXPONENT))) */
     #define PRIME_FIELD_FULL_HEX_LENGTH (NUM_LIMBS * LIMB_SIZE_IN_HEX)
 
-    #define NUM_POINTS (128)
+    #define NUM_POINTS (1024)
 
     extern char *m_glo_hex;
     extern char *a_glo_hex;
