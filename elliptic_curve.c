@@ -126,17 +126,19 @@ void double_point(struct curve_point *p2, struct curve_point *p1, unsigned int n
  * Supposes data is in Montgomery form prior to being called
  */
 void double_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1) {
+    gmp_int_t x1_squared_gmp;
     gmp_int_t numer_gmp;
     gmp_int_t denom_gmp;
     gmp_int_t lambda_gmp;
+    gmp_int_init(x1_squared_gmp);
     gmp_int_init(numer_gmp);
     gmp_int_init(denom_gmp);
     gmp_int_init(lambda_gmp);
 
     /* lambda = (3 * (x1^2) + a) / (2 * y1) */
-    gmp_int_mul_montgomery(numer_gmp, p1->x, p1->x, inv_R_glo_gmp, m_glo_gmp);
-    gmp_int_add_mod(numer_gmp, numer_gmp, numer_gmp, m_glo_gmp);
-    gmp_int_add_mod(numer_gmp, numer_gmp, numer_gmp, m_glo_gmp);
+    gmp_int_mul_montgomery(x1_squared_gmp, p1->x, p1->x, inv_R_glo_gmp, m_glo_gmp);
+    gmp_int_add_mod(numer_gmp, x1_squared_gmp, x1_squared_gmp, m_glo_gmp);
+    gmp_int_add_mod(numer_gmp, numer_gmp, x1_squared_gmp, m_glo_gmp);
     gmp_int_add_mod(numer_gmp, numer_gmp, a_glo_gmp, m_glo_gmp);
     gmp_int_add_mod(denom_gmp, p1->y, p1->y, m_glo_gmp);
     gmp_int_montgomery_inverse(denom_gmp, denom_gmp, m_glo_gmp);
@@ -152,6 +154,7 @@ void double_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1) {
     gmp_int_mul_montgomery(p2->y, lambda_gmp, p2->y, inv_R_glo_gmp, m_glo_gmp);
     gmp_int_sub_mod(p2->y, p2->y, p1->y, m_glo_gmp);
 
+    gmp_int_clear(x1_squared_gmp);
     gmp_int_clear(numer_gmp);
     gmp_int_clear(denom_gmp);
     gmp_int_clear(lambda_gmp);
