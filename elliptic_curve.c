@@ -33,6 +33,7 @@ void neg_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1) {
     gmp_int_set_str(zero_gmp, "0", 10);
     gmp_int_set(p2->x, p1->x);
     gmp_int_sub_mod(p2->y, zero_gmp, p1->y, m_glo_gmp);
+    gmp_int_clear(zero_gmp);
 }
 
 /**
