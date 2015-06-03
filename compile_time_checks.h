@@ -4,9 +4,9 @@
     #include "settings.h"
 
     /* compile-time checks for settings validity */
-    #if LIMB_SIZE_IN_BITS != 16 && LIMB_SIZE_IN_BITS != 32 && LIMB_SIZE_IN_BITS != 64
+    #if LIMB_SIZE_IN_BITS != 8 && LIMB_SIZE_IN_BITS != 16 && LIMB_SIZE_IN_BITS != 32 && LIMB_SIZE_IN_BITS != 64
 
-        #error "LIMB_SIZE_IN_BITS must be 16, 32 or 64"
+        #error "LIMB_SIZE_IN_BITS must be 8, 16, 32 or 64"
 
     #endif /* LIMB_SIZE_IN_BITS != 32 && LIMB_SIZE_IN_BITS != 64 */
 

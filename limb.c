@@ -74,7 +74,11 @@ limb_t zero() {
 limb_t set_limb(unsigned long long int a) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            return _mm256_set1_epi8((char) a);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             return _mm256_set1_epi16((short int) a);
 
@@ -98,7 +102,11 @@ limb_t set_limb(unsigned long long int a) {
 limb_t add_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            return _mm256_add_epi8(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             return _mm256_add_epi16(a, b);
 
@@ -122,7 +130,11 @@ limb_t add_limb_limb(limb_t a, limb_t b) {
 limb_t sub_limb_limb(limb_t a, limb_t b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            return _mm256_sub_epi8(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             return _mm256_sub_epi16(a, b);
 
@@ -149,7 +161,15 @@ limb_t cmpgt_limb_limb(limb_t a, limb_t b) {
          * comparisons, so we need to code UNsigned cmpgt ourselves. The code
          * below computes an a > b for unsigned values of a and b. */
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            limb_t mask = _mm256_set1_epi8(0x1);
+            limb_t tmp = _mm256_set1_epi8((char) 0x80);
+            a = _mm256_add_epi8(a, tmp);
+            b = _mm256_add_epi8(b, tmp);
+            tmp = _mm256_cmpgt_epi8(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             limb_t mask = _mm256_set1_epi16(0x1);
             limb_t tmp = _mm256_slli_epi16(mask, LIMB_SIZE_IN_BITS - 1);
@@ -189,7 +209,11 @@ limb_t cmpeq_limb_limb(limb_t a, limb_t b) {
 
         limb_t mask = set_limb(0x1);
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            limb_t tmp = _mm256_cmpeq_epi8(a, b);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             limb_t tmp = _mm256_cmpeq_epi16(a, b);
 
@@ -239,7 +263,12 @@ limb_t and_limb_limb(limb_t a, limb_t b) {
 limb_t srli_limb(limb_t a, int b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            limb_t mask = _mm256_set1_epi8((char) (0xff >> b));
+            return _mm256_and_si256(_mm256_srli_epi16(a, b), mask);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             return _mm256_srli_epi16(a, b);
 
@@ -263,7 +292,12 @@ limb_t srli_limb(limb_t a, int b) {
 limb_t slli_limb(limb_t a, int b) {
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            limb_t mask = _mm256_set1_epi8((char) (0xff << b));
+            return _mm256_and_si256(_mm256_slli_epi16(a, b), mask);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             return _mm256_slli_epi16(a, b);
 
@@ -313,7 +347,26 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
     #if SIMD_PARALLEL_WALKS
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            limb_t mask_lo = _mm256_set1_epi16((unsigned char) 0xff);
+            limb_t a_even = _mm256_and_si256(a, mask_lo);
+            limb_t b_even = _mm256_and_si256(b, mask_lo);
+            limb_t a_odd = _mm256_srli_epi16(a, 8);
+            limb_t b_odd = _mm256_srli_epi16(b, 8);
+
+            limb_t c_even = _mm256_mullo_epi16(a_even, b_even);
+            limb_t c_even_lo = _mm256_and_si256(c_even, mask_lo);
+            limb_t c_even_hi = _mm256_srli_epi16(c_even, 8);
+
+            limb_t c_odd = _mm256_mullo_epi16(a_odd, b_odd);
+            limb_t c_odd_lo = _mm256_slli_epi16(c_odd, 8);
+            limb_t c_odd_hi = _mm256_andnot_si256(mask_lo, c_odd);
+
+            c.lo = _mm256_or_si256(c_even_lo, c_odd_lo);
+            c.hi = _mm256_or_si256(c_even_hi, c_odd_hi);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             c.lo = _mm256_mullo_epi16(a, b);
             c.hi = _mm256_mulhi_epu16(a, b);
@@ -359,7 +412,13 @@ struct d_limb_t mul_limb_limb(limb_t a, limb_t b) {
 
     #else /* SIMD_PARALLEL_WALKS */
 
-        #if LIMB_SIZE_IN_BITS == 16
+        #if LIMB_SIZE_IN_BITS == 8
+
+            uint16_t res = (uint16_t) (a * b);
+            c.lo = (uint8_t) (res & 0xff);
+            c.hi = (uint8_t) (res >> 8);
+
+        #elif LIMB_SIZE_IN_BITS == 16
 
             uint32_t res = (uint32_t) a * b;
             c.lo = res & 0xffff;
