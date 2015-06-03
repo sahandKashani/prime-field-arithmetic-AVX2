@@ -595,10 +595,10 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
     return success;
 }
 
-bool test_point_addition() {
+bool test_point_addition(unsigned int number_of_tests) {
     bool success = true;
 
-    for (unsigned int i = 0; (i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB)) && success; i += 2) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i += 2) {
         struct curve_point p1;
         struct curve_point_gmp p1_gmp;
         curve_point_init_gmp(&p1_gmp);
@@ -666,10 +666,10 @@ bool test_point_addition() {
     return success;
 }
 
-bool test_point_double() {
+bool test_point_double(unsigned int number_of_tests) {
     bool success = true;
 
-    for (unsigned int i = 0; (i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB)) && success; i += 1) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i += 1) {
         struct curve_point p1;
         struct curve_point_gmp p1_gmp;
         curve_point_init_gmp(&p1_gmp);
@@ -720,10 +720,10 @@ bool test_point_double() {
     return success;
 }
 
-bool test_point_neg() {
+bool test_point_neg(unsigned int number_of_tests) {
     bool success = true;
 
-    for (unsigned int i = 0; (i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB)) && success; i += 1) {
+    for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i += 1) {
         struct curve_point p1;
         struct curve_point_gmp p1_gmp;
         curve_point_init_gmp(&p1_gmp);
@@ -862,9 +862,9 @@ void check_mul_montgomery_num_num(unsigned int num_iterations, unsigned int seed
     printf("\n");
 }
 
-void check_add_point_point(unsigned int num_iterations, unsigned int seed) {
+void check_add_point_point(unsigned int num_iterations) {
     printf("Point addition:\n");
-    if (test_point_addition()) {
+    if (test_point_addition(num_iterations)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -872,9 +872,9 @@ void check_add_point_point(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_double_point(unsigned int num_iterations, unsigned int seed) {
+void check_double_point(unsigned int num_iterations) {
     printf("Point double:\n");
-    if (test_point_double()) {
+    if (test_point_double(num_iterations)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -882,9 +882,9 @@ void check_double_point(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_neg_point(unsigned int num_iterations, unsigned int seed) {
+void check_neg_point(unsigned int num_iterations) {
     printf("Point neg:\n");
-    if (test_point_neg()) {
+    if (test_point_neg(num_iterations)) {
         printf("Success\n");
     } else {
         printf("Failed\n");

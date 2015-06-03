@@ -24,9 +24,9 @@ int main(void) {
         check_add_mod_num_num(iterations, SEED);
         check_sub_mod_num_num(iterations, SEED);
         check_mul_montgomery_num_num(iterations, SEED);
-        check_add_point_point(iterations, SEED);
-        check_double_point();
-        check_neg_point();
+        check_add_point_point(iterations);
+        check_double_point(iterations);
+        check_neg_point(iterations);
 
     #elif BENCHMARK /* TEST */
 

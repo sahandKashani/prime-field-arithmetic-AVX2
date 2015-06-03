@@ -24,8 +24,8 @@ void check_mul_num_num(unsigned int num_iterations, unsigned int seed);
 void check_add_mod_num_num(unsigned int num_iterations, unsigned int seed);
 void check_sub_mod_num_num(unsigned int num_iterations, unsigned int seed);
 void check_mul_montgomery_num_num(unsigned int num_iterations, unsigned int seed);
-void check_add_point_point();
-void check_double_point();
-void check_neg_point();
+void check_add_point_point(unsigned int num_iterations);
+void check_double_point(unsigned int num_iterations);
+void check_neg_point(unsigned int num_iterations);
 
 #endif /* CHECK_ARITHMETIC_H_ */
