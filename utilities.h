@@ -31,8 +31,11 @@
     void cmp_num_gmp(int *res, limb_t *num, gmp_int_t num_gmp, unsigned int num_limbs);
     void generate_random_gmp_less_than(gmp_int_t num_gmp, gmp_int_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state);
     void generate_random_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);
+    void generate_random_gmp_less_than_with_inverse(gmp_int_t num_gmp, gmp_int_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state);
+    void generate_random_gmp_number_with_inverse(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state, gmp_int_t mod);
     void generate_random_prime_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);
     three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state);
+    three_sorted_gmp get_three_sorted_gmp_with_inverse(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state, gmp_int_t mod);
     void clear_three_sorted_gmp(three_sorted_gmp x);
     void copy_num(limb_t * const b, limb_t *a, unsigned int num_limbs);
     bool is_power_of_2(unsigned int x);

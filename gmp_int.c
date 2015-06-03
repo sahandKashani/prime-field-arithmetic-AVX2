@@ -80,6 +80,36 @@ void gmp_int_rrandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n) {
     }
 }
 
+void gmp_int_urandomm_with_inverse(gmp_int_t rop, gmp_randstate_t state, gmp_int_t n) {
+    mpz_t inverse;
+    mpz_init(inverse);
+
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        int inverse_exists = 0;
+        do {
+            mpz_urandomm(rop[i], state, n[i]);
+            inverse_exists = mpz_invert(inverse, rop[i], n[i]);
+        } while (!inverse_exists);
+    }
+
+    mpz_clear(inverse);
+}
+
+void gmp_int_rrandomb_with_inverse(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n, gmp_int_t mod) {
+    mpz_t inverse;
+    mpz_init(inverse);
+
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        int inverse_exists = 0;
+        do {
+            mpz_rrandomb(rop[i], state, n);
+            inverse_exists = mpz_invert(inverse, rop[i], mod[i]);
+        } while (!inverse_exists);
+    }
+
+    mpz_clear(inverse);
+}
+
 void gmp_int_urandomb(gmp_int_t rop, gmp_randstate_t state, mp_bitcnt_t n) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
         mpz_urandomb(rop[i], state, n);

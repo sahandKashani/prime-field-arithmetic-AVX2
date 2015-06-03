@@ -152,6 +152,15 @@ void generate_random_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bit
     gmp_int_rrandomb(num_gmp, gmp_random_state, precision_in_bits);
 }
 
+void generate_random_gmp_less_than_with_inverse(gmp_int_t num_gmp, gmp_int_t strict_upper_bound_gmp, gmp_randstate_t gmp_random_state) {
+    gmp_int_urandomm_with_inverse(num_gmp, gmp_random_state, strict_upper_bound_gmp);
+}
+
+void generate_random_gmp_number_with_inverse(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state, gmp_int_t mod) {
+    /* random number with long chain of consecutive 0s and 1s for testing */
+    gmp_int_rrandomb_with_inverse(num_gmp, gmp_random_state, precision_in_bits, mod);
+}
+
 void generate_random_prime_gmp_number(gmp_int_t num_gmp, unsigned int precision_in_bits, gmp_randstate_t gmp_random_state) {
     for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
         do {
@@ -175,6 +184,40 @@ three_sorted_gmp get_three_sorted_gmp(unsigned int precision_in_bits, gmp_randst
         generate_random_gmp_number(output.big, precision_in_bits, gmp_random_state);
         generate_random_gmp_number(output.middle, precision_in_bits, gmp_random_state);
         generate_random_gmp_number(output.small, precision_in_bits, gmp_random_state);
+
+        for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+            equalities_found |= ((mpz_cmp(output.big[i], output.middle[i]) == 0) ||
+                                 (mpz_cmp(output.big[i], output.small[i]) == 0)  ||
+                                 (mpz_cmp(output.middle[i], output.small[i]) == 0));
+        }
+    } while (equalities_found);
+
+    /* How to sort 3 values in descending order (a > b > c)
+     *  if (a > b) swap(a, b);
+     *  if (a > c) swap(a, c);
+     *  if (b > c) swap(b, c);
+     */
+    for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
+        if (mpz_cmp(output.small[i], output.middle[i]) == 1) mpz_swap(output.small[i], output.middle[i]);
+        if (mpz_cmp(output.small[i], output.big[i]) == 1) mpz_swap(output.small[i], output.big[i]);
+        if (mpz_cmp(output.middle[i], output.big[i]) == 1) mpz_swap(output.middle[i], output.big[i]);
+    }
+
+    return output;
+}
+
+three_sorted_gmp get_three_sorted_gmp_with_inverse(unsigned int precision_in_bits, gmp_randstate_t gmp_random_state, gmp_int_t mod) {
+    three_sorted_gmp output;
+    gmp_int_init(output.big);
+    gmp_int_init(output.middle);
+    gmp_int_init(output.small);
+
+    bool equalities_found = false;
+    do {
+        equalities_found = false;
+        generate_random_gmp_number_with_inverse(output.big, precision_in_bits, gmp_random_state, mod);
+        generate_random_gmp_number_with_inverse(output.middle, precision_in_bits, gmp_random_state, mod);
+        generate_random_gmp_number_with_inverse(output.small, precision_in_bits, gmp_random_state, mod);
 
         for (unsigned int i = 0; i < NUM_ENTRIES_IN_LIMB; i++) {
             equalities_found |= ((mpz_cmp(output.big[i], output.middle[i]) == 0) ||

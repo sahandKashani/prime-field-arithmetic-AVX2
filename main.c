@@ -554,32 +554,9 @@ bool test_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed
     bool success = true;
 
     for (unsigned int i = 0; (i < (number_of_tests / NUM_ENTRIES_IN_LIMB)) && success; i++) {
-        three_sorted_gmp operands;
+        generate_random_gmp_number(mod_gmp, PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
 
-        bool operands_ok;
-        do {
-            operands = get_three_sorted_gmp(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state);
-            gmp_int_set(op1_gmp, operands.small);
-            gmp_int_set(op2_gmp, operands.middle);
-            gmp_int_set(mod_gmp, operands.big);
-
-            operands_ok = true;
-
-            int inverse_exists[NUM_ENTRIES_IN_LIMB];
-            gmp_int_invert(inverse_exists, mod_prime_gmp, mod_gmp, base_gmp);
-            bool inverse_exists_common = true;
-
-            for (unsigned int j = 0; j < NUM_ENTRIES_IN_LIMB; j++) {
-                if (!inverse_exists[j]) {
-                    inverse_exists_common = false;
-                }
-            }
-
-            if (!inverse_exists_common) {
-                operands_ok = false;
-                clear_three_sorted_gmp(operands);
-            }
-        } while (!operands_ok);
+        three_sorted_gmp operands = get_three_sorted_gmp_with_inverse(PRIME_FIELD_BINARY_BIT_LENGTH, gmp_random_state, mod_gmp);
 
         gmp_int_neg(mod_prime_gmp, mod_prime_gmp);
         gmp_int_mod(mod_prime_gmp, mod_prime_gmp, base_gmp);
