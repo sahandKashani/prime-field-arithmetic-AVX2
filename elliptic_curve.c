@@ -97,14 +97,15 @@ void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1,
  * Supposes data is in Montgomery form prior to being called
  */
 void double_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs) {
+    limb_t x1_squared[num_limbs];
     limb_t numer[num_limbs];
     limb_t denom[num_limbs];
     limb_t lambda[num_limbs];
 
     /* lambda = (3 * (x1^2) + a) / (2 * y1) */
-    mul_montgomery_num_num(numer, p1->x, p1->x, m_glo, m_prime_glo, num_limbs);
-    add_mod_num_num(numer, numer, numer, m_glo, num_limbs);
-    add_mod_num_num(numer, numer, numer, m_glo, num_limbs);
+    mul_montgomery_num_num(x1_squared, p1->x, p1->x, m_glo, m_prime_glo, num_limbs);
+    add_mod_num_num(numer, x1_squared, x1_squared, m_glo, num_limbs);
+    add_mod_num_num(numer, numer, x1_squared, m_glo, num_limbs);
     add_mod_num_num(numer, numer, a_glo, m_glo, num_limbs);
     add_mod_num_num(denom, p1->y, p1->y, m_glo, num_limbs);
     montgomery_inverse_num(denom, denom, m_glo, num_limbs);
