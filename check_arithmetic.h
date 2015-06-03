@@ -3,6 +3,9 @@
 
 #include <stdbool.h>
 
+#define NUMBER_OF_TESTS (1 << 10)
+#define SEED (12345)
+
 bool test_add_num_num(unsigned int number_of_tests, unsigned int seed);
 bool test_add_num_limb(unsigned int number_of_tests, unsigned int seed);
 bool test_sub_num_num(unsigned int number_of_tests, unsigned int seed);

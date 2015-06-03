@@ -5,15 +5,12 @@
 #include "check_arithmetic.h"
 #include "settings.h"
 
-#define NUM_ITERATIONS (1 << 10)
-#define SEED (12345)
-
 int main(void) {
     initialize_constants();
 
     #if TEST
 
-        unsigned int iterations = NUM_ITERATIONS / NUM_ENTRIES_IN_LIMB;
+        unsigned int iterations = NUMBER_OF_TESTS / NUM_ENTRIES_IN_LIMB;
 
         check_add_num_num(iterations, SEED);
         check_add_num_limb(iterations, SEED);
