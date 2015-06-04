@@ -12,14 +12,14 @@ overwrite_file() {
 #define SETTINGS_H_
 
     #define PRIME_FIELD_BINARY_BIT_LENGTH       (131)
-    #define LIMB_SIZE_IN_BITS                   (${limb_size_in_bits})
-    #define FULL_LIMB_PRECISION                 (${full_limb_precision})
-    #define MULX                                (${mulx})
-    #define SIMD_PARALLEL_WALKS                 (${simd_parallel_walks})
-    #define TEST                                (0)
-    #define BENCHMARK_PRIME_FIELD_ARITHMETIC    (${benchmark_prime_field_arithmetic})
-    #define BENCHMARK_ELLIPTIC_CURVE_ARITHMETIC (${benchmark_elliptic_curve_arithmetic})
-    #define BENCHMARK_USE_GMP                   (${benchmark_use_gmp})
+    #define LIMB_SIZE_IN_BITS                   (${limb_size_in_bits}) /* 8, 16, 32, 64 */
+    #define FULL_LIMB_PRECISION                 (${full_limb_precision}) /* 0, 1 */
+    #define MULX                                (${mulx}) /* 0, 1: Only useful if LIMB_SIZE_IN_BITS == 64 */
+    #define SIMD_PARALLEL_WALKS                 (${simd_parallel_walks}) /* 0, 1 */
+    #define TEST                                (0) /* 0, 1 */
+    #define BENCHMARK_PRIME_FIELD_ARITHMETIC    (${benchmark_prime_field_arithmetic}) /* 0, 1 */
+    #define BENCHMARK_ELLIPTIC_CURVE_ARITHMETIC (${benchmark_elliptic_curve_arithmetic}) /* 0, 1 */
+    #define BENCHMARK_USE_GMP                   (${benchmark_use_gmp}) /* 0, 1 */
 
 #endif /* SETTINGS_H_ */"
 
