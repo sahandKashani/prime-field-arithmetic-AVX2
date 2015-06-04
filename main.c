@@ -34,7 +34,7 @@ int main(void) {
         check_double_point(number_of_points);
         check_neg_point(number_of_points);
 
-    #elif BENCHMARK /* TEST */
+    #elif BENCHMARK_ELLIPTIC_CURVE_ARITHMETIC /* TEST */
 
         struct curve_point p1;
         struct curve_point p2;
@@ -50,6 +50,9 @@ int main(void) {
         double stop = get_time();
 
         printf("elapsed time = %lf s\n", stop - start);
+
+    #elif BENCHMARK_PRIME_FIELD_ARITHMETIC /* BENCHMARK_ELLIPTIC_CURVE_ARITHMETIC */
+
 
     #endif /* BENCHMARK */
 
