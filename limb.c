@@ -321,7 +321,7 @@ limb_t slli_limb(limb_t a, int b) {
 limb_t load_limb(limb_t *base, unsigned int i) {
     #if SIMD_PARALLEL_WALKS
 
-        return _mm256_load_si256(base + i);
+        return _mm256_lddqu_si256(base + i);
 
     #else /* SIMD_PARALLEL_WALKS */
 
