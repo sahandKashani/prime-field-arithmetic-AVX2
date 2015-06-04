@@ -18,7 +18,7 @@
     extern char *m_glo_hex;
     extern char *a_glo_hex;
     extern char *b_glo_hex;
-    extern unsigned int num_points;
+    extern unsigned int num_points_glo;
     extern char **points_x_glo_hex; /* large pool of points */
     extern char **points_y_glo_hex; /* large pool of points */
 

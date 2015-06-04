@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <string.h>
+#include <stdio.h>
 #include "constants.h"
 #include "gmp_int.h"
 #include "utilities.h"
@@ -13,12 +15,15 @@
 
 #endif /* PRIME_FIELD_BINARY_BIT_LENGTH */
 
+unsigned int num_points_glo;
+char **points_x_glo_hex; /* large pool of points */
+char **points_y_glo_hex; /* large pool of points */
+
 limb_t m_glo[NUM_LIMBS];
 limb_t a_glo[NUM_LIMBS];
 limb_t b_glo[NUM_LIMBS];
-unsigned int num_points;
-limb_t points_x_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
-limb_t points_y_glo[NUM_POINTS / NUM_ENTRIES_IN_LIMB][NUM_LIMBS];
+limb_t (*points_x_glo)[NUM_LIMBS];
+limb_t (*points_y_glo)[NUM_LIMBS];
 limb_t R_2_mod_m_glo[NUM_LIMBS];
 limb_t m_prime_glo;
 limb_t inv_R_glo[NUM_LIMBS];
@@ -26,13 +31,30 @@ limb_t inv_R_glo[NUM_LIMBS];
 gmp_int_t m_glo_gmp;
 gmp_int_t a_glo_gmp;
 gmp_int_t b_glo_gmp;
-gmp_int_t points_x_glo_gmp[NUM_POINTS / NUM_ENTRIES_IN_LIMB];
-gmp_int_t points_y_glo_gmp[NUM_POINTS / NUM_ENTRIES_IN_LIMB];
+gmp_int_t *points_x_glo_gmp;
+gmp_int_t *points_y_glo_gmp;
 gmp_int_t R_2_mod_m_glo_gmp;
 gmp_int_t m_prime_glo_gmp;
 gmp_int_t inv_R_glo_gmp;
 
 void initialize_constants(unsigned int num_points) {
+    num_points_glo = num_points;
+    /* create large pool of points by replicating src pool */
+    points_x_glo_hex = calloc(num_points_glo / NUM_ENTRIES_IN_LIMB, sizeof(*points_x_glo_hex));
+    points_y_glo_hex = calloc(num_points_glo / NUM_ENTRIES_IN_LIMB, sizeof(*points_y_glo_hex));
+    for (unsigned int i = 0; i < (num_points_glo / NUM_ENTRIES_IN_LIMB); i++) {
+        size_t strlen_x = strlen(points_x_glo_src_hex[i % NUM_POINTS_SRC]);
+        size_t strlen_y = strlen(points_y_glo_src_hex[i % NUM_POINTS_SRC]);
+        points_x_glo_hex[i] = calloc(strlen_x + 1, sizeof(*points_x_glo_hex[i]));
+        points_y_glo_hex[i] = calloc(strlen_y + 1, sizeof(*points_y_glo_hex[i]));
+        strcpy(points_x_glo_hex[i], points_x_glo_src_hex[i % NUM_POINTS_SRC]);
+        strcpy(points_y_glo_hex[i], points_y_glo_src_hex[i % NUM_POINTS_SRC]);
+    }
+    points_x_glo_gmp = calloc(num_points_glo / NUM_ENTRIES_IN_LIMB, sizeof(*points_x_glo_gmp));
+    points_y_glo_gmp = calloc(num_points_glo / NUM_ENTRIES_IN_LIMB, sizeof(*points_y_glo_gmp));
+    points_x_glo = calloc(num_points_glo / NUM_ENTRIES_IN_LIMB, sizeof(*points_x_glo));
+    points_y_glo = calloc(num_points_glo / NUM_ENTRIES_IN_LIMB, sizeof(*points_y_glo));
+
     /* initializing global gmp */
     gmp_int_init(m_glo_gmp);
     gmp_int_init(a_glo_gmp);
@@ -40,7 +62,7 @@ void initialize_constants(unsigned int num_points) {
     gmp_int_init(R_2_mod_m_glo_gmp);
     gmp_int_init(m_prime_glo_gmp);
     gmp_int_init(inv_R_glo_gmp);
-    for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
+    for (unsigned int i = 0; i < (num_points / NUM_ENTRIES_IN_LIMB); i++) {
         gmp_int_init(points_x_glo_gmp[i]);
         gmp_int_init(points_y_glo_gmp[i]);
     }
@@ -66,7 +88,7 @@ void initialize_constants(unsigned int num_points) {
     gmp_int_mod(m_prime_glo_gmp, m_prime_glo_gmp, base_gmp);
     gmp_int_set_str(a_glo_gmp, a_glo_hex, 16);
     gmp_int_set_str(b_glo_gmp, b_glo_hex, 16);
-    for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
+    for (unsigned int i = 0; i < (num_points / NUM_ENTRIES_IN_LIMB); i++) {
         gmp_int_set_strings(points_x_glo_gmp[i], points_x_glo_hex + (i * NUM_ENTRIES_IN_LIMB), 16);
         gmp_int_set_strings(points_y_glo_gmp[i], points_y_glo_hex + (i * NUM_ENTRIES_IN_LIMB), 16);
     }
@@ -82,7 +104,7 @@ void initialize_constants(unsigned int num_points) {
     convert_gmp_to_num(a_glo, a_glo_gmp, NUM_LIMBS);
     convert_gmp_to_num(b_glo, b_glo_gmp, NUM_LIMBS);
     convert_gmp_to_num(inv_R_glo, inv_R_glo_gmp, NUM_LIMBS);
-    for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
+    for (unsigned int i = 0; i < (num_points / NUM_ENTRIES_IN_LIMB); i++) {
         convert_gmp_to_num(points_x_glo[i], points_x_glo_gmp[i], NUM_LIMBS);
         convert_gmp_to_num(points_y_glo[i], points_y_glo_gmp[i], NUM_LIMBS);
     }
@@ -99,8 +121,15 @@ void free_constants() {
     gmp_int_clear(R_2_mod_m_glo_gmp);
     gmp_int_clear(m_prime_glo_gmp);
     gmp_int_clear(inv_R_glo_gmp);
-    for (unsigned int i = 0; i < (NUM_POINTS / NUM_ENTRIES_IN_LIMB); i++) {
+    for (unsigned int i = 0; i < (num_points_glo / NUM_ENTRIES_IN_LIMB); i++) {
         gmp_int_clear(points_x_glo_gmp[i]);
         gmp_int_clear(points_y_glo_gmp[i]);
+        free(points_x_glo_hex[i]);
+        free(points_y_glo_hex[i]);
     }
+
+    free(points_x_glo_gmp);
+    free(points_y_glo_gmp);
+    free(points_x_glo);
+    free(points_y_glo);
 }

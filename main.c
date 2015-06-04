@@ -6,24 +6,23 @@
 #include "settings.h"
 
 int main(void) {
-    initialize_constants();
+    unsigned int number_of_points = 1 << 10;
+    initialize_constants(number_of_points);
 
     #if TEST
 
-        unsigned int iterations = NUMBER_OF_TESTS / NUM_ENTRIES_IN_LIMB;
-
-        check_add_num_num(iterations, SEED);
-        check_add_num_limb(iterations, SEED);
-        check_sub_num_num(iterations, SEED);
-        check_mul_limb_limb(iterations, SEED);
-        check_mul_num_limb(iterations, SEED);
-        check_mul_num_num(iterations, SEED);
-        check_add_mod_num_num(iterations, SEED);
-        check_sub_mod_num_num(iterations, SEED);
-        check_mul_montgomery_num_num(iterations, SEED);
-        check_add_point_point(iterations);
-        check_double_point(iterations);
-        check_neg_point(iterations);
+        check_add_num_num(NUMBER_OF_TESTS, SEED);
+        check_add_num_limb(NUMBER_OF_TESTS, SEED);
+        check_sub_num_num(NUMBER_OF_TESTS, SEED);
+        check_mul_limb_limb(NUMBER_OF_TESTS, SEED);
+        check_mul_num_limb(NUMBER_OF_TESTS, SEED);
+        check_mul_num_num(NUMBER_OF_TESTS, SEED);
+        check_add_mod_num_num(NUMBER_OF_TESTS, SEED);
+        check_sub_mod_num_num(NUMBER_OF_TESTS, SEED);
+        check_mul_montgomery_num_num(NUMBER_OF_TESTS, SEED);
+        check_add_point_point(number_of_points);
+        check_double_point(number_of_points);
+        check_neg_point(number_of_points);
 
     #elif BENCHMARK /* TEST */
 

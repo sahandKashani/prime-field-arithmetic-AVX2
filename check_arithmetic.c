@@ -772,9 +772,9 @@ bool test_point_neg(unsigned int number_of_tests) {
     return success;
 }
 
-void check_add_num_num(unsigned int num_iterations, unsigned int seed) {
+void check_add_num_num(unsigned int number_of_tests, unsigned int seed) {
     printf("Add:\n");
-    if (test_add_num_num(num_iterations, seed)) {
+    if (test_add_num_num(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -782,9 +782,9 @@ void check_add_num_num(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_add_num_limb(unsigned int num_iterations, unsigned int seed) {
+void check_add_num_limb(unsigned int number_of_tests, unsigned int seed) {
     printf("add_num_limb:\n");
-    if (test_add_num_limb(num_iterations, seed)) {
+    if (test_add_num_limb(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -792,9 +792,9 @@ void check_add_num_limb(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_sub_num_num(unsigned int num_iterations, unsigned int seed) {
+void check_sub_num_num(unsigned int number_of_tests, unsigned int seed) {
     printf("Sub:\n");
-    if (test_sub_num_num(num_iterations, seed)) {
+    if (test_sub_num_num(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -802,9 +802,9 @@ void check_sub_num_num(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_mul_limb_limb(unsigned int num_iterations, unsigned int seed) {
+void check_mul_limb_limb(unsigned int number_of_tests, unsigned int seed) {
     printf("mul_limb_limb:\n");
-    if (test_mul_limb_limb(num_iterations, seed)) {
+    if (test_mul_limb_limb(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -812,9 +812,9 @@ void check_mul_limb_limb(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_mul_num_limb(unsigned int num_iterations, unsigned int seed) {
+void check_mul_num_limb(unsigned int number_of_tests, unsigned int seed) {
     printf("mul_num_limb:\n");
-    if (test_mul_num_limb(num_iterations, seed)) {
+    if (test_mul_num_limb(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -822,9 +822,9 @@ void check_mul_num_limb(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_mul_num_num(unsigned int num_iterations, unsigned int seed) {
+void check_mul_num_num(unsigned int number_of_tests, unsigned int seed) {
     printf("Mul:\n");
-    if (test_mul_num_num(num_iterations, seed)) {
+    if (test_mul_num_num(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -832,9 +832,9 @@ void check_mul_num_num(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_add_mod_num_num(unsigned int num_iterations, unsigned int seed) {
+void check_add_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
     printf("Add Mod:\n");
-    if (test_add_mod_num_num(num_iterations, seed)) {
+    if (test_add_mod_num_num(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -842,9 +842,9 @@ void check_add_mod_num_num(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_sub_mod_num_num(unsigned int num_iterations, unsigned int seed) {
+void check_sub_mod_num_num(unsigned int number_of_tests, unsigned int seed) {
     printf("Sub Mod:\n");
-    if (test_sub_mod_num_num(num_iterations, seed)) {
+    if (test_sub_mod_num_num(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -852,9 +852,9 @@ void check_sub_mod_num_num(unsigned int num_iterations, unsigned int seed) {
     printf("\n");
 }
 
-void check_mul_montgomery_num_num(unsigned int num_iterations, unsigned int seed) {
+void check_mul_montgomery_num_num(unsigned int number_of_tests, unsigned int seed) {
     printf("Mul Montgomery:\n");
-    if (test_mul_montgomery_num_num(num_iterations, seed)) {
+    if (test_mul_montgomery_num_num(number_of_tests, seed)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -862,9 +862,9 @@ void check_mul_montgomery_num_num(unsigned int num_iterations, unsigned int seed
     printf("\n");
 }
 
-void check_add_point_point(unsigned int num_iterations) {
+void check_add_point_point(unsigned int number_of_tests) {
     printf("Point addition:\n");
-    if (test_point_addition(num_iterations)) {
+    if (test_point_addition(number_of_tests)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -872,9 +872,9 @@ void check_add_point_point(unsigned int num_iterations) {
     printf("\n");
 }
 
-void check_double_point(unsigned int num_iterations) {
+void check_double_point(unsigned int number_of_tests) {
     printf("Point double:\n");
-    if (test_point_double(num_iterations)) {
+    if (test_point_double(number_of_tests)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
@@ -882,9 +882,9 @@ void check_double_point(unsigned int num_iterations) {
     printf("\n");
 }
 
-void check_neg_point(unsigned int num_iterations) {
+void check_neg_point(unsigned int number_of_tests) {
     printf("Point neg:\n");
-    if (test_point_neg(num_iterations)) {
+    if (test_point_neg(number_of_tests)) {
         printf("Success\n");
     } else {
         printf("Failed\n");
