@@ -18,10 +18,15 @@ void curve_point_clear_gmp(struct curve_point_gmp *p) {
  * Supposes data is in Montgomery form prior to being called
  */
 void neg_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs) {
+    struct curve_point p_out;
+
     limb_t zero[NUM_LIMBS];
     zero_num(zero, num_limbs);
-    copy_num(p2->x, p1->x, num_limbs);
-    sub_mod_num_num(p2->y, zero, p1->y, m_glo, num_limbs);
+    copy_num(p_out.x, p1->x, num_limbs);
+    sub_mod_num_num(p_out.y, zero, p1->y, m_glo, num_limbs);
+
+    copy_num(p2->x, p_out.x, num_limbs);
+    copy_num(p2->y, p_out.y, num_limbs);
 }
 
 /**
@@ -40,6 +45,8 @@ void neg_point_gmp(struct curve_point_gmp *p2, struct curve_point_gmp *p1) {
  * Supposes data is in Montgomery form prior to being called
  */
 void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curve_point *p2, unsigned int num_limbs) {
+    struct curve_point p_out;
+
     limb_t numer[num_limbs];
     limb_t denom[num_limbs];
     limb_t lambda[num_limbs];
@@ -51,14 +58,17 @@ void add_point_point(struct curve_point *p3, struct curve_point *p1, struct curv
     mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, num_limbs);
 
     /* x */
-    mul_montgomery_num_num(p3->x, lambda, lambda, m_glo, m_prime_glo, num_limbs);
-    sub_mod_num_num(p3->x, p3->x, p1->x, m_glo, num_limbs);
-    sub_mod_num_num(p3->x, p3->x, p2->x, m_glo, num_limbs);
+    mul_montgomery_num_num(p_out.x, lambda, lambda, m_glo, m_prime_glo, num_limbs);
+    sub_mod_num_num(p_out.x, p_out.x, p1->x, m_glo, num_limbs);
+    sub_mod_num_num(p_out.x, p_out.x, p2->x, m_glo, num_limbs);
 
     /* y */
-    sub_mod_num_num(p3->y, p1->x, p3->x, m_glo, num_limbs);
-    mul_montgomery_num_num(p3->y, lambda, p3->y, m_glo, m_prime_glo, num_limbs);
-    sub_mod_num_num(p3->y, p3->y, p1->y, m_glo, num_limbs);
+    sub_mod_num_num(p_out.y, p1->x, p_out.x, m_glo, num_limbs);
+    mul_montgomery_num_num(p_out.y, lambda, p_out.y, m_glo, m_prime_glo, num_limbs);
+    sub_mod_num_num(p_out.y, p_out.y, p1->y, m_glo, num_limbs);
+
+    copy_num(p3->x, p_out.x, num_limbs);
+    copy_num(p3->y, p_out.y, num_limbs);
 }
 
 /**
@@ -97,6 +107,8 @@ void add_point_point_gmp(struct curve_point_gmp *p3, struct curve_point_gmp *p1,
  * Supposes data is in Montgomery form prior to being called
  */
 void double_point(struct curve_point *p2, struct curve_point *p1, unsigned int num_limbs) {
+    struct curve_point p_out;
+
     limb_t x1_squared[num_limbs];
     limb_t numer[num_limbs];
     limb_t denom[num_limbs];
@@ -112,14 +124,17 @@ void double_point(struct curve_point *p2, struct curve_point *p1, unsigned int n
     mul_montgomery_num_num(lambda, numer, denom, m_glo, m_prime_glo, num_limbs);
 
     /* x */
-    mul_montgomery_num_num(p2->x, lambda, lambda, m_glo, m_prime_glo, num_limbs);
-    sub_mod_num_num(p2->x, p2->x, p1->x, m_glo, num_limbs);
-    sub_mod_num_num(p2->x, p2->x, p1->x, m_glo, num_limbs);
+    mul_montgomery_num_num(p_out.x, lambda, lambda, m_glo, m_prime_glo, num_limbs);
+    sub_mod_num_num(p_out.x, p_out.x, p1->x, m_glo, num_limbs);
+    sub_mod_num_num(p_out.x, p_out.x, p1->x, m_glo, num_limbs);
 
     /* y */
-    sub_mod_num_num(p2->y, p1->x, p2->x, m_glo, num_limbs);
-    mul_montgomery_num_num(p2->y, lambda, p2->y, m_glo, m_prime_glo, num_limbs);
-    sub_mod_num_num(p2->y, p2->y, p1->y, m_glo, num_limbs);
+    sub_mod_num_num(p_out.y, p1->x, p_out.x, m_glo, num_limbs);
+    mul_montgomery_num_num(p_out.y, lambda, p_out.y, m_glo, m_prime_glo, num_limbs);
+    sub_mod_num_num(p_out.y, p_out.y, p1->y, m_glo, num_limbs);
+
+    copy_num(p2->x, p_out.x, num_limbs);
+    copy_num(p2->y, p_out.y, num_limbs);
 }
 
 /**
