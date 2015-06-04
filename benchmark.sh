@@ -60,18 +60,17 @@ for limb_size_in_bits in ${LIMB_SIZE_IN_BITS}; do
                     mulx="0"
                 fi
 
-                for config in 0 1; do
-                    benchmark_prime_field_arithmetic=${config}
+                for benchmark_prime_field_arithmetic in 0 1; do
                     if [ ${benchmark_prime_field_arithmetic} -eq 0 ]; then
                         benchmark_elliptic_curve_arithmetic=1
                     else
                         benchmark_elliptic_curve_arithmetic=0
                     fi
-                done
 
-                overwrite_file
-                compile
-                benchmark
+                    overwrite_file
+                    compile
+                    benchmark
+                done
             done
         done
     done
